@@ -10,22 +10,22 @@ namespace jts
 		{
 			case Type::CHAR:
 
-				EvalObj(a)->_char += CastObj<char>(EvalObj(b));
+				a->_char += CastObj<char>(EvalObj(b));
 				break;
 
 			case Type::BOOL:
 
-				EvalObj(a)->_bool += CastObj<bool>(EvalObj(b));
+				a->_bool += CastObj<bool>(EvalObj(b));
 				break;
 
 			case Type::INT:
 
-				EvalObj(a)->_int += CastObj<int>(EvalObj(b));
+				a->_int += CastObj<int>(EvalObj(b));
 				break;
 
 			default: // case FLOAT
 
-				EvalObj(a)->_float += CastObj<float>(EvalObj(b));
+				a->_float += CastObj<float>(EvalObj(b));
 				break;
 		}
 
@@ -38,22 +38,22 @@ namespace jts
 		{
 			case Type::CHAR:
 
-				EvalObj(a)->_char -= CastObj<char>(EvalObj(b));
+				a->_char -= CastObj<char>(EvalObj(b));
 				break;
 
 			case Type::BOOL:
 
-				EvalObj(a)->_bool -= CastObj<bool>(EvalObj(b));
+				a->_bool -= CastObj<bool>(EvalObj(b));
 				break;
 
 			case Type::INT:
 
-				EvalObj(a)->_int -= CastObj<int>(EvalObj(b));
+				a->_int -= CastObj<int>(EvalObj(b));
 				break;
 
 			default: // case FLOAT
 
-				EvalObj(a)->_float -= CastObj<float>(EvalObj(b));
+				a->_float -= CastObj<float>(EvalObj(b));
 				break;
 		}
 
@@ -66,25 +66,25 @@ namespace jts
 		{
 			case Type::CHAR:
 
-				EvalObj(a)->_char = EvalObj(b)->_char;
+				a->_char = EvalObj(b)->_char;
 				a->type = Type::CHAR;
 				break;
 
 			case Type::BOOL:
 
-				EvalObj(a)->_bool = EvalObj(b)->_bool;
+				a->_bool = EvalObj(b)->_bool;
 				a->type = Type::BOOL;
 				break;
 
 			case Type::INT:
 
-				EvalObj(a)->_int = EvalObj(b)->_int;
+				a->_int = EvalObj(b)->_int;
 				a->type = Type::INT;
 				break;
 
 			default: // case FLOAT
 
-				EvalObj(a)->_float = EvalObj(b)->_float;
+				a->_float = EvalObj(b)->_float;
 				a->type = Type::FLOAT;
 				break;
 		}

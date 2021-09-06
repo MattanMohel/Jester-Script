@@ -152,7 +152,7 @@
     <ClCompile Include="src\StrCon.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Jts Libs\StandardLib.h" />
+    <ClInclude Include="Jts Libs\Lib.h" />
     <ClInclude Include="src\Execute.h" />
     <ClInclude Include="src\Operations.h" />
     <ClInclude Include="src\Parser.h" />

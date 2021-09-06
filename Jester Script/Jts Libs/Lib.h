@@ -11,7 +11,7 @@
 
 using namespace jts;
 
-inline void StandardLib(VM* vm)
+inline void StdLib(VM* vm)
 {
 	env::AddNative(vm, "+", [](Obj* args)
 	{
@@ -52,26 +52,28 @@ inline void StandardLib(VM* vm)
 
 		while (rest)
 		{
-			switch (rest->type)
+			Obj* value = EvalObj(rest);
+
+			switch (value->type)
 			{
 				case Type::CHAR:
 
-					std::cout << EvalObj(rest)->_char;
+					std::cout << value->_char;
 					break;
 
 				case Type::BOOL:
 
-					std::cout << EvalObj(rest)->_bool;
+					std::cout << value->_bool;
 					break;
 
 				case Type::INT:
 
-					std::cout << EvalObj(rest)->_int;
+					std::cout << value->_int;
 					break;
 
 				case Type::FLOAT:
 
-					std::cout << EvalObj(rest)->_float;
+					std::cout << value->_float;
 					break;
 			}
 

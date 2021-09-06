@@ -21,17 +21,16 @@ namespace jts
 
 			it = it->rest;
 
-			Obj* startIndex = vm->stackPtrCur;
+			ParseTokens_Impl(vm, vm->stackPtrCur, it, codeDepth, &vm->stackPtrCur->args);
 
-			vm->stackPtrCur = ParseTokens_Impl(vm, vm->stackPtrCur, it, codeDepth);
-
-			startIndex->next = vm->stackPtrCur;
+			vm->stackPtrCur->next = new Obj();
+			vm->stackPtrCur = vm->stackPtrCur->next;
 
 			it = it->rest;
 		}
 	}
 
-	Obj* ParseTokens_Impl(VM* vm, Obj* head, Tok*& it, int& codeDepth)
+	Obj* ParseTokens_Impl(VM* vm, Obj* head, Tok*& it, int& codeDepth, Obj** nextNode)
 	{
 		head->type = it->type;
 		head->spec = it->spec;
@@ -41,20 +40,9 @@ namespace jts
 		head->_native = vm->natives[it->value];
 
 		int targetDepth = codeDepth - 1;
-
+		
 		while (codeDepth > targetDepth)
 		{
-			Obj** nextNode = nullptr;
-
-			if (head->spec == Spec::FUNC)
-			{
-				nextNode = &head->args;
-			}
-			else
-			{
-				nextNode = &head->next;
-			}
-
 			it = it->rest;
 
 			switch (it->spec)
@@ -72,13 +60,19 @@ namespace jts
 				case Spec::FUNC:
 
 					*nextNode = new Obj();
-					head = ParseTokens_Impl(vm, head->next, it, codeDepth);
+					ParseTokens_Impl(vm, *nextNode, it, codeDepth, &(*nextNode)->args);
+
+					nextNode = &head->args->next;
+
 					break;
 
 				case Spec::LTRL:
 
 					*nextNode = TokToLtrl(it);
 					head = *nextNode;
+
+					nextNode = &head->next;
+
 					break;
 
 				case Spec::SYMBOL:
@@ -90,9 +84,13 @@ namespace jts
 
 					*nextNode = env::GetSymbol(vm, it);
 					head = *nextNode;
+
+					nextNode = &head->next;
+
 					break;
 			}
 		}
+
 
 		return head;
 	}
