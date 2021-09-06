@@ -14,6 +14,7 @@ namespace jts
 
 		Type type;
 		Spec spec;
+		FnType fnType;
 
 		union // Values
 		{

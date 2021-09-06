@@ -36,6 +36,8 @@ namespace jts
 		head->type = it->type;
 		head->spec = it->spec;
 
+		// For now all funcs are natives
+		head->fnType = FnType::NAT_FUNC;
 		head->_native = vm->natives[it->value];
 
 		int targetDepth = codeDepth - 1;

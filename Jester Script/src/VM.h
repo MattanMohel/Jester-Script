@@ -27,6 +27,8 @@ namespace jts
 		void AddNative(VM* vm, str value, Obj* (*native)(Obj* params));
 
 		Obj* GetSymbol(VM* vm, Tok* tok);
+
+		void RunVM(VM* vm);
 	}
 }
 
