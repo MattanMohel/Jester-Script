@@ -7,12 +7,13 @@ namespace jts
 {
 	struct Obj
 	{
-		Obj* rest;
+		// Object's arguments
+		Obj* args;
+		// Next object in scope
+		Obj* next;
 
 		Type type;
 		Spec spec;
-
-		bool argsEnd = false;
 
 		union // Values
 		{
@@ -24,7 +25,7 @@ namespace jts
 
 		union // Callables
 		{
-			void (*_native)(Obj*);
+			Obj* (*_native)(Obj*);
 		};
 	};
 }

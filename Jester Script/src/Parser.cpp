@@ -21,7 +21,11 @@ namespace jts
 
 			it = it->rest;
 
-			ParseTokens_Impl(vm, vm->stackPtrCur, it, codeDepth);
+			Obj* startIndex = vm->stackPtrCur;
+
+			vm->stackPtrCur = ParseTokens_Impl(vm, vm->stackPtrCur, it, codeDepth);
+
+			startIndex->next = vm->stackPtrCur;
 
 			it = it->rest;
 		}
@@ -38,6 +42,17 @@ namespace jts
 
 		while (codeDepth > targetDepth)
 		{
+			Obj** nextNode = nullptr;
+
+			if (head->spec == Spec::FUNC)
+			{
+				nextNode = &head->args;
+			}
+			else
+			{
+				nextNode = &head->next;
+			}
+
 			it = it->rest;
 
 			switch (it->spec)
@@ -54,14 +69,14 @@ namespace jts
 
 				case Spec::FUNC:
 
-					head->rest = new Obj();
-					head = ParseTokens_Impl(vm, head->rest, it, codeDepth);
+					*nextNode = new Obj();
+					head = ParseTokens_Impl(vm, head->next, it, codeDepth);
 					break;
 
 				case Spec::LTRL:
 
-					head->rest = TokToLtrl(it); 
-					head = head->rest;
+					*nextNode = TokToLtrl(it);
+					head = *nextNode;
 					break;
 
 				case Spec::SYMBOL:
@@ -71,13 +86,11 @@ namespace jts
 						vm->symbols.emplace(it->value, new Obj());
 					}
 
-					head->rest = env::GetSymbol(vm, it); 
-					head = head->rest;
+					*nextNode = env::GetSymbol(vm, it);
+					head = *nextNode;
 					break;
 			}
 		}
-
-		head->argsEnd = true;
 
 		return head;
 	}

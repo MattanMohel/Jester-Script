@@ -12,60 +12,39 @@ void MathLib(VM* vm)
 	env::AddNative(vm, "+", [](Obj* args)
 	{
 		args->_int = 0;
-		Obj* arg = args->rest;
+		Obj* rest = args->args;
 
-		while (!arg->argsEnd)
+		while (rest)
 		{
-			args->_int += arg->_int;
-			arg = arg->rest;
+			args->_int += rest->_int;
+			rest = rest->args;
 		}
 
-		return arg;
+		return rest;
 	});	
 	
-	env::AddNative(vm, "-", [](Obj* args)
+	env::AddNative(vm, "-", [](Obj* args) -> Obj*
 	{
 		args->_int = 0;
-		Obj* arg = args->rest;
+		Obj* rest = args->args;
 
-		while (!arg->argsEnd)
+		while (rest)
 		{
-			args->_int -= arg->_int;
-			arg = arg->rest;
+			args->_int -= rest->_int;
+			rest = rest->args;
 		}
 
-		return arg;
+		return rest;
 	});	
 	
-	env::AddNative(vm, "set", [](Obj* args)
+	env::AddNative(vm, "set", [](Obj* args) -> Obj*
 	{
-		// (set x 10) --> x becomes int
-		// (+= x 10.0) --> x becomes float
-		switch (args->rest->rest->type)
-		{ 
-			case Type::INT:
-				//cast args->rest->_int to type
-				args->rest->_int = args->rest->rest->_int;
-				break;
-
-			case Type::FLOAT:
-				
-				args->rest->_float = args->rest->rest->_float;
-				break;			
-			
-			case Type::FLOAT:
-				
-				args->rest->_float = args->rest->rest->_float;
-				break;
-		}
+		return nullptr;
 	});	
 	
-	env::AddNative(vm, "print", [](Obj* args)
+	env::AddNative(vm, "print", [](Obj* args) -> Obj*
 	{
-		while (true)
-		{
-
-		}
+		return nullptr;
 	});
 }
 
