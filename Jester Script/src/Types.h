@@ -2,31 +2,45 @@
 #define TYPES_H
 
 #include <string>
+#include <unordered_map>
 
 namespace jts
 {
 	using str = std::string;
 
 	struct VM;
+	struct Tok;
+	struct Obj;
 
 	enum class Type
 	{
-		VOID,
+		NIL = 0,
+
 		CHAR,
 		BOOL,
 		INT,
 		FLOAT,
+		STRING,
 	};
 
 	enum class Spec
 	{
+		NIL = 0,
+
+		SYMBOL,
+
 		LTRL,
 		VAR,
 		FUNC,
+
+		PARENTH_L,
+		PARENTH_R
 	};
 
 	enum class FnType
 	{
+		NIL = 0,
+
 		NAT_FUNC,
 		CPP_FUNC,
 		JTS_FUNC,
@@ -34,6 +48,8 @@ namespace jts
 
 	enum class Flag
 	{
+		NIL = 0,
+
 		CONST,
 		STATIC,
 
@@ -41,14 +57,5 @@ namespace jts
 		QUASI_QUOTE,
 		UNQUOTE,
 	};
-
-	struct Tok
-	{
-		Tok* head;
-
-		str value;
-		size_t line;
-	};
-
 }
 #endif

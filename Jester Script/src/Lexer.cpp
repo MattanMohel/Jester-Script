@@ -1,4 +1,6 @@
 #include "Lexer.h"
+#include "Token.h"
+#include "StrCon.h"
 #include "VM.h"
 
 namespace jts
@@ -18,8 +20,6 @@ namespace jts
 			Ex: (++x) --> (++ x)
 		*/
 
-		// '#' will become part of a list of prefix operators --> '#' = comment | '\'' = quote | '`' = quasi-quote | '~' = unquote
-
 		vm->tokenPtrBeg = new Tok();
 		vm->tokenPtrCur = vm->tokenPtrBeg;
 
@@ -37,9 +37,10 @@ namespace jts
 			{
 				vm->tokenPtrCur->value = lexer;
 				vm->tokenPtrCur->line  =  line;
+				MatchTokenType(vm);
 
-				vm->tokenPtrCur->head = new Tok();
-				vm->tokenPtrCur = vm->tokenPtrCur->head;
+				vm->tokenPtrCur->rest = new Tok();
+				vm->tokenPtrCur = vm->tokenPtrCur->rest;
 
 				lexer.clear();
 			}
@@ -57,22 +58,55 @@ namespace jts
 			{
 				vm->tokenPtrCur->value = ch;
 				vm->tokenPtrCur->line = line;
+				MatchTokenType(vm);
 
-				vm->tokenPtrCur->head = new Tok();
-				vm->tokenPtrCur = vm->tokenPtrCur->head;
+				vm->tokenPtrCur->rest = new Tok();
+				vm->tokenPtrCur = vm->tokenPtrCur->rest;
 			}
 			else if (ch == EOF)
 			{
 				break;
 			}
 
-			//add token to vm
 			ch = fgetc(file);
-
 		}
 
-		vm->tokenPtrEnd = vm->tokenPtrCur;
 		vm->tokenPtrCur = vm->tokenPtrBeg;
 	}
-}
 
+	void MatchTokenType(VM* vm)
+	{
+		const str& value = vm->tokenPtrCur->value;
+
+		if (value.empty())
+		{
+			return;
+		}
+
+		else if (value == "(")
+		{
+			vm->tokenPtrCur->spec = Spec::PARENTH_L;
+		}		
+		
+		else if (value == ")")
+		{
+			vm->tokenPtrCur->spec = Spec::PARENTH_R;
+		}
+
+		else if (vm->natives.find(value) != vm->natives.end())
+		{
+			vm->tokenPtrCur->fnType = FnType::NAT_FUNC;
+			vm->tokenPtrCur->spec = Spec::FUNC;
+		}
+
+		else if (TokIsLtrl(vm->tokenPtrCur))
+		{
+			vm->tokenPtrCur->spec = Spec::LTRL;
+		}
+
+		else 
+		{
+			vm->tokenPtrCur->spec = Spec::SYMBOL;
+		}
+	}
+}

@@ -1,5 +1,6 @@
 #include "File.h"
 #include "Lexer.h"
+#include "Parser.h"
 #include "VM.h"
 
 namespace jts
@@ -10,8 +11,8 @@ namespace jts
 
 		fopen_s(&file, path.c_str(), "r");
 
-		vm->Assert(file == nullptr, "could not open file " + path);
-
 		TokenizeFile(vm, file);
+
+		ParseTokens(vm);
 	}
 }

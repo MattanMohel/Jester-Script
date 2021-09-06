@@ -7,21 +7,26 @@ namespace jts
 {
 	struct Obj
 	{
-		Obj* head;
+		Obj* rest;
 
 		Type type;
+		Spec spec;
 
-		void (*func)(Obj*);
+		bool argsEnd = false;
 
-		union
+		union // Values
 		{
-			char* _char;
-			bool* _bool;
-			int* _int;
-			float* _float;
+			char _char;
+			bool _bool;
+			int _int;
+			float _float;
+		};
+
+		union // Callables
+		{
+			void (*_native)(Obj*);
 		};
 	};
-
 }
 
 #endif
