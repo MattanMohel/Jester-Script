@@ -148,7 +148,6 @@
     <ClCompile Include="src\File.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\VM.cpp" />
-    <ClCompile Include="src\Token.cpp" />
     <ClCompile Include="src\StrCon.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\Jester.jts" />
+    <None Include="scripts\Testing.jts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,0 +1,6 @@
+# function syntax:
+
+(defn (fac n)
+	(if (equal n 2)
+		2
+		(fac (- n 1))))

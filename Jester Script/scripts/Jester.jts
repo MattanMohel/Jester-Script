@@ -2,12 +2,12 @@
 
 (set x true)
 
-(println x)
+(println x) # hi
 
 (set x (+ 5 5))
 
-(println x)
+(println (++ x))  # hello!
 
-(set x (* .99 x))
+(set x (* .99 x)) # pay attention to mee... I'm a comment, parse me!
 
 (println x)

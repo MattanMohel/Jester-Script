@@ -30,9 +30,6 @@
     <ClCompile Include="src\Parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Token.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\StrCon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -80,5 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\Jester.jts" />
+    <None Include="scripts\Testing.jts" />
   </ItemGroup>
 </Project>

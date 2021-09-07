@@ -1,0 +1,11 @@
+﻿  Operations.cpp
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(18,13): warning C4804: '+=': unsafe use of type 'bool' in operation
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(46,13): warning C4804: '-=': unsafe use of type 'bool' in operation
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(74,13): warning C4804: '*=': unsafe use of type 'bool' in operation
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(102,13): warning C4804: '/=': unsafe use of type 'bool' in operation
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(102,13): warning C4804: '/': unsafe use of type 'bool' in operation
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 517 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Jester Script.vcxproj -> C:\repo\Jester Script\Release\Jester Script.exe

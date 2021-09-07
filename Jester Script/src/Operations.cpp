@@ -2,6 +2,8 @@
 #include "Execute.h"
 #include "Object.h"
 
+// char, int and bool share the same data -> for switch check if its float, otherwise operate on int --> transmutable for char bool & float
+
 namespace jts
 {
 	template<> Obj* BinaryOpObj<BinaryOp::ADD>(ObjNode* a, ObjNode* b)
@@ -154,9 +156,14 @@ namespace jts
 	{
 		switch (a->value->type)
 		{
+			case Type::CHAR:
+
+				++a->value->_char;
+				break;
+
 			case Type::BOOL:
 
-				++a->value->_bool;
+				++a->value->_int;
 				break;
 
 			case Type::INT:

@@ -16,10 +16,6 @@ namespace jts
 		Spec spec;
 		FnType fnType;
 	};
-
-	Tok* IncrTok(Tok*& tok, size_t index = 1);
-
-	Tok* SeekTok(Tok* tok, size_t index = 1);
 }
 
 #endif

@@ -1,2 +1,7 @@
-﻿  Parser.cpp
+﻿  Operations.cpp
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(20,13): warning C4804: '+=': unsafe use of type 'bool' in operation
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(48,13): warning C4804: '-=': unsafe use of type 'bool' in operation
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(76,13): warning C4804: '*=': unsafe use of type 'bool' in operation
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(104,13): warning C4804: '/=': unsafe use of type 'bool' in operation
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(104,13): warning C4804: '/': unsafe use of type 'bool' in operation
   Jester Script.vcxproj -> C:\repo\Jester Script\Debug\Jester Script.exe
