@@ -17,7 +17,9 @@ namespace jts
 			and ASCII symbol except '(' or ')' or '#', therefore all symbols must be
 			separated by a space
 
-			Ex: (++x) --> (++ x)
+			EX: 
+
+			(++x) --> (++ x)
 		*/
 
 		vm->tokenPtrBeg = new Tok();

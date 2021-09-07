@@ -8,73 +8,51 @@ namespace jts
 {
 	void ParseTokens(VM* vm)
 	{
-		int codeDepth = 0;
+		/*
+			ObjNode nodes: 'args' points to the arguments and 'next' to the next function
+
+			EX:
+
+			(set x (+ 5 5))
+			(println x)
+
+			translates to:
+
+			(set) --> next: (println) --> next: (null)
+			   `--> args: (x +)  `--> args: (x)
+			                  `--> args: 5, 5
+		*/
+
+		ObjNode** head = &vm->stackPtrBeg;
+		ObjNode** funcHead = nullptr;
 
 		Tok* it = vm->tokenPtrBeg;
 
-		vm->stackPtrCur = new ObjNode();
-		vm->stackPtrBeg = vm->stackPtrCur;
+		bool onInvocation = false;
 
 		while (it->spec != Spec::NIL)
 		{
-			++codeDepth;
+			// Mark next head as a call
+			if (it->spec == Spec::PARENTH_L)
+			{
+				onInvocation = true;
 
-			it = it->next;
+				funcHead = head;
 
-			ParseTokens_Impl(vm, vm->stackPtrCur, it, codeDepth, &vm->stackPtrCur->args);
+				it = it->next;
+				continue;
+			}
+			// Return head to previous function head
+			if (it->spec == Spec::PARENTH_R)
+			{
+				head = &(*funcHead)->next;
 
-			vm->stackPtrCur->next = new ObjNode();
-			vm->stackPtrCur = vm->stackPtrCur->next;
-
-			it = it->next;
-		}
-	}
-
-	void ParseTokens_Impl(VM* vm, ObjNode* head, Tok*& it, int& codeDepth, ObjNode** nextNode)
-	{
-		head->value->type = it->type;
-		head->value->spec = it->spec;
-		head->value->token = it;
-
-		// For now all funcs are natives
-		head->value->fnType = FnType::NATIVE;
-		head->value->_native = vm->natives[it->value]->_native;
-
-		int targetDepth = codeDepth - 1;
-		
-		while (codeDepth > targetDepth)
-		{
-			it = it->next;
+				it = it->next;
+				continue;
+			}
 
 			switch (it->spec)
 			{
-				case Spec::PARENTH_L:
-
-					++codeDepth;
-					break;
-
-				case Spec::PARENTH_R:
-
-					--codeDepth;
-					break;
-
-				case Spec::CALL:
-
-					*nextNode = new ObjNode();
-					ParseTokens_Impl(vm, *nextNode, it, codeDepth, &(*nextNode)->args);
-
-					nextNode = &head->args->next;
-					break;
-
-				case Spec::VALUE:
-
-					*nextNode = new ObjNode(TokToLtrl(it));
-					head = *nextNode;
-
-					nextNode = &head->next;
-
-					break;
-
 				case Spec::SYMBOL:
 
 					if (env::GetSymbol(vm, it) == nullptr)
@@ -82,13 +60,39 @@ namespace jts
 						vm->symbols.emplace(it->value, new Obj());
 					}
 
-					*nextNode = new ObjNode(env::GetSymbol(vm, it));
-					head = *nextNode;
+					(*head) = new ObjNode(env::GetSymbol(vm, it));
 
-					nextNode = &head->next;
+					break;
+
+				case Spec::VALUE:
+
+					(*head) = new ObjNode(TokToLtrl(it));
+
+					break;
+
+				case Spec::CALL:
+
+					Obj* call = new Obj {Type::NIL, Spec::CALL, FnType::NATIVE};
+					call->_native = vm->natives[it->value]->_native;
+
+					(*head) = new ObjNode(call);
 
 					break;
 			}
+
+			// Invocation --> emplace to args
+			if (onInvocation)
+			{
+				head = &(*head)->args;
+				onInvocation = false;
+			}
+			// Otherwise --> emplace to next
+			else
+			{
+				head = &(*head)->next;
+			}
+
+			it = it->next;
 		}
 	}
 }
