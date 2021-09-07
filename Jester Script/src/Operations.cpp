@@ -147,6 +147,14 @@ namespace jts
 				a->value->_float = value->_float;
 				a->value->type = Type::FLOAT; 
 				break;
+
+			case Type::JTS_FUNC:
+
+				a->value->_jtsFunc = value->_jtsFunc;
+				a->value->fnType = FnType::JTS_FUNC;
+				a->value->type = Type::JTS_FUNC;
+				a->value->spec = Spec::FUNC;
+				break;
 		}
 
 		return a->value;

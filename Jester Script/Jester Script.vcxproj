@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\JtsFunc.cpp" />
     <ClCompile Include="src\Execute.cpp" />
     <ClCompile Include="src\Operations.cpp" />
     <ClCompile Include="src\Parser.cpp" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Jts Libs\Lib.h" />
+    <ClInclude Include="src\JtsFunc.h" />
     <ClInclude Include="src\Execute.h" />
     <ClInclude Include="src\Operations.h" />
     <ClInclude Include="src\Parser.h" />

@@ -34,6 +34,7 @@ namespace jts
 	{
 		head->value->type = it->type;
 		head->value->spec = it->spec;
+		head->value->token = it;
 
 		// For now all funcs are natives
 		head->value->fnType = FnType::NAT_FUNC;

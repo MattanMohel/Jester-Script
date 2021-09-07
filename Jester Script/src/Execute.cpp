@@ -1,4 +1,5 @@
 #include "Execute.h"
+#include "JtsFunc.h"
 #include "Object.h"
 
 namespace jts
@@ -21,11 +22,11 @@ namespace jts
 
 				return obj->value->_native(obj);
 
-			case FnType::CPP_FUNC:
+			case FnType::JTS_FUNC:
 
-				return nullptr;
+				return ExecJtsFunc(obj);
 
-			default: // case JTS_FUNC
+			default: // case CPP_FUNC
 
 				return nullptr;
 		}

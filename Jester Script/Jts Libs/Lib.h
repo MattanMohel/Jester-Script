@@ -6,6 +6,7 @@
 #include "../src/Object.h"
 #include "../src/Operations.h"
 #include "../src/Execute.h"
+#include "../src/JtsFunc.h"
 
 #include <iostream>
 
@@ -86,6 +87,19 @@ inline void StdLib(VM* vm)
 	env::AddNative(vm, "set", [](ObjNode* args) -> Obj*
 	{
 		return BinaryOpObj<BinaryOp::SET>(args->args, args->args->next);
+	});
+
+	env::AddNative(vm, "defn", [](ObjNode* args) -> Obj*
+	{
+		Obj* fn = new Obj();
+
+		fn->spec = Spec::FUNC;
+		fn->type = Type::JTS_FUNC;
+		
+		fn->_jtsFunc = new Func();
+		fn->_jtsFunc->codeBlock = args->args;
+
+		return fn;
 	});
 
 	env::AddNative(vm, "print", [](ObjNode* in) -> Obj*

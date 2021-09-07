@@ -11,3 +11,8 @@
 (set x (* .99 x)) # pay attention to mee... I'm a comment, parse me!
 
 (println x)
+
+(set x (defn 
+	(+ 5 5)))
+
+(println (x))

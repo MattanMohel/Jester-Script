@@ -11,6 +11,8 @@ namespace jts
 		Spec spec;
 		FnType fnType;
 
+		Tok* token;
+
 		union // Values
 		{
 			char _char;
@@ -22,6 +24,7 @@ namespace jts
 		union // Callables
 		{
 			Obj* (*_native)(ObjNode*);
+			Func* _jtsFunc;
 		};
 	};
 

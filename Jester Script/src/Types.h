@@ -11,6 +11,7 @@ namespace jts
 	struct VM;
 	struct Tok;
 	struct Obj;
+	struct Func;
 	struct ObjNode;
 
 	enum class Type
@@ -22,6 +23,10 @@ namespace jts
 		INT,
 		FLOAT,
 		STRING,
+
+		NAT_FUNC,
+		CPP_FUNC,
+		JTS_FUNC,
 	};
 
 	enum class Spec
@@ -35,7 +40,9 @@ namespace jts
 		FUNC,
 
 		PARENTH_L,
-		PARENTH_R
+		PARENTH_R,
+		BRACKET_L,
+		BRACKET_R,
 	};
 
 	enum class FnType
@@ -56,4 +63,5 @@ namespace jts
 		UNQUOTE,
 	};
 }
+
 #endif
