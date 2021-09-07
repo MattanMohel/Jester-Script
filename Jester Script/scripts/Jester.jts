@@ -1,3 +1,17 @@
-(set my-func *)
+(println x)
 
-(println (my-func 5 5))
+(set x true)
+
+(println x)
+
+(set x (* 10 x))
+
+(println x)
+
+(set x (* .99 x))
+
+(println x)
+
+(set x *)
+
+(println (x 1 2 3 4 5))

@@ -4,6 +4,8 @@
 #include "StrCon.h"
 #include "VM.h"
 
+#include <stack>
+
 namespace jts
 {
 	void ParseTokens(VM* vm)
@@ -24,7 +26,7 @@ namespace jts
 		*/
 
 		ObjNode** head = &vm->stackPtrBeg;
-		ObjNode** funcHead = nullptr;
+		std::stack<ObjNode**> funcHead;
 
 		Tok* it = vm->tokenPtrBeg;
 
@@ -37,7 +39,7 @@ namespace jts
 			{
 				onInvocation = true;
 
-				funcHead = head;
+				funcHead.emplace(head);
 
 				it = it->next;
 				continue;
@@ -45,7 +47,8 @@ namespace jts
 			// Return head to previous function head
 			if (it->spec == Spec::PARENTH_R)
 			{
-				head = &(*funcHead)->next;
+				head = &(*funcHead.top())->next;
+				funcHead.pop(); 
 
 				it = it->next;
 				continue;
