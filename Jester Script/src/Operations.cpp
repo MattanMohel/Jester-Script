@@ -122,39 +122,56 @@ namespace jts
 	{
 		Obj* value = EvalObj(b);
 
-		switch (value->type)
+		if (value->spec == Spec::VALUE)
 		{
-			case Type::CHAR:
+			a->value->spec = Spec::VALUE;
+			a->value->type = value->type;
 
-				a->value->_char = value->_char;
-				a->value->type = Type::CHAR;
-				break;
+			switch (value->type)
+			{
+				case Type::CHAR:
 
-			case Type::BOOL:
+					a->value->_char = value->_char;
+					break;
 
-				a->value->_bool = value->_bool;
-				a->value->type = Type::BOOL;
-				break;
+				case Type::BOOL:
 
-			case Type::INT:
+					a->value->_bool = value->_bool;
+					break;
 
-				a->value->_int = value->_int;
-				a->value->type = Type::INT;
-				break;
+				case Type::INT:
 
-			case Type::FLOAT:
+					a->value->_int = value->_int;
+					break;
 
-				a->value->_float = value->_float;
-				a->value->type = Type::FLOAT; 
-				break;
+				case Type::FLOAT:
 
-			case Type::JTS_FUNC:
+					a->value->_float = value->_float;
+					break;
+			}
+		}
+		else
+		{
+			a->value->spec   =    Spec::CALL;
+			a->value->fnType = value->fnType;
 
-				a->value->_jtsFunc = value->_jtsFunc;
-				a->value->fnType = FnType::JTS_FUNC;
-				a->value->type = Type::JTS_FUNC;
-				a->value->spec = Spec::FUNC;
-				break;
+			switch (value->fnType)
+			{
+				case FnType::NATIVE:
+				{
+					a->value->_native = value->_native;
+					break;
+				}				
+				case FnType::JTS:
+				{
+					a->value->_jtsFunc = value->_jtsFunc;
+					break;
+				}				
+				case FnType::C_BRIDGE:
+				{
+					break;
+				}
+			}
 		}
 
 		return a->value;

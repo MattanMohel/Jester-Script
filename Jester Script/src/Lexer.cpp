@@ -39,8 +39,8 @@ namespace jts
 				vm->tokenPtrCur->line  =  line;
 				MatchTokenType(vm);
 
-				vm->tokenPtrCur->rest = new Tok();
-				vm->tokenPtrCur = vm->tokenPtrCur->rest;
+				vm->tokenPtrCur->next = new Tok();
+				vm->tokenPtrCur = vm->tokenPtrCur->next;
 
 				lexer.clear();
 			}
@@ -60,8 +60,8 @@ namespace jts
 				vm->tokenPtrCur->line = line;
 				MatchTokenType(vm);
 
-				vm->tokenPtrCur->rest = new Tok();
-				vm->tokenPtrCur = vm->tokenPtrCur->rest;
+				vm->tokenPtrCur->next = new Tok();
+				vm->tokenPtrCur = vm->tokenPtrCur->next;
 			}
 			else if (ch == EOF)
 			{
@@ -77,6 +77,7 @@ namespace jts
 	void MatchTokenType(VM* vm)
 	{
 		const str& value = vm->tokenPtrCur->value;
+		static Tok* prevTok = nullptr;
 
 		if (value.empty())
 		{
@@ -95,18 +96,28 @@ namespace jts
 
 		else if (vm->natives.find(value) != vm->natives.end())
 		{
-			vm->tokenPtrCur->fnType = FnType::NAT_FUNC;
-			vm->tokenPtrCur->spec = Spec::FUNC;
+			vm->tokenPtrCur->fnType = FnType::NATIVE;
+
+			if (prevTok->spec == Spec::PARENTH_L)
+			{
+				vm->tokenPtrCur->spec = Spec::CALL;
+			}
+			else
+			{
+				vm->tokenPtrCur->spec = Spec::SYMBOL;
+			}
 		}
 
 		else if (TokIsLtrl(vm->tokenPtrCur))
 		{
-			vm->tokenPtrCur->spec = Spec::LTRL;
+			vm->tokenPtrCur->spec = Spec::VALUE;
 		}
 
 		else 
 		{
 			vm->tokenPtrCur->spec = Spec::SYMBOL;
 		}
+
+		prevTok = vm->tokenPtrCur;
 	}
 }

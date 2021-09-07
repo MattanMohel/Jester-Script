@@ -19,14 +19,14 @@ namespace jts
 		{
 			++codeDepth;
 
-			it = it->rest;
+			it = it->next;
 
 			ParseTokens_Impl(vm, vm->stackPtrCur, it, codeDepth, &vm->stackPtrCur->args);
 
 			vm->stackPtrCur->next = new ObjNode();
 			vm->stackPtrCur = vm->stackPtrCur->next;
 
-			it = it->rest;
+			it = it->next;
 		}
 	}
 
@@ -37,14 +37,14 @@ namespace jts
 		head->value->token = it;
 
 		// For now all funcs are natives
-		head->value->fnType = FnType::NAT_FUNC;
-		head->value->_native = vm->natives[it->value];
+		head->value->fnType = FnType::NATIVE;
+		head->value->_native = vm->natives[it->value]->_native;
 
 		int targetDepth = codeDepth - 1;
 		
 		while (codeDepth > targetDepth)
 		{
-			it = it->rest;
+			it = it->next;
 
 			switch (it->spec)
 			{
@@ -58,16 +58,15 @@ namespace jts
 					--codeDepth;
 					break;
 
-				case Spec::FUNC:
+				case Spec::CALL:
 
 					*nextNode = new ObjNode();
 					ParseTokens_Impl(vm, *nextNode, it, codeDepth, &(*nextNode)->args);
 
 					nextNode = &head->args->next;
-
 					break;
 
-				case Spec::LTRL:
+				case Spec::VALUE:
 
 					*nextNode = new ObjNode(TokToLtrl(it));
 					head = *nextNode;

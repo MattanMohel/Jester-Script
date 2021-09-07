@@ -23,10 +23,6 @@ namespace jts
 		INT,
 		FLOAT,
 		STRING,
-
-		NAT_FUNC,
-		CPP_FUNC,
-		JTS_FUNC,
 	};
 
 	enum class Spec
@@ -35,23 +31,21 @@ namespace jts
 
 		SYMBOL,
 
-		LTRL,
-		VAR,
+		VALUE,
+		CALL,
 		FUNC,
 
 		PARENTH_L,
 		PARENTH_R,
-		BRACKET_L,
-		BRACKET_R,
 	};
 
 	enum class FnType
 	{
 		NIL = 0,
 
-		NAT_FUNC,
-		CPP_FUNC,
-		JTS_FUNC,
+		NATIVE,
+		C_BRIDGE,
+		JTS,
 	};
 
 	enum class Flag

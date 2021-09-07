@@ -24,7 +24,12 @@ namespace jts
 
 		void AddNative(VM* vm, str value, Obj* (*native)(ObjNode* params))
 		{
-			vm->natives.emplace(value, native);
+			Obj* func = new Obj();
+			func->_native = native;
+			func->fnType = FnType::NATIVE;
+			func->spec = Spec::SYMBOL;
+
+			vm->natives.emplace(value, func);
 		}
 
 		Obj* GetSymbol(VM* vm, Tok* tok)
@@ -32,6 +37,11 @@ namespace jts
 			if (vm->symbols.find(tok->value) != vm->symbols.end())
 			{
 				return vm->symbols[tok->value];
+			}
+
+			if (vm->natives.find(tok->value) != vm->natives.end())
+			{
+				return vm->natives[tok->value];
 			}
 
 			return nullptr;

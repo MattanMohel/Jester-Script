@@ -93,8 +93,8 @@ inline void StdLib(VM* vm)
 	{
 		Obj* fn = new Obj();
 
-		fn->spec = Spec::FUNC;
-		fn->type = Type::JTS_FUNC;
+		fn->spec = Spec::CALL;
+		fn->fnType = FnType::JTS;
 		
 		fn->_jtsFunc = new Func();
 		fn->_jtsFunc->codeBlock = args->args;

@@ -10,11 +10,11 @@ namespace jts
 
 		while (block->next)
 		{
-			ExecObj(block);
+			EvalObj(block);
 
 			block = block->next;
 		}
 
-		return ExecObj(block);
+		return EvalObj(block);
 	}
 }

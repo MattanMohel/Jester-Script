@@ -15,7 +15,7 @@ namespace jts
 
 		std::unordered_map<str, Obj*> symbols;
 
-		std::unordered_map<str, Obj* (*)(ObjNode* params)> natives;
+		std::unordered_map<str, Obj*> natives;
 
 		std::vector<void(*)(VM* vm)> libs;
 	};

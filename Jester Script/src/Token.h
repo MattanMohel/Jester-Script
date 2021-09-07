@@ -7,7 +7,7 @@ namespace jts
 {
 	struct Tok
 	{
-		Tok* rest;
+		Tok* next;
 
 		str value;
 		size_t line;

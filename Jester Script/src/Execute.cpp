@@ -6,7 +6,7 @@ namespace jts
 {
 	Obj* EvalObj(ObjNode* obj)
 	{
-		if (obj->value->spec == Spec::FUNC)
+		if (obj->value->spec == Spec::CALL)
 		{
 			return ExecObj(obj);
 		}
@@ -18,15 +18,15 @@ namespace jts
 	{
 		switch (obj->value->fnType)
 		{
-			case FnType::NAT_FUNC:
+			case FnType::NATIVE:
 
 				return obj->value->_native(obj);
 
-			case FnType::JTS_FUNC:
+			case FnType::JTS:
 
 				return ExecJtsFunc(obj);
 
-			default: // case CPP_FUNC
+			default: // case C_BRIDGE
 
 				return nullptr;
 		}
