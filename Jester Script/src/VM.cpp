@@ -22,7 +22,7 @@ namespace jts
 			lib(vm);
 		}
 
-		void AddNative(VM* vm, str value, Obj* (*native)(Obj* params))
+		void AddNative(VM* vm, str value, Obj* (*native)(ObjNode* params))
 		{
 			vm->natives.emplace(value, native);
 		}

@@ -4,91 +4,200 @@
 
 namespace jts
 {
-	template<> Obj* BinaryOpObj<BinaryOp::ADD>(Obj* a, Obj* b)
+	template<> Obj* BinaryOpObj<BinaryOp::ADD>(ObjNode* a, ObjNode* b)
 	{
-		switch (a->type)
+		switch (a->value->type)
 		{
 			case Type::CHAR:
 
-				a->_char += CastObj<char>(EvalObj(b));
+				a->value->_char += CastObj<char>(EvalObj(b));
 				break;
 
 			case Type::BOOL:
 
-				a->_bool += CastObj<bool>(EvalObj(b));
+				a->value->_bool += CastObj<bool>(EvalObj(b));
 				break;
 
 			case Type::INT:
 
-				a->_int += CastObj<int>(EvalObj(b));
+				a->value->_int += CastObj<int>(EvalObj(b));
 				break;
 
-			default: // case FLOAT
+			case Type::FLOAT:
 
-				a->_float += CastObj<float>(EvalObj(b));
+				a->value->_float += CastObj<float>(EvalObj(b));
 				break;
 		}
 
-		return a;
+		return a->value;
 	}
 
-	template<> Obj* BinaryOpObj<BinaryOp::SUB>(Obj* a, Obj* b)
+	template<> Obj* BinaryOpObj<BinaryOp::SUB>(ObjNode* a, ObjNode* b)
 	{
-		switch (a->type)
+		switch (a->value->type)
 		{
 			case Type::CHAR:
 
-				a->_char -= CastObj<char>(EvalObj(b));
+				a->value->_char -= CastObj<char>(EvalObj(b));
 				break;
 
 			case Type::BOOL:
 
-				a->_bool -= CastObj<bool>(EvalObj(b));
+				a->value->_bool -= CastObj<bool>(EvalObj(b));
 				break;
 
 			case Type::INT:
 
-				a->_int -= CastObj<int>(EvalObj(b));
+				a->value->_int -= CastObj<int>(EvalObj(b));
 				break;
 
-			default: // case FLOAT
+			case Type::FLOAT:
 
-				a->_float -= CastObj<float>(EvalObj(b));
+				a->value->_float -= CastObj<float>(EvalObj(b));
 				break;
 		}
 
-		return a;
+		return a->value;
+	}		
+	
+	template<> Obj* BinaryOpObj<BinaryOp::MUL>(ObjNode* a, ObjNode* b)
+	{
+		switch (a->value->type)
+		{
+			case Type::CHAR:
+
+				a->value->_char *= CastObj<char>(EvalObj(b));
+				break;
+
+			case Type::BOOL:
+
+				a->value->_bool *= CastObj<bool>(EvalObj(b));
+				break;
+
+			case Type::INT:
+
+				a->value->_int *= CastObj<int>(EvalObj(b));
+				break;
+
+			case Type::FLOAT:
+
+				a->value->_float *= CastObj<float>(EvalObj(b));
+				break;
+		}
+
+		return a->value;
+	}		
+	
+	template<> Obj* BinaryOpObj<BinaryOp::DIV>(ObjNode* a, ObjNode* b)
+	{
+		switch (a->value->type)
+		{
+			case Type::CHAR:
+
+				a->value->_char /= CastObj<char>(EvalObj(b));
+				break;
+
+			case Type::BOOL:
+
+				a->value->_bool /= CastObj<bool>(EvalObj(b));
+				break;
+
+			case Type::INT:
+
+				a->value->_int /= CastObj<int>(EvalObj(b));
+				break;
+
+			case Type::FLOAT:
+
+				a->value->_float /= CastObj<float>(EvalObj(b));
+				break;
+		}
+
+		return a->value;
 	}	
 	
-	template<> Obj* BinaryOpObj<BinaryOp::SET>(Obj* a, Obj* b)
+	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b)
 	{
-		switch (b->type)
+		Obj* value = EvalObj(b);
+
+		switch (value->type)
 		{
 			case Type::CHAR:
 
-				a->_char = EvalObj(b)->_char;
-				a->type = Type::CHAR;
+				a->value->_char = value->_char;
+				a->value->type = Type::CHAR;
 				break;
 
 			case Type::BOOL:
 
-				a->_bool = EvalObj(b)->_bool;
-				a->type = Type::BOOL;
+				a->value->_bool = value->_bool;
+				a->value->type = Type::BOOL;
 				break;
 
 			case Type::INT:
 
-				a->_int = EvalObj(b)->_int;
-				a->type = Type::INT;
+				a->value->_int = value->_int;
+				a->value->type = Type::INT;
 				break;
 
-			default: // case FLOAT
+			case Type::FLOAT:
 
-				a->_float = EvalObj(b)->_float;
-				a->type = Type::FLOAT;
+				a->value->_float = value->_float;
+				a->value->type = Type::FLOAT; 
 				break;
 		}
 
-		return a;
+		return a->value;
+	}
+
+	template<> Obj* UnaryOpObj<UnaryOp::INCR>(ObjNode* a)
+	{
+		switch (a->value->type)
+		{
+			case Type::BOOL:
+
+				++a->value->_bool;
+				break;
+
+			case Type::INT:
+
+				++a->value->_int;
+				break;
+
+			case Type::FLOAT:
+
+				++a->value->_float;
+				break;
+		}
+
+		return a->value;
+	}	
+	
+	template<> Obj* UnaryOpObj<UnaryOp::DECR>(ObjNode* a)
+	{
+		switch (a->value->type)
+		{
+			case Type::CHAR:
+
+				--a->value->_char;
+				break;
+
+			case Type::BOOL:
+
+				--a->value->_int; // Cant decrement bool
+				break;
+
+			case Type::INT:
+
+				--a->value->_int;
+				break;
+
+			case Type::FLOAT:
+
+				--a->value->_float;
+				break;
+		}
+
+		return a->value;
 	}
 }

@@ -5,8 +5,8 @@
 
 namespace jts
 {
-	Obj* EvalObj(Obj* obj);
-	Obj* ExecObj(Obj* obj);
+	Obj* EvalObj(ObjNode* obj);
+	Obj* ExecObj(ObjNode* obj);
 }
 
 #endif

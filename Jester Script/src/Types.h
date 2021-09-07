@@ -11,6 +11,7 @@ namespace jts
 	struct VM;
 	struct Tok;
 	struct Obj;
+	struct ObjNode;
 
 	enum class Type
 	{
@@ -49,9 +50,6 @@ namespace jts
 	enum class Flag
 	{
 		NIL = 0,
-
-		CONST,
-		STATIC,
 
 		QUOTE,
 		QUASI_QUOTE,

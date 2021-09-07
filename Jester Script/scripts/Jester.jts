@@ -1,2 +1,13 @@
-(set x 10)
-(print x)
+(println x)
+
+(set x true)
+
+(println x)
+
+(set x (+ 5 5))
+
+(println x)
+
+(set x (* .99 x))
+
+(println x)

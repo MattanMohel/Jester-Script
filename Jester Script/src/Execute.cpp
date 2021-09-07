@@ -3,23 +3,23 @@
 
 namespace jts
 {
-	Obj* EvalObj(Obj* obj)
+	Obj* EvalObj(ObjNode* obj)
 	{
-		if (obj->spec == Spec::FUNC)
+		if (obj->value->spec == Spec::FUNC)
 		{
 			return ExecObj(obj);
 		}
 
-		return obj;
+		return obj->value;
 	}
 
-	Obj* ExecObj(Obj* obj)
+	Obj* ExecObj(ObjNode* obj)
 	{
-		switch (obj->fnType)
+		switch (obj->value->fnType)
 		{
 			case FnType::NAT_FUNC:
 
-				return obj->_native(obj);
+				return obj->value->_native(obj);
 
 			case FnType::CPP_FUNC:
 

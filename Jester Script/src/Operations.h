@@ -27,20 +27,25 @@ namespace jts
 	};
 
 	template<BinaryOp op>
-	inline Obj* BinaryOpObj(Obj* a, Obj* b)
+	inline Obj* BinaryOpObj(ObjNode* a, ObjNode* b)
 	{
 		static_assert(false, "binary operator not supported");
 	}
 
 	template<UnaryOp op>
-	inline Obj* UnaryOpObj(Obj* a)
+	inline Obj* UnaryOpObj(ObjNode* a)
 	{
 		static_assert(false, "unary operator not supported");
 	}
 
-	template<> Obj* BinaryOpObj<BinaryOp::ADD>(Obj* a, Obj* b);
-	template<> Obj* BinaryOpObj<BinaryOp::SUB>(Obj* a, Obj* b);
-	template<> Obj* BinaryOpObj<BinaryOp::SET>(Obj* a, Obj* b);
+	template<> Obj* BinaryOpObj<BinaryOp::ADD>(ObjNode* a, ObjNode* b);
+	template<> Obj* BinaryOpObj<BinaryOp::SUB>(ObjNode* a, ObjNode* b);
+	template<> Obj* BinaryOpObj<BinaryOp::MUL>(ObjNode* a, ObjNode* b);
+	template<> Obj* BinaryOpObj<BinaryOp::DIV>(ObjNode* a, ObjNode* b);
+	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b);
+
+	template<> Obj* UnaryOpObj<UnaryOp::INCR>(ObjNode* a);
+	template<> Obj* UnaryOpObj<UnaryOp::DECR>(ObjNode* a);
 
 	template<typename T>
 	inline T CastObj(Obj* obj)

@@ -13,46 +13,89 @@ using namespace jts;
 
 inline void StdLib(VM* vm)
 {
-	env::AddNative(vm, "+", [](Obj* args)
+	env::AddNative(vm, "+", [](ObjNode* in)
 	{
-		BinaryOpObj<BinaryOp::SET>(args, args->args);
-		Obj* rest = args->args;
+		BinaryOpObj<BinaryOp::SET>(in, in->args);
+		auto* rest = in->args;
 
-		while (rest)
+		while (rest->next)
 		{
-			BinaryOpObj<BinaryOp::ADD>(args, rest);
-			rest = rest->args;
+			BinaryOpObj<BinaryOp::ADD>(in, rest->next);
+			rest = rest->next;
 		}
 
-		return args;
+		return in->value;
 	});
 
-	env::AddNative(vm, "-", [](Obj* args) -> Obj*
+	env::AddNative(vm, "-", [](ObjNode* in) -> Obj*
 	{
-		BinaryOpObj<BinaryOp::SET>(args, args->args);
-		Obj* rest = args->args;
+		BinaryOpObj<BinaryOp::SET>(in, in->args);
+		auto* rest = in->args;
 
-		while (rest)
+		while (rest->next)
 		{
-			BinaryOpObj<BinaryOp::SUB>(args, rest);
-			rest = rest->args;
+			BinaryOpObj<BinaryOp::SUB>(in, rest->next);
+			rest = rest->next;
 		}
 
-		return args;
+		return in->value;
+	});	
+	
+	env::AddNative(vm, "*", [](ObjNode* in) -> Obj*
+	{
+		BinaryOpObj<BinaryOp::SET>(in, in->args);
+		auto* rest = in->args;
+
+		while (rest->next)
+		{
+			BinaryOpObj<BinaryOp::MUL>(in, rest->next);
+			rest = rest->next;
+		}
+
+		return in->value;
+	});	
+	
+	env::AddNative(vm, "/", [](ObjNode* in) -> Obj*
+	{
+		BinaryOpObj<BinaryOp::SET>(in, in->args);
+		auto* rest = in->args;
+
+		while (rest->next)
+		{
+			BinaryOpObj<BinaryOp::DIV>(in, rest->next);
+			rest = rest->next;
+		}
+
+		return in->value;
+	});	
+	
+	env::AddNative(vm, "++", [](ObjNode* in) -> Obj*
+	{
+		UnaryOpObj<UnaryOp::INCR>(in->args);
+
+		return in->args->value;
+	});		
+	
+	env::AddNative(vm, "--", [](ObjNode* in) -> Obj*
+	{
+		UnaryOpObj<UnaryOp::INCR>(in->args);
+
+		return in->args->value;
+	});	
+	
+	env::AddNative(vm, "set", [](ObjNode* args) -> Obj*
+	{
+		return BinaryOpObj<BinaryOp::SET>(args->args, args->args->next);
 	});
 
-	env::AddNative(vm, "set", [](Obj* args) -> Obj*
-	{
-		return BinaryOpObj<BinaryOp::SET>(args, args->args);
-	});
-
-	env::AddNative(vm, "print", [](Obj* args) -> Obj*
-	{
-		Obj* rest = args->args;
+	env::AddNative(vm, "print", [](ObjNode* in) -> Obj*
+	{ 
+		auto* rest = in->args;
+		Obj* value = nullptr;
 
 		while (rest)
 		{
-			Obj* value = EvalObj(rest);
+			value = EvalObj(rest);
 
 			switch (value->type)
 			{
@@ -63,7 +106,7 @@ inline void StdLib(VM* vm)
 
 				case Type::BOOL:
 
-					std::cout << value->_bool;
+					std::cout << (value->_bool? "true" : "false");
 					break;
 
 				case Type::INT:
@@ -75,12 +118,61 @@ inline void StdLib(VM* vm)
 
 					std::cout << value->_float;
 					break;
+
+				default: // case NIL
+					std::cout << "nil";
+					break;
 			}
 
 			rest = rest->next;
 		}
 
-		return rest;
+		return value;
+	});
+	
+	env::AddNative(vm, "println", [](ObjNode* args) -> Obj*
+	{
+		args = args->args;
+
+		Obj* value = nullptr;
+
+		while (args)
+		{
+			value = EvalObj(args);
+
+			switch (value->type)
+			{
+				case Type::CHAR:
+
+					std::cout << value->_char;
+					break;
+
+				case Type::BOOL:
+
+					std::cout << (value->_bool ? "true" : "false");
+					break;
+
+				case Type::INT:
+
+					std::cout << value->_int;
+					break;
+
+				case Type::FLOAT:
+
+					std::cout << value->_float;
+					break;
+
+				default: // case NIL
+					std::cout << "nil";
+					break;
+			}
+
+			args = args->next;
+		}
+
+		std::cout << std::endl;
+
+		return value;
 	});
 }
 

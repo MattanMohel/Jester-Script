@@ -7,11 +7,6 @@ namespace jts
 {
 	struct Obj
 	{
-		// Object's arguments
-		Obj* args;
-		// Next object in scope
-		Obj* next;
-
 		Type type;
 		Spec spec;
 		FnType fnType;
@@ -26,8 +21,23 @@ namespace jts
 
 		union // Callables
 		{
-			Obj* (*_native)(Obj*);
+			Obj* (*_native)(ObjNode*);
 		};
+	};
+
+	struct ObjNode
+	{
+		ObjNode() : value(new Obj())
+		{}		
+		
+		ObjNode(Obj* obj) : value(obj)
+		{}
+
+		ObjNode* next = nullptr;
+		ObjNode* args = nullptr;
+
+		Obj* value = nullptr;
+
 	};
 }
 

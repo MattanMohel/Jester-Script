@@ -7,15 +7,15 @@ namespace jts
 {
 	struct VM
 	{
-		Obj* stackPtrCur = nullptr;
-		Obj* stackPtrBeg = nullptr;
+		ObjNode* stackPtrCur = nullptr;
+		ObjNode* stackPtrBeg = nullptr;
 
 		Tok* tokenPtrCur = nullptr;
 		Tok* tokenPtrBeg = nullptr;
 
 		std::unordered_map<str, Obj*> symbols;
 
-		std::unordered_map<str, Obj* (*)(Obj* params)> natives;
+		std::unordered_map<str, Obj* (*)(ObjNode* params)> natives;
 
 		std::vector<void(*)(VM* vm)> libs;
 	};
@@ -24,7 +24,7 @@ namespace jts
 	{
 		void AddLib(VM* vm, void(*lib)(VM* vm));
 
-		void AddNative(VM* vm, str value, Obj* (*native)(Obj* params));
+		void AddNative(VM* vm, str value, Obj* (*native)(ObjNode* params));
 
 		Obj* GetSymbol(VM* vm, Tok* tok);
 
