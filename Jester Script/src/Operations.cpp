@@ -10,24 +10,13 @@ namespace jts
 	{
 		switch (a->value->type)
 		{
-			case Type::CHAR:
-
-				a->value->_char += CastObj<char>(EvalObj(b));
-				break;
-
-			case Type::BOOL:
-
-				a->value->_bool += CastObj<bool>(EvalObj(b));
-				break;
-
-			case Type::INT:
-
-				a->value->_int += CastObj<int>(EvalObj(b));
-				break;
-
 			case Type::FLOAT:
 
 				a->value->_float += CastObj<float>(EvalObj(b));
+				break;
+			
+			default: // CHAR, BOOL, INT
+				a->value->_int += CastObj<int>(EvalObj(b));
 				break;
 		}
 
@@ -38,24 +27,13 @@ namespace jts
 	{
 		switch (a->value->type)
 		{
-			case Type::CHAR:
-
-				a->value->_char -= CastObj<char>(EvalObj(b));
-				break;
-
-			case Type::BOOL:
-
-				a->value->_bool -= CastObj<bool>(EvalObj(b));
-				break;
-
-			case Type::INT:
-
-				a->value->_int -= CastObj<int>(EvalObj(b));
-				break;
-
 			case Type::FLOAT:
 
 				a->value->_float -= CastObj<float>(EvalObj(b));
+				break;
+
+			default: // CHAR, BOOL, INT
+				a->value->_int -= CastObj<int>(EvalObj(b));
 				break;
 		}
 
@@ -66,24 +44,13 @@ namespace jts
 	{
 		switch (a->value->type)
 		{
-			case Type::CHAR:
-
-				a->value->_char *= CastObj<char>(EvalObj(b));
-				break;
-
-			case Type::BOOL:
-
-				a->value->_bool *= CastObj<bool>(EvalObj(b));
-				break;
-
-			case Type::INT:
-
-				a->value->_int *= CastObj<int>(EvalObj(b));
-				break;
-
 			case Type::FLOAT:
 
 				a->value->_float *= CastObj<float>(EvalObj(b));
+				break;
+
+			default: // CHAR, BOOL, INT
+				a->value->_int *= CastObj<int>(EvalObj(b));
 				break;
 		}
 
@@ -94,24 +61,13 @@ namespace jts
 	{
 		switch (a->value->type)
 		{
-			case Type::CHAR:
-
-				a->value->_char /= CastObj<char>(EvalObj(b));
-				break;
-
-			case Type::BOOL:
-
-				a->value->_bool /= CastObj<bool>(EvalObj(b));
-				break;
-
-			case Type::INT:
-
-				a->value->_int /= CastObj<int>(EvalObj(b));
-				break;
-
 			case Type::FLOAT:
 
 				a->value->_float /= CastObj<float>(EvalObj(b));
+				break;
+
+			default: // CHAR, BOOL, INT
+				a->value->_int /= CastObj<int>(EvalObj(b));
 				break;
 		}
 
@@ -129,24 +85,13 @@ namespace jts
 
 			switch (value->type)
 			{
-				case Type::CHAR:
-
-					a->value->_char = value->_char;
-					break;
-
-				case Type::BOOL:
-
-					a->value->_bool = value->_bool;
-					break;
-
-				case Type::INT:
-
-					a->value->_int = value->_int;
-					break;
-
 				case Type::FLOAT:
 
 					a->value->_float = value->_float;
+					break;
+
+				default: // CHAR, BOOL, INT
+					a->value->_int = CastObj<int>(EvalObj(b));
 					break;
 			}
 		}
@@ -181,24 +126,13 @@ namespace jts
 	{
 		switch (a->value->type)
 		{
-			case Type::CHAR:
-
-				++a->value->_char;
-				break;
-
-			case Type::BOOL:
-
-				++a->value->_int;
-				break;
-
-			case Type::INT:
-
-				++a->value->_int;
-				break;
-
 			case Type::FLOAT:
 
 				++a->value->_float;
+				break;
+
+			default: // CHAR, BOOL, INT
+				++a->value->_int;
 				break;
 		}
 
@@ -209,24 +143,13 @@ namespace jts
 	{
 		switch (a->value->type)
 		{
-			case Type::CHAR:
-
-				--a->value->_char;
-				break;
-
-			case Type::BOOL:
-
-				--a->value->_int; // Cant decrement bool
-				break;
-
-			case Type::INT:
-
-				--a->value->_int;
-				break;
-
 			case Type::FLOAT:
 
 				--a->value->_float;
+				break;
+
+			default: // CHAR, BOOL, INT
+				--a->value->_int;
 				break;
 		}
 

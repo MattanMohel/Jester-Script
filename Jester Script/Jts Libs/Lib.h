@@ -79,7 +79,7 @@ inline void StdLib(VM* vm)
 	
 	env::AddNative(vm, "--", [](ObjNode* in) -> Obj*
 	{
-		UnaryOpObj<UnaryOp::INCR>(in->args);
+		UnaryOpObj<UnaryOp::DECR>(in->args);
 
 		return in->args->value;
 	});	
