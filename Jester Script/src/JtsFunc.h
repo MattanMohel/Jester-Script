@@ -7,9 +7,9 @@ namespace jts
 {
 	struct Func
 	{
-		std::unordered_map<str, Obj*> parameters;
-
 		ObjNode* codeBlock = nullptr;
+		
+		ObjNode* params    = nullptr;
 	};
 
 	Obj* ExecJtsFunc(ObjNode* func);

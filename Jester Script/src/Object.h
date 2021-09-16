@@ -11,7 +11,7 @@ namespace jts
 		Spec spec;
 		FnType fnType;
 
-		Tok* token;
+		str* symbol;
 
 		union // Values
 		{
@@ -23,9 +23,12 @@ namespace jts
 
 		union // Callables
 		{
-			Obj* (*_native)(ObjNode*);
+			Obj* (*_native)(ObjNode* args);
 			Func* _jtsFunc;
 		};
+
+		Flag<SFlag, ENUM_SIZE(SFlag)> flag;
+		bool initialized = false;
 	};
 
 	struct ObjNode
@@ -40,7 +43,6 @@ namespace jts
 		ObjNode* args = nullptr;
 
 		Obj* value = nullptr;
-
 	};
 }
 

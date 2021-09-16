@@ -7,7 +7,7 @@ namespace jts
 {
 	struct Tok
 	{
-		Tok* next;
+		Tok* next = nullptr;
 
 		str value;
 		size_t line;
@@ -15,6 +15,8 @@ namespace jts
 		Type type;
 		Spec spec;
 		FnType fnType;
+
+		Flag<SFlag, ENUM_SIZE(SFlag)> flag;
 	};
 }
 

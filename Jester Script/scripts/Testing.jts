@@ -1,9 +1,1 @@
-# function syntax:
-
-(defn (fac n)
-	(if (equal n 2)
-		2
-		(fac (- n 1))))
-
-(defn 
-	(+ 5 5))
+(print 5)

@@ -5,6 +5,19 @@
 
 namespace jts
 {
+	bool IsPrefix(char value)
+	{
+		for (char pref : prefixes)
+		{
+			if (value == pref)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	void TokenizeFile(VM* vm, FILE* file)
 	{
 		char ch =  ' ';
@@ -28,7 +41,7 @@ namespace jts
 		while (true)
 		{
 			// Extract a single token
-			while (ch != '(' && ch != ')' && ch != '#' && ch != ' ' && ch != '\t' && ch != '\n' && ch != EOF)
+			while (!IsPrefix(ch) && ch != ' ' && ch != '\t' && ch != '\n' && ch != EOF)
 			{
 				lexer += ch;
 
@@ -96,7 +109,19 @@ namespace jts
 			vm->tokenPtrCur->spec = Spec::PARENTH_R;
 		}
 
-		else if (vm->natives.find(value) != vm->natives.end())
+		else if (value == "const")
+		{
+			vm->tokenPtrCur->spec = Spec::FLAG;
+			vm->tokenPtrCur->flag.Set(SFlag::CONST);
+		}		
+		
+		else if (value == "ref")
+		{
+			vm->tokenPtrCur->spec = Spec::FLAG;
+			vm->tokenPtrCur->flag.Set(SFlag::REF);
+		}
+
+		else if (env::GetSymbol(vm, vm->tokenPtrCur))
 		{
 			vm->tokenPtrCur->fnType = FnType::NATIVE;
 

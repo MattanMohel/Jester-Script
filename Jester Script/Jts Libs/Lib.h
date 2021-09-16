@@ -84,20 +84,31 @@ inline void StdLib(VM* vm)
 		return in->args->value;
 	});	
 	
-	env::AddNative(vm, "set", [](ObjNode* args) -> Obj*
+	env::AddNative(vm, "set", [](ObjNode* in) -> Obj*
 	{
-		return BinaryOpObj<BinaryOp::SET>(args->args, args->args->next);
+		return BinaryOpObj<BinaryOp::SET>(in->args, in->args->next);
 	});
 
-	env::AddNative(vm, "defn", [](ObjNode* args) -> Obj*
+	env::AddNative(vm, "init", [](ObjNode* in) -> Obj*
+	{	
+		if (in->args->value->initialized)
+		{
+			return in->args->value;
+		}
+
+		return BinaryOpObj<BinaryOp::SET>(in->args, in->args->next);
+	});
+
+	env::AddNative(vm, "defn", [](ObjNode* in) -> Obj*
 	{
-		Obj* fn = new Obj();
+		Obj* fn = in->args->value;
 
 		fn->spec = Spec::CALL;
 		fn->fnType = FnType::JTS;
 		
 		fn->_jtsFunc = new Func();
-		fn->_jtsFunc->codeBlock = args->args;
+		fn->_jtsFunc->params    = in->args->next;
+		fn->_jtsFunc->codeBlock = in->args->next->next;
 
 		return fn;
 	});
@@ -144,15 +155,15 @@ inline void StdLib(VM* vm)
 		return value;
 	});
 	
-	env::AddNative(vm, "println", [](ObjNode* args) -> Obj*
+	env::AddNative(vm, "println", [](ObjNode* in) -> Obj*
 	{
-		args = args->args;
+		in = in->args;
 
 		Obj* value = nullptr;
 
-		while (args)
+		while (in)
 		{
-			value = EvalObj(args);
+			value = EvalObj(in);
 
 			switch (value->type)
 			{
@@ -181,7 +192,7 @@ inline void StdLib(VM* vm)
 					break;
 			}
 
-			args = args->next;
+			in = in->next;
 		}
 
 		std::cout << std::endl;

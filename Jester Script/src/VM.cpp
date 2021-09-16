@@ -29,7 +29,7 @@ namespace jts
 			func->fnType = FnType::NATIVE;
 			func->spec = Spec::SYMBOL;
 
-			vm->natives.emplace(value, func);
+			vm->symbols.emplace(value, func);
 		}
 
 		Obj* GetSymbol(VM* vm, Tok* tok)
@@ -37,11 +37,6 @@ namespace jts
 			if (vm->symbols.find(tok->value) != vm->symbols.end())
 			{
 				return vm->symbols[tok->value];
-			}
-
-			if (vm->natives.find(tok->value) != vm->natives.end())
-			{
-				return vm->natives[tok->value];
 			}
 
 			return nullptr;

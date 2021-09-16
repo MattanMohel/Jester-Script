@@ -4,7 +4,7 @@
 #include "StrCon.h"
 #include "VM.h"
 
-#include <stack>
+#include "IterableStack.h"
 
 namespace jts
 {
@@ -26,7 +26,7 @@ namespace jts
 		*/
 
 		ObjNode** head = &vm->stackPtrBeg;
-		std::stack<ObjNode**> funcHead;
+		ItStack<ObjNode**> funcHead;
 
 		Tok* it = vm->tokenPtrBeg;
 
@@ -34,6 +34,13 @@ namespace jts
 
 		while (it->spec != Spec::NIL)
 		{
+			if (it->spec == Spec::FLAG)
+			{
+				it->next->flag += it->flag;
+
+				it = it->next;
+				continue;
+			}
 			// Mark next head as a call
 			if (it->spec == Spec::PARENTH_L)
 			{
@@ -47,8 +54,7 @@ namespace jts
 			// Return head to previous function head
 			if (it->spec == Spec::PARENTH_R)
 			{
-				head = &(*funcHead.top())->next;
-				funcHead.pop(); 
+				head = &(*funcHead.pop())->next;
 
 				it = it->next;
 				continue;
@@ -60,7 +66,16 @@ namespace jts
 
 					if (env::GetSymbol(vm, it) == nullptr)
 					{
-						vm->symbols.emplace(it->value, new Obj());
+						if (it->flag.Get(SFlag::REF))
+						{
+							vm->symbols.emplace(it->value, nullptr);
+						}
+						else
+						{
+							vm->symbols.emplace(it->value, new Obj());
+						}
+
+						vm->symbols[it->value]->flag = it->flag;
 					}
 
 					(*head) = new ObjNode(env::GetSymbol(vm, it));
@@ -76,12 +91,14 @@ namespace jts
 				case Spec::CALL:
 
 					Obj* call = new Obj {Type::NIL, Spec::CALL, FnType::NATIVE};
-					call->_native = vm->natives[it->value]->_native;
+					call->_native = env::GetSymbol(vm, it)->_native; 
 
 					(*head) = new ObjNode(call);
 
 					break;
 			}
+
+			(*head)->value->symbol = &it->value;
 
 			// Invocation --> emplace to args
 			if (onInvocation)

@@ -1,17 +1,6 @@
-(println x)
+(defn add(a b)
+	(+ a b))
 
-(set x true)
+(println my-val) 
 
-(println x)
-
-(set x (* 10 x))
-
-(println x)
-
-(set x (* .99 x))
-
-(println x)
-
-(set x *)
-
-(println (x 1 2 3 4 5))
+#parameters and locals still declared in global scope

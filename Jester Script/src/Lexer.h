@@ -5,6 +5,10 @@
 
 namespace jts
 {
+	static const char prefixes[] = { '(', ')', '#', '\'', ',' };
+
+	bool IsPrefix(char value);
+
 	void TokenizeFile(VM* vm, FILE* file);
 	void MatchTokenType(VM* vm);
 }
