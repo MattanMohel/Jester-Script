@@ -83,6 +83,12 @@
     <ClInclude Include="src\IterableStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Jts Libs\Arithmetic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Jts Libs\Boolean.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\Jester.jts" />

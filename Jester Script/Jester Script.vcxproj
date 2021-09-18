@@ -152,6 +152,8 @@
     <ClCompile Include="src\StrCon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Jts Libs\Arithmetic.h" />
+    <ClInclude Include="Jts Libs\Boolean.h" />
     <ClInclude Include="Jts Libs\Lib.h" />
     <ClInclude Include="src\IterableStack.h" />
     <ClInclude Include="src\JtsFunc.h" />

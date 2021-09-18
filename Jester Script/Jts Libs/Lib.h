@@ -12,193 +12,116 @@
 
 using namespace jts;
 
-inline void StdLib(VM* vm)
+namespace lib
 {
-	env::AddNative(vm, "+", [](ObjNode* in)
+	inline void StandardLib(VM* vm)
 	{
-		BinaryOpObj<BinaryOp::SET>(in, in->args);
-		auto* rest = in->args;
-
-		while (rest->next)
+		env::AddNative(vm, "set", [](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::ADD>(in, rest->next);
-			rest = rest->next;
-		}
+			return BinaryOpObj<BinaryOp::SET>(in->args, in->args->next);
+		});
 
-		return in->value;
-	});
-
-	env::AddNative(vm, "-", [](ObjNode* in) -> Obj*
-	{
-		BinaryOpObj<BinaryOp::SET>(in, in->args);
-		auto* rest = in->args;
-
-		while (rest->next)
+		env::AddNative(vm, "defn", [](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SUB>(in, rest->next);
-			rest = rest->next;
-		}
+			Obj* fn = in->args->value;
 
-		return in->value;
-	});	
-	
-	env::AddNative(vm, "*", [](ObjNode* in) -> Obj*
-	{
-		BinaryOpObj<BinaryOp::SET>(in, in->args);
-		auto* rest = in->args;
+			fn->spec = Spec::CALL;
+			fn->fnType = FnType::JTS;
 
-		while (rest->next)
+			fn->_jtsFunc = new Func();
+			fn->_jtsFunc->params = in->args->next;
+			fn->_jtsFunc->codeBlock = in->args->next->next;
+
+			return fn;
+		});
+
+		env::AddNative(vm, "print", [](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::MUL>(in, rest->next);
-			rest = rest->next;
-		}
+			auto* rest = in->args;
+			Obj* value = nullptr;
 
-		return in->value;
-	});	
-	
-	env::AddNative(vm, "/", [](ObjNode* in) -> Obj*
-	{
-		BinaryOpObj<BinaryOp::SET>(in, in->args);
-		auto* rest = in->args;
-
-		while (rest->next)
-		{
-			BinaryOpObj<BinaryOp::DIV>(in, rest->next);
-			rest = rest->next;
-		}
-
-		return in->value;
-	});	
-	
-	env::AddNative(vm, "++", [](ObjNode* in) -> Obj*
-	{
-		UnaryOpObj<UnaryOp::INCR>(in->args);
-
-		return in->args->value;
-	});		
-	
-	env::AddNative(vm, "--", [](ObjNode* in) -> Obj*
-	{
-		UnaryOpObj<UnaryOp::DECR>(in->args);
-
-		return in->args->value;
-	});	
-	
-	env::AddNative(vm, "set", [](ObjNode* in) -> Obj*
-	{
-		return BinaryOpObj<BinaryOp::SET>(in->args, in->args->next);
-	});
-
-	env::AddNative(vm, "init", [](ObjNode* in) -> Obj*
-	{	
-		if (in->args->value->initialized)
-		{
-			return in->args->value;
-		}
-
-		return BinaryOpObj<BinaryOp::SET>(in->args, in->args->next);
-	});
-
-	env::AddNative(vm, "defn", [](ObjNode* in) -> Obj*
-	{
-		Obj* fn = in->args->value;
-
-		fn->spec = Spec::CALL;
-		fn->fnType = FnType::JTS;
-		
-		fn->_jtsFunc = new Func();
-		fn->_jtsFunc->params    = in->args->next;
-		fn->_jtsFunc->codeBlock = in->args->next->next;
-
-		return fn;
-	});
-
-	env::AddNative(vm, "print", [](ObjNode* in) -> Obj*
-	{ 
-		auto* rest = in->args;
-		Obj* value = nullptr;
-
-		while (rest)
-		{
-			value = EvalObj(rest);
-
-			switch (value->type)
+			while (rest)
 			{
-				case Type::CHAR:
+				value = EvalObj(rest);
 
-					std::cout << value->_char;
-					break;
+				switch (value->type)
+				{
+					case Type::CHAR:
 
-				case Type::BOOL:
+						std::cout << value->_char;
+						break;
 
-					std::cout << (value->_bool? "true" : "false");
-					break;
+					case Type::BOOL:
 
-				case Type::INT:
+						std::cout << (value->_bool ? "true" : "false");
+						break;
 
-					std::cout << value->_int;
-					break;
+					case Type::INT:
 
-				case Type::FLOAT:
+						std::cout << value->_int;
+						break;
 
-					std::cout << value->_float;
-					break;
+					case Type::FLOAT:
 
-				default: // case NIL
-					std::cout << "nil";
-					break;
+						std::cout << value->_float;
+						break;
+
+					default: // case NIL
+						std::cout << "nil";
+						break;
+				}
+
+				rest = rest->next;
 			}
 
-			rest = rest->next;
-		}
+			return value;
+		});
 
-		return value;
-	});
-	
-	env::AddNative(vm, "println", [](ObjNode* in) -> Obj*
-	{
-		in = in->args;
-
-		Obj* value = nullptr;
-
-		while (in)
+		env::AddNative(vm, "println", [](ObjNode* in) -> Obj*
 		{
-			value = EvalObj(in);
+			in = in->args;
 
-			switch (value->type)
+			Obj* value = nullptr;
+
+			while (in)
 			{
-				case Type::CHAR:
+				value = EvalObj(in);
 
-					std::cout << value->_char;
-					break;
+				switch (value->type)
+				{
+					case Type::CHAR:
 
-				case Type::BOOL:
+						std::cout << value->_char;
+						break;
 
-					std::cout << (value->_bool ? "true" : "false");
-					break;
+					case Type::BOOL:
 
-				case Type::INT:
+						std::cout << (value->_bool ? "true" : "false");
+						break;
 
-					std::cout << value->_int;
-					break;
+					case Type::INT:
 
-				case Type::FLOAT:
+						std::cout << value->_int;
+						break;
 
-					std::cout << value->_float;
-					break;
+					case Type::FLOAT:
 
-				default: // case NIL
-					std::cout << "nil";
-					break;
+						std::cout << value->_float;
+						break;
+
+					default: // case NIL
+						std::cout << "nil";
+						break;
+				}
+
+				in = in->next;
 			}
 
-			in = in->next;
-		}
+			std::cout << std::endl;
 
-		std::cout << std::endl;
-
-		return value;
-	});
+			return value;
+		});
+	}
 }
 
 #endif

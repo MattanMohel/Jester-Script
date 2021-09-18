@@ -6,7 +6,7 @@ namespace jts
 {
 	Obj* EvalObj(ObjNode* obj)
 	{
-		if (obj->value->spec == Spec::CALL)
+		if (obj->value->fnType != FnType::NIL)
 		{
 			return ExecObj(obj);
 		}

@@ -15,15 +15,12 @@ namespace jts
 		MOD,		
 
 		SET,
-		EQUAL,
 	};
 
 	enum class UnaryOp
 	{
 		INCR,
 		DECR,
-
-		NOT,
 	};
 
 	template<BinaryOp op>
@@ -36,8 +33,8 @@ namespace jts
 	inline Obj* UnaryOpObj(ObjNode* a)
 	{
 		static_assert(false, "unary operator not supported");
-	}
-
+	}	
+	
 	template<> Obj* BinaryOpObj<BinaryOp::ADD>(ObjNode* a, ObjNode* b);
 	template<> Obj* BinaryOpObj<BinaryOp::SUB>(ObjNode* a, ObjNode* b);
 	template<> Obj* BinaryOpObj<BinaryOp::MUL>(ObjNode* a, ObjNode* b);
@@ -46,6 +43,10 @@ namespace jts
 
 	template<> Obj* UnaryOpObj<UnaryOp::INCR>(ObjNode* a);
 	template<> Obj* UnaryOpObj<UnaryOp::DECR>(ObjNode* a);
+
+	bool isTrue (ObjNode* a);
+	bool isEqual(ObjNode* a, ObjNode* b);
+	Obj* SetState(ObjNode* a, bool state);
 
 	template<typename T>
 	inline T CastObj(Obj* obj)
