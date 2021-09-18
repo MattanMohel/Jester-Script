@@ -1,7 +1,8 @@
+(setv x 1)
+(list x 2 3 4 5)
 
-(set deg 0.0)
+(set val x)
 
-'
-(loop (<= deg 360)
-	(println deg ':' ' ' (cos (* deg2rad deg)))
-	(++ deg))
+(loop val
+	(println val)
+	(set val (rest val)))

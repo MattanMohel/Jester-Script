@@ -21,6 +21,60 @@ namespace lib
 		env::AddSymbol(vm, "set", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			return BinaryOpObj<BinaryOp::SET>(in->args, in->args->next);
+		}));		
+		
+		env::AddSymbol(vm, "setv", env::AddNative([](ObjNode* in) -> Obj*
+		{
+			return BinaryOpObj<BinaryOp::SET_VAL>(in->args, in->args->next);
+		}));	
+		
+		env::AddSymbol(vm, "setc", env::AddNative([](ObjNode* in) -> Obj*
+		{
+			return BinaryOpObj<BinaryOp::SET_CON>(in->args, in->args->next);
+		}));
+				
+		env::AddSymbol(vm, "bind", env::AddNative([](ObjNode* in) -> Obj*
+		{
+			in->args->value->cons = new ObjNode();
+			BinaryOpObj<BinaryOp::SET>(in->args->value->cons, in->args->next);
+
+			return in->args->value;
+		}));	
+		
+		env::AddSymbol(vm, "list", env::AddNative([](ObjNode* in) -> Obj*
+		{
+			auto* cell = in->args;
+			auto* args = in->args;
+
+			while (args->next)
+			{
+				cell->value->cons = new ObjNode();
+				BinaryOpObj<BinaryOp::SET>(cell->value->cons, args->next);
+				cell = cell->value->cons;
+				args = args->next;
+			}
+
+			return in->args->value;
+		}));
+		
+		env::AddSymbol(vm, "nth", env::AddNative([](ObjNode* in) -> Obj*
+		{
+			ObjNode* init = in->args->next;
+
+			for (int i = 0; i < CastObj<int>(EvalObj(in->args)); ++i)
+			{
+				init = init->value->cons;
+
+				if (!init) return NIL;
+			}
+
+			return init->value;
+		}));		
+		
+		env::AddSymbol(vm, "rest", env::AddNative([](ObjNode* in) -> Obj*
+		{
+			if (!in->args->value->cons) return NIL;
+			return in->args->value->cons->value;
 		}));
 
 		env::AddSymbol(vm, "defn", env::AddNative([](ObjNode* in) -> Obj*
@@ -57,23 +111,36 @@ namespace lib
 
 				condState = isTrue(cond);
 
-				if (!condState)
-				{
-					return ret;
-				}
+				if (!condState) return ret;
 
 				block = blockStart;
 			}
+		}));		
+		
+		env::AddSymbol(vm, "progn", env::AddNative([](ObjNode* in) -> Obj*
+		{
+			auto* beg = in->args;
+
+			while (in->next)
+			{
+				EvalObj(in);
+				in = in->next;
+			}
+
+			return EvalObj(in);
 		}));
+
+
 
 		env::AddSymbol(vm, "print", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			auto* rest = in->args;
+			in = in->args;
+
 			Obj* value = nullptr;
 
-			while (rest)
+			while (in)
 			{
-				value = EvalObj(rest);
+				value = EvalObj(in);
 
 				switch (value->type)
 				{
@@ -102,7 +169,7 @@ namespace lib
 						break;
 				}
 
-				rest = rest->next;
+				in = in->next;
 			}
 
 			return value;

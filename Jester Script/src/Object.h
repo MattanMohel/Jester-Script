@@ -27,11 +27,13 @@ namespace jts
 			Func* _jtsFunc;
 		};
 
+		ObjNode* cons = nullptr;
+
 		Flag<SFlag, ENUM_SIZE(SFlag)> flag;
 		bool initialized = false;
 	};
 
-	static Obj* NIL = new Obj { Type::NIL, Spec::NIL, FnType::NIL };
+	static Obj* NIL = new Obj { Type::NIL, Spec::VALUE, FnType::NIL };
 
 	struct ObjNode
 	{

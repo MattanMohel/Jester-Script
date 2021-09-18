@@ -2,6 +2,8 @@
 #include "Execute.h"
 #include "Object.h"
 
+#include <iostream>
+
 // char, int and bool share the same data -> for switch check if its float, otherwise operate on int --> transmutable for char bool & float
 
 namespace jts
@@ -104,6 +106,7 @@ namespace jts
 		{
 			a->value->spec = Spec::VALUE;
 			a->value->type = value->type;
+			a->value->cons = value->cons;
 
 			switch (value->type)
 			{
@@ -142,7 +145,62 @@ namespace jts
 		}
 
 		return a->value;
-	}	
+	}
+
+	template<> Obj* BinaryOpObj<BinaryOp::SET_VAL>(ObjNode* a, ObjNode* b)
+	{
+		Obj* value = EvalObj(b);
+
+		if (value->spec == Spec::VALUE)
+		{
+			a->value->spec = Spec::VALUE;
+			a->value->type = value->type;
+
+			switch (value->type)
+			{
+				case Type::FLOAT:
+
+					a->value->_float = CastObj<float>(value);
+					break;
+
+				default: // CHAR, BOOL, INT
+
+					a->value->_int = CastObj<int>(value);
+					break;
+			}
+		}
+		else
+		{
+			a->value->spec = Spec::CALL;
+			a->value->fnType = value->fnType;
+
+			switch (value->fnType)
+			{
+				case FnType::NATIVE:
+
+					a->value->_native = value->_native;
+					break;
+
+				case FnType::JTS:
+
+					a->value->_jtsFunc = value->_jtsFunc;
+					break;
+
+				default: // C_BRIDGE
+
+					break;
+			}
+		}
+
+		return a->value;
+	}
+
+	template<> Obj* BinaryOpObj<BinaryOp::SET_CON>(ObjNode* a, ObjNode* b)
+	{
+		a->value->cons = EvalObj(b)->cons;
+
+		return a->value;
+	}
 
 	template<> Obj* UnaryOpObj<UnaryOp::INCR>(ObjNode* a)
 	{
