@@ -1,11 +1,7 @@
+(set counter 10)
 
-(set counter 2)
-(set state true)
-
-(loop state
+(set value (loop (> counter 0)
 	(-- counter)
-	(if (equal counter 0)
-		(set state false)
-		(set state true)))
+	(* 10 (- 10 counter))))
 
-(print counter)
+(print value)

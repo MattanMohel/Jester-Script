@@ -1,3 +1,6 @@
-﻿  main.cpp
+﻿  JtsFunc.cpp
+  Operations.cpp
+  main.cpp
+  Generating Code...
 C:\repo\Jester Script\Jester Script\Jts Libs\Lib.h(65): warning C4715: '<lambda_4ef80c4a80567df1a8f254d9996e8ec1>::operator()': not all control paths return a value
   Jester Script.vcxproj -> C:\repo\Jester Script\Debug\Jester Script.exe

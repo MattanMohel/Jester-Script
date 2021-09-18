@@ -25,6 +25,26 @@ namespace lib
 		env::AddNative(vm, "equal", [](ObjNode* in) -> Obj*
 		{
 			return SetState(in, isEqual(in->args, in->args->next));
+		});			
+		
+		env::AddNative(vm, ">", [](ObjNode* in) -> Obj*
+		{
+			return SetState(in, isGreater(in->args, in->args->next));
+		});			
+		
+		env::AddNative(vm, ">=", [](ObjNode* in) -> Obj*
+		{
+			return SetState(in, isGreaterEq(in->args, in->args->next));
+		});				
+		
+		env::AddNative(vm, "<", [](ObjNode* in) -> Obj*
+		{
+			return SetState(in, !isGreaterEq(in->args, in->args->next));
+		});				
+		
+		env::AddNative(vm, "<=", [](ObjNode* in) -> Obj*
+		{
+			return SetState(in, !isGreater(in->args, in->args->next));
 		});				
 		
 		env::AddNative(vm, "not", [](ObjNode* in) -> Obj*

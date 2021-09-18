@@ -206,6 +206,44 @@ namespace jts
 
 	}
 
+	bool isGreater(ObjNode* a, ObjNode* b)
+	{
+		Obj* val1 = EvalObj(a);
+		Obj* val2 = EvalObj(b);
+
+		switch (val1->type)
+		{
+			case Type::FLOAT:
+
+				return val1->_float > CastObj<float>(val2);
+
+			default: // CHAR, BOOL, INT
+
+				return val1->_int > CastObj<int>(val2);
+		}
+
+		return false;
+	}
+
+	bool isGreaterEq(ObjNode* a, ObjNode* b)
+	{
+		Obj* val1 = EvalObj(a);
+		Obj* val2 = EvalObj(b);
+
+		switch (val1->type)
+		{
+			case Type::FLOAT:
+
+				return val1->_float >= CastObj<float>(val2);
+
+			default: // CHAR, BOOL, INT
+
+				return val1->_int >= CastObj<int>(val2);
+		}
+
+		return false;
+	}
+
 	Obj* SetState(ObjNode* a, bool state)
 	{
 		a->value->type = Type::BOOL;

@@ -46,6 +46,8 @@ namespace jts
 
 	bool isTrue (ObjNode* a);
 	bool isEqual(ObjNode* a, ObjNode* b);
+	bool isGreater(ObjNode* a, ObjNode* b);
+	bool isGreaterEq(ObjNode* a, ObjNode* b);
 	Obj* SetState(ObjNode* a, bool state);
 
 	template<typename T>
