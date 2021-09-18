@@ -33,6 +33,35 @@ namespace lib
 			fn->_jtsFunc->codeBlock = in->args->next->next;
 
 			return fn;
+		});		
+		
+		env::AddNative(vm, "loop", [](ObjNode* in) -> Obj*
+		{
+			auto* cond = in->args;
+			auto* block = cond->next;
+			auto* blockStart = block;
+
+			bool condState = isTrue(cond);
+
+			while (condState)
+			{
+				while (block->next)
+				{
+					EvalObj(block);
+					block = block->next;
+				}
+
+				Obj* ret = EvalObj(block);
+
+				condState = isTrue(cond);
+
+				if (!condState)
+				{
+					return ret;
+				}
+
+				block = blockStart;
+			}
 		});
 
 		env::AddNative(vm, "print", [](ObjNode* in) -> Obj*

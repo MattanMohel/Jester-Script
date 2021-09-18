@@ -1,2 +1,11 @@
 
-(print (not 0))
+(set counter 2)
+(set state true)
+
+(loop state
+	(-- counter)
+	(if (equal counter 0)
+		(set state false)
+		(set state true)))
+
+(print counter)
