@@ -12,7 +12,7 @@ namespace lib
 {
 	inline void BooleanLib(VM* vm)
 	{
-		env::AddNative(vm, "if", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "if", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			if (isTrue(in->args))
 			{
@@ -20,39 +20,39 @@ namespace lib
 			}
 
 			return EvalObj(in->args->next->next);
-		});
+		}));
 
-		env::AddNative(vm, "equal", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "equal", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			return SetState(in, isEqual(in->args, in->args->next));
-		});			
+		}));			
 		
-		env::AddNative(vm, ">", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, ">", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			return SetState(in, isGreater(in->args, in->args->next));
-		});			
+		}));			
 		
-		env::AddNative(vm, ">=", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, ">=", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			return SetState(in, isGreaterEq(in->args, in->args->next));
-		});				
+		}));				
 		
-		env::AddNative(vm, "<", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "<", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			return SetState(in, !isGreaterEq(in->args, in->args->next));
-		});				
+		}));				
 		
-		env::AddNative(vm, "<=", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "<=", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			return SetState(in, !isGreater(in->args, in->args->next));
-		});				
+		}));				
 		
-		env::AddNative(vm, "not", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "not", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			return SetState(in, !isTrue(in->args));
-		});		
+		}));		
 		
-		env::AddNative(vm, "and", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "and", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			auto* rest = in->args;
 			bool state = false;
@@ -70,9 +70,9 @@ namespace lib
 			}
 
 			return SetState(in, state);
-		});		
+		}));		
 		
-		env::AddNative(vm, "or", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "or", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			auto* rest = in->args;
 			bool state = false;
@@ -90,7 +90,7 @@ namespace lib
 			}
 
 			return SetState(in, state);
-		});
+		}));
 	}
 }
 

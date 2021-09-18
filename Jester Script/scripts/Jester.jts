@@ -1,7 +1,7 @@
-(set counter 10)
 
-(set value (loop (> counter 0)
-	(-- counter)
-	(* 10 (- 10 counter))))
+(set deg 0.0)
 
-(print value)
+'
+(loop (<= deg 360)
+	(println deg ':' ' ' (cos (* deg2rad deg)))
+	(++ deg))

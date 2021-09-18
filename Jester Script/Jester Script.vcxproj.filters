@@ -74,7 +74,7 @@
     <ClInclude Include="src\Operations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Jts Libs\Lib.h">
+    <ClInclude Include="Jts Libs\Standard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\JtsFunc.h">

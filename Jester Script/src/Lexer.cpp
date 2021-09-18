@@ -22,6 +22,7 @@ namespace jts
 	{
 		char ch =  ' ';
 		str lexer = "";
+		bool inLtrl = false;
 
 		size_t line = 1;
 
@@ -41,8 +42,13 @@ namespace jts
 		while (true)
 		{
 			// Extract a single token
-			while (!IsPrefix(ch) && ch != ' ' && ch != '\t' && ch != '\n' && ch != EOF)
+			while (inLtrl || (!IsPrefix(ch) && ch != ' ' && ch != '\t' && ch != '\n' && ch != EOF))
 			{
+				if (ch == '\'' || ch == '\"')
+				{
+					inLtrl = !inLtrl;
+				}
+
 				lexer += ch;
 
 				ch = fgetc(file);

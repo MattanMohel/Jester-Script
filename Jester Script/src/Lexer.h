@@ -5,7 +5,7 @@
 
 namespace jts
 {
-	static const char prefixes[] = { '(', ')', '#', '\'', ',' };
+	static const char prefixes[] = { '(', ')', '#', ',' };
 
 	bool IsPrefix(char value);
 

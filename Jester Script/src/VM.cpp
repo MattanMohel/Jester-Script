@@ -22,14 +22,64 @@ namespace jts
 			lib(vm);
 		}
 
-		void AddNative(VM* vm, str value, Obj* (*native)(ObjNode* params))
+		void AddSymbol(VM* vm, str key, Obj* value)
 		{
-			Obj* func = new Obj();
-			func->_native = native;
-			func->fnType = FnType::NATIVE;
-			func->spec = Spec::SYMBOL;
+			vm->symbols.emplace(key, value);
+		}
 
-			vm->symbols.emplace(value, func);
+		Obj* AddNative(Obj* (*native)(ObjNode* params))
+		{
+			Obj* obj = new Obj();
+			
+			obj->_native = native;
+			obj->fnType = FnType::NATIVE;
+			obj->spec = Spec::SYMBOL;
+
+			return obj;
+		}
+
+		template<> Obj* AddConst(char value)
+		{
+			Obj* obj = new Obj { Type::CHAR, Spec::VALUE };
+			obj->flag.Set(SFlag::CONST, true);
+			obj->_char = value;
+
+			return obj;
+		}
+
+		template<> Obj* AddConst(bool value)
+		{
+			Obj* obj = new Obj { Type::BOOL, Spec::VALUE };
+			obj->flag.Set(SFlag::CONST, true);
+			obj->_bool = value;
+
+			return obj;
+		}
+
+		template<> Obj* AddConst(int  value)
+		{
+			Obj* obj = new Obj { Type::INT, Spec::VALUE };
+			obj->flag.Set(SFlag::CONST, true);
+			obj->_int = value;
+
+			return obj;
+		}
+
+		template<> Obj* AddConst(float value)
+		{
+			Obj* obj = new Obj { Type::FLOAT, Spec::VALUE };
+			obj->flag.Set(SFlag::CONST, true);
+			obj->_float = value;
+
+			return obj;
+		}
+
+		template<> Obj* AddConst(std::nullptr_t value)
+		{
+			Obj* obj = new Obj { Type::NIL, Spec::NIL, FnType::NIL };
+			obj->flag.Set(SFlag::CONST, true);
+
+			return obj;
 		}
 
 		Obj* GetSymbol(VM* vm, Tok* tok)

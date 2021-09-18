@@ -6,6 +6,10 @@ namespace jts
 {
 	Obj* EvalObj(ObjNode* obj)
 	{
+		if (!obj)
+		{
+			return NIL;
+		}
 		if (obj->value->fnType != FnType::NIL)
 		{
 			return ExecObj(obj);

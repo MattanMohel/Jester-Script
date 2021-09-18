@@ -31,6 +31,8 @@ namespace jts
 		bool initialized = false;
 	};
 
+	static Obj* NIL = new Obj { Type::NIL, Spec::NIL, FnType::NIL };
+
 	struct ObjNode
 	{
 		ObjNode() : value(new Obj())

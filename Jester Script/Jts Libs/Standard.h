@@ -16,12 +16,14 @@ namespace lib
 {
 	inline void StandardLib(VM* vm)
 	{
-		env::AddNative(vm, "set", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "nil", env::AddConst(nullptr));
+
+		env::AddSymbol(vm, "set", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			return BinaryOpObj<BinaryOp::SET>(in->args, in->args->next);
-		});
+		}));
 
-		env::AddNative(vm, "defn", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "defn", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			Obj* fn = in->args->value;
 
@@ -33,9 +35,9 @@ namespace lib
 			fn->_jtsFunc->codeBlock = in->args->next->next;
 
 			return fn;
-		});		
+		}));		
 		
-		env::AddNative(vm, "loop", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "loop", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			auto* cond = in->args;
 			auto* block = cond->next;
@@ -62,9 +64,9 @@ namespace lib
 
 				block = blockStart;
 			}
-		});
+		}));
 
-		env::AddNative(vm, "print", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "print", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			auto* rest = in->args;
 			Obj* value = nullptr;
@@ -104,9 +106,9 @@ namespace lib
 			}
 
 			return value;
-		});
+		}));
 
-		env::AddNative(vm, "println", [](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "println", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			in = in->args;
 
@@ -149,7 +151,7 @@ namespace lib
 			std::cout << std::endl;
 
 			return value;
-		});
+		}));
 	}
 }
 

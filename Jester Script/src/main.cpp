@@ -5,7 +5,7 @@
 #include "File.h"
 #include "VM.h"
 
-#include "../Jts Libs/Lib.h"
+#include "../Jts Libs/Standard.h"
 #include "../Jts Libs/Arithmetic.h"
 #include "../Jts Libs/Boolean.h"
 using namespace jts;

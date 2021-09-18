@@ -16,6 +16,7 @@ namespace jts
 				break;
 			
 			default: // CHAR, BOOL, INT
+				
 				a->value->_int += CastObj<int>(EvalObj(b));
 				break;
 		}
@@ -33,6 +34,7 @@ namespace jts
 				break;
 
 			default: // CHAR, BOOL, INT
+				
 				a->value->_int -= CastObj<int>(EvalObj(b));
 				break;
 		}
@@ -50,6 +52,7 @@ namespace jts
 				break;
 
 			default: // CHAR, BOOL, INT
+				
 				a->value->_int *= CastObj<int>(EvalObj(b));
 				break;
 		}
@@ -67,12 +70,31 @@ namespace jts
 				break;
 
 			default: // CHAR, BOOL, INT
+				
 				a->value->_int /= CastObj<int>(EvalObj(b));
 				break;
 		}
 
 		return a->value;
 	}	
+
+	template<> Obj* BinaryOpObj<BinaryOp::MOD>(ObjNode* a, ObjNode* b)
+	{
+		switch (a->value->type)
+		{
+			case Type::FLOAT:
+
+				a->value->_float = (int)a->value->_float % CastObj<int>(EvalObj(b));
+				break;
+
+			default: // CHAR, BOOL, INT
+				
+				a->value->_int %= CastObj<int>(EvalObj(b));
+				break;
+		}
+
+		return a->value;
+	}
 	
 	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b)
 	{
@@ -150,6 +172,114 @@ namespace jts
 
 			default: // CHAR, BOOL, INT
 				--a->value->_int;
+				break;
+		}
+
+		return a->value;
+	}
+
+	template<> Obj* UnaryOpObj<UnaryOp::SIN>(ObjNode* a)
+	{
+		switch (a->value->type)
+		{
+			case Type::FLOAT:
+
+				a->value->_float = sin(a->value->_float);
+				break;
+
+			default: // CHAR, BOOL, INT
+				
+				a->value->_int = sin(a->value->_int);
+				break;
+		}
+
+		return a->value;
+	}
+
+	template<> Obj* UnaryOpObj<UnaryOp::ASIN>(ObjNode* a)
+	{
+		switch (a->value->type)
+		{
+			case Type::FLOAT:
+
+				a->value->_float = asin(a->value->_float);
+				break;
+
+			default: // CHAR, BOOL, INT
+
+				a->value->_int = asin(a->value->_int); 
+				break;
+		}
+
+		return a->value;
+	}
+
+	template<> Obj* UnaryOpObj<UnaryOp::COS>(ObjNode* a)
+	{
+		switch (a->value->type)
+		{
+			case Type::FLOAT:
+
+				a->value->_float = cos(a->value->_float);
+				break;
+
+			default: // CHAR, BOOL, INT
+
+				a->value->_int = cos(a->value->_int);
+				break;
+		}
+
+		return a->value;
+	}
+
+	template<> Obj* UnaryOpObj<UnaryOp::ACOS>(ObjNode* a)
+	{
+		switch (a->value->type)
+		{
+			case Type::FLOAT:
+
+				a->value->_float = acos(a->value->_float);
+				break;
+
+			default: // CHAR, BOOL, INT
+
+				a->value->_int = acos(a->value->_int);
+				break;
+		}
+
+		return a->value;
+	}
+
+	template<> Obj* UnaryOpObj<UnaryOp::TAN>(ObjNode* a)
+	{
+		switch (a->value->type)
+		{
+			case Type::FLOAT:
+
+				a->value->_float = tan(a->value->_float);
+				break;
+
+			default: // CHAR, BOOL, INT
+
+				a->value->_int = tan(a->value->_int);
+				break;
+		}
+
+		return a->value;
+	}
+
+	template<> Obj* UnaryOpObj<UnaryOp::ATAN>(ObjNode* a)
+	{
+		switch (a->value->type)
+		{
+			case Type::FLOAT:
+
+				a->value->_float = atan(a->value->_float);
+				break;
+
+			default: // CHAR, BOOL, INT
+
+				a->value->_int = atan(a->value->_int);
 				break;
 		}
 
