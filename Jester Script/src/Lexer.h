@@ -11,6 +11,8 @@ namespace jts
 
 	void TokenizeFile(VM* vm, str& src);
 	void MatchTokenType(VM* vm);
+
+	str ExtractWord(str src);
 }
 
 #endif

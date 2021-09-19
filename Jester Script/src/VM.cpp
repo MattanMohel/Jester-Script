@@ -2,6 +2,7 @@
 #include "Token.h"
 #include "Execute.h"
 #include "Object.h"
+#include "Lexer.h"
 #include "File.h"
 #include "Log.h"
 
@@ -110,12 +111,40 @@ namespace jts
 
 				if (src.empty()) continue;
 
-				ParseSrc(vm, src);
-
-				PrintObj(env::RunVM(vm), true);
+				// Reset VM
 
 				vm->stackPtrBeg = vm->stackPtrCur = nullptr;
 				vm->tokenPtrBeg = vm->tokenPtrCur = nullptr;
+
+				// commands
+
+				if (src.substr(0, 2) == "--")
+				{
+					src = src.substr(2);
+					str buffer = ExtractWord(src);
+
+					if (buffer == "quit")
+					{
+						break;
+					}
+					if (buffer == "parse")
+					{
+						src = src.substr(6, src.size() - 7);
+
+						ParseSrc(vm, ReadSrc(vm, src));
+						env::RunVM(vm);
+
+						std::cout << '\n';
+					}
+
+					continue;
+				}
+
+				// Run input
+
+				ParseSrc(vm, src);
+
+				PrintObj(env::RunVM(vm), true);
 			}
 		}
 

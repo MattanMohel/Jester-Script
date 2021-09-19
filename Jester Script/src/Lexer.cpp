@@ -143,4 +143,22 @@ namespace jts
 			vm->tokenPtrCur->spec = Spec::SYMBOL;
 		}
 	}
+
+	str ExtractWord(str src)
+	{
+		src += EOF;
+
+		str buffer = "";
+		str::iterator it = src.begin();
+
+		if (*it == ' ') ++it;
+
+		while (*it != EOF && *it != ' ')
+		{
+			buffer += *it;
+			++it;
+		}
+
+		return buffer;
+	}
 }
