@@ -120,12 +120,6 @@ namespace jts
 			vm->tokenPtrCur->spec = Spec::FLAG;
 			vm->tokenPtrCur->flag.Set(SFlag::CONST);
 		}		
-		
-		else if (value == "ref")
-		{
-			vm->tokenPtrCur->spec = Spec::FLAG;
-			vm->tokenPtrCur->flag.Set(SFlag::REF);
-		}
 
 		else if (env::GetSymbol(vm, vm->tokenPtrCur))
 		{

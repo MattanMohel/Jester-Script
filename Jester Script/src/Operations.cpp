@@ -367,31 +367,16 @@ namespace jts
 		Obj* val1 = EvalObj(a);
 		Obj* val2 = EvalObj(b);
 
-		if (val1->fnType == FnType::NIL)
+		switch (val1->type)
 		{
-			switch (val1->type)
-			{
-				case Type::FLOAT:
+			case Type::FLOAT:
 
-					return val1->_float == val2->_float;
+				return val1->_float == val2->_float;
 
-				default: // CHAR, BOOL, INT
+			default: // CHAR, BOOL, INT
 
-					return val1->_int == val2->_int;
-			}
+				return val1->_int == val2->_int;
 		}
-
-		switch (val1->fnType)
-		{
-			case FnType::NATIVE:
-
-				return val1->_native == val2->_native;
-
-			default: // JTS
-
-				return val1->_jtsFunc == val2->_jtsFunc;
-		}
-
 	}
 
 	bool isGreater(ObjNode* a, ObjNode* b)

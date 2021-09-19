@@ -76,7 +76,7 @@ namespace jts
 
 		template<> Obj* AddConst(std::nullptr_t value)
 		{
-			Obj* obj = new Obj { Type::NIL, Spec::NIL, FnType::NIL };
+			Obj* obj = new Obj { Type::NIL, Spec::VALUE, FnType::NIL };
 			obj->flag.Set(SFlag::CONST, true);
 
 			return obj;

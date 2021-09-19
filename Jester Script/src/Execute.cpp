@@ -10,7 +10,7 @@ namespace jts
 		{
 			return NIL;
 		}
-		if (obj->value->fnType != FnType::NIL)
+		if (obj->value->spec == Spec::CALL)
 		{
 			return ExecObj(obj);
 		}

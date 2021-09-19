@@ -28,7 +28,7 @@ namespace lib
 			return BinaryOpObj<BinaryOp::SET_VAL>(in->args, in->args->next);
 		}));	
 		
-		env::AddSymbol(vm, "setc", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "setl", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			return BinaryOpObj<BinaryOp::SET_CON>(in->args, in->args->next);
 		}));
@@ -121,13 +121,13 @@ namespace lib
 		{
 			auto* beg = in->args;
 
-			while (in->next)
+			while (beg->next)
 			{
-				EvalObj(in);
-				in = in->next;
+				EvalObj(beg);
+				beg = beg->next;
 			}
 
-			return EvalObj(in);
+			return EvalObj(beg);
 		}));
 
 

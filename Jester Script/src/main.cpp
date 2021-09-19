@@ -18,6 +18,6 @@ int main(char** argc, int** argv)
 	env::AddLib(vm, lib::ArithmeticLib);
 	env::AddLib(vm, lib::BooleanLib);
 
-	ParseFile(vm, "scripts/Jester.jts");
+	ParseFile(vm, "scripts/Testing.jts");
 	env::RunVM(vm);
 }

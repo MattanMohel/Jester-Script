@@ -66,14 +66,7 @@ namespace jts
 
 					if (env::GetSymbol(vm, it) == nullptr)
 					{
-						if (it->flag.Get(SFlag::REF))
-						{
-							vm->symbols.emplace(it->value, nullptr);
-						}
-						else
-						{
-							vm->symbols.emplace(it->value, new Obj());
-						}
+						vm->symbols.emplace(it->value, new Obj());
 
 						vm->symbols[it->value]->flag = it->flag;
 					}
