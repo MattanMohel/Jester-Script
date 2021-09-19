@@ -25,6 +25,9 @@ namespace jts
 		BOOL,
 		INT,
 		FLOAT,
+		QUOTE,
+
+		// needs attending to
 		STRING,
 	};
 
@@ -33,11 +36,9 @@ namespace jts
 		NIL = 0,
 
 		SYMBOL,
+		QUOTE,
+		LTRL,
 		FLAG,
-
-		VALUE,
-		CALL,
-		FUNC,
 
 		PARENTH_L,
 		PARENTH_R,

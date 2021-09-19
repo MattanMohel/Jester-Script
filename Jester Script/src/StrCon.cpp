@@ -113,7 +113,7 @@ namespace jts
             }
         }
 
-        obj->spec = Spec::VALUE;
+        obj->spec = Spec::LTRL;
         obj->type = tok->type;
 
         return obj;

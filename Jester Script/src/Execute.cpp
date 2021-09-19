@@ -10,7 +10,7 @@ namespace jts
 		{
 			return NIL;
 		}
-		if (obj->value->spec == Spec::CALL)
+		if (obj->invocation && !obj->quoted)
 		{
 			return ExecObj(obj);
 		}

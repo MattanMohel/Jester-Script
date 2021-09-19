@@ -102,11 +102,16 @@ namespace jts
 	{
 		Obj* value = EvalObj(b);
 
-		if (value->spec == Spec::VALUE)
+		if (b->quoted && b->invocation) 
 		{
-			a->value->spec = Spec::VALUE;
+			a->value->type = Type::QUOTE;
+
+			a->value->_quote = b;
+		}
+		else if (value->fnType == FnType::NIL)
+		{
 			a->value->type = value->type;
-			a->value->cons = value->cons;
+			a->value->cell = value->cell;
 
 			switch (value->type)
 			{
@@ -123,24 +128,24 @@ namespace jts
 		}
 		else
 		{
-			a->value->spec   =    Spec::CALL;
 			a->value->fnType = value->fnType;
+			a->value->cell   = value->cell;
 
 			switch (value->fnType)
 			{
 				case FnType::NATIVE:
-					
+
 					a->value->_native = value->_native;
 					break;
 
 				case FnType::JTS:
-				
+
 					a->value->_jtsFunc = value->_jtsFunc;
 					break;
-								
+
 				default: // C_BRIDGE
 
-					break;	
+					break;
 			}
 		}
 
@@ -151,9 +156,8 @@ namespace jts
 	{
 		Obj* value = EvalObj(b);
 
-		if (value->spec == Spec::VALUE)
+		if (value->fnType == FnType::NIL)
 		{
-			a->value->spec = Spec::VALUE;
 			a->value->type = value->type;
 
 			switch (value->type)
@@ -171,7 +175,6 @@ namespace jts
 		}
 		else
 		{
-			a->value->spec = Spec::CALL;
 			a->value->fnType = value->fnType;
 
 			switch (value->fnType)
@@ -197,7 +200,7 @@ namespace jts
 
 	template<> Obj* BinaryOpObj<BinaryOp::SET_CON>(ObjNode* a, ObjNode* b)
 	{
-		a->value->cons = EvalObj(b)->cons;
+		a->value->cell = EvalObj(b)->cell;
 
 		return a->value;
 	}

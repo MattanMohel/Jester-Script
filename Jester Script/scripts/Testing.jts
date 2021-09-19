@@ -1,4 +1,0 @@
-(defn fn() )
-
-(set v (+ 5 5))
-(print (v 10 10))

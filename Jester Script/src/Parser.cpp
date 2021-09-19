@@ -31,33 +31,43 @@ namespace jts
 		Tok* it = vm->tokenPtrBeg;
 
 		bool onInvocation = false;
+		bool isQuoted = false;
 
 		while (it->spec != Spec::NIL)
 		{
-			if (it->spec == Spec::FLAG)
+			switch (it->spec)
 			{
-				it->next->flag += it->flag;
+				case Spec::FLAG:
+					
+					it->next->flag += it->flag;
 
-				it = it->next;
-				continue;
-			}
-			// Mark next head as a call
-			if (it->spec == Spec::PARENTH_L)
-			{
-				onInvocation = true;
+					it = it->next;
+					continue;
 
-				funcHead.emplace(head);
+				case Spec::QUOTE:
 
-				it = it->next;
-				continue;
-			}
-			// Return head to previous function head
-			if (it->spec == Spec::PARENTH_R)
-			{
-				head = &(*funcHead.pop())->next;
+					isQuoted = true;
 
-				it = it->next;
-				continue;
+					it = it->next;
+					continue;
+
+				// Mark next head as a call
+				case Spec::PARENTH_L:
+					
+					onInvocation = true;
+
+					funcHead.emplace(head);
+
+					it = it->next;
+					continue;
+
+				// Return head to previous function head
+				case Spec::PARENTH_R:
+
+					head = &(*funcHead.pop())->next;
+
+					it = it->next;
+					continue;
 			}
 
 			switch (it->spec)
@@ -71,22 +81,13 @@ namespace jts
 						vm->symbols[it->value]->flag = it->flag;
 					}
 
-					(*head) = new ObjNode(env::GetSymbol(vm, it));
+					(*head) = new ObjNode(env::GetSymbol(vm, it), onInvocation ,isQuoted);
 
 					break;
 
-				case Spec::VALUE:
+				case Spec::LTRL:
 
-					(*head) = new ObjNode(TokToLtrl(it));
-
-					break;
-
-				case Spec::CALL:
-
-					Obj* call = new Obj {Type::NIL, Spec::CALL, FnType::NATIVE};
-					call->_native = env::GetSymbol(vm, it)->_native; 
-
-					(*head) = new ObjNode(call);
+					(*head) = new ObjNode(TokToLtrl(it), onInvocation, isQuoted);
 
 					break;
 			}
@@ -104,6 +105,8 @@ namespace jts
 			{
 				head = &(*head)->next;
 			}
+
+			isQuoted = false;
 
 			it = it->next;
 		}

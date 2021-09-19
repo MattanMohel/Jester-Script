@@ -35,8 +35,8 @@ namespace lib
 				
 		env::AddSymbol(vm, "bind", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			in->args->value->cons = new ObjNode();
-			BinaryOpObj<BinaryOp::SET>(in->args->value->cons, in->args->next);
+			in->args->value->cell = new ObjNode();
+			BinaryOpObj<BinaryOp::SET>(in->args->value->cell, in->args->next);
 
 			return in->args->value;
 		}));	
@@ -48,9 +48,9 @@ namespace lib
 
 			while (args->next)
 			{
-				cell->value->cons = new ObjNode();
-				BinaryOpObj<BinaryOp::SET>(cell->value->cons, args->next);
-				cell = cell->value->cons;
+				cell->value->cell = new ObjNode();
+				BinaryOpObj<BinaryOp::SET>(cell->value->cell, args->next);
+				cell = cell->value->cell;
 				args = args->next;
 			}
 
@@ -63,7 +63,7 @@ namespace lib
 
 			for (int i = 0; i < CastObj<int>(EvalObj(in->args)); ++i)
 			{
-				init = init->value->cons;
+				init = init->value->cell;
 
 				if (!init) return NIL;
 			}
@@ -73,15 +73,26 @@ namespace lib
 		
 		env::AddSymbol(vm, "rest", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			if (!in->args->value->cons) return NIL;
-			return in->args->value->cons->value;
+			if (!in->args->value->cell) return NIL;
+			return in->args->value->cell->value;
+		}));		
+		
+		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* in) -> Obj*
+		{
+			// make sure object is a quote
+			if (in->args->value->_quote->invocation)
+			{
+				return ExecObj(in->args->value->_quote);
+			}
+
+			return in->args->value;
 		}));
 
 		env::AddSymbol(vm, "defn", env::AddNative([](ObjNode* in) -> Obj*
 		{
 			Obj* fn = in->args->value;
 
-			fn->spec = Spec::CALL;
+			fn->spec = Spec::SYMBOL; 
 			fn->fnType = FnType::JTS;
 
 			fn->_jtsFunc = new Func();

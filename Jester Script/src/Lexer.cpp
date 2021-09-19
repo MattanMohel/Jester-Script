@@ -44,7 +44,7 @@ namespace jts
 			// Extract a single token
 			while (inLtrl || (!IsPrefix(ch) && ch != ' ' && ch != '\t' && ch != '\n' && ch != EOF))
 			{
-				if (ch == '\'' || ch == '\"')
+				if (ch == '\"')
 				{
 					inLtrl = !inLtrl;
 				}
@@ -75,7 +75,7 @@ namespace jts
 				while (ch != '\n') { ch = fgetc(file); }
 				++line;
 			}
-			else if (ch == '(' || ch == ')')
+			else if (ch == '(' || ch == ')' || ch == '\'')
 			{
 				vm->tokenPtrCur->value = ch;
 				vm->tokenPtrCur->line = line;
@@ -98,7 +98,6 @@ namespace jts
 	void MatchTokenType(VM* vm)
 	{
 		const str& value = vm->tokenPtrCur->value;
-		static Tok* prevTok = nullptr;
 
 		if (value.empty())
 		{
@@ -113,6 +112,11 @@ namespace jts
 		else if (value == ")")
 		{
 			vm->tokenPtrCur->spec = Spec::PARENTH_R;
+		}		
+		
+		else if (value == "'")
+		{
+			vm->tokenPtrCur->spec = Spec::QUOTE;
 		}
 
 		else if (value == "const")
@@ -125,26 +129,17 @@ namespace jts
 		{
 			vm->tokenPtrCur->fnType = FnType::NATIVE;
 
-			if (prevTok->spec == Spec::PARENTH_L)
-			{
-				vm->tokenPtrCur->spec = Spec::CALL;
-			}
-			else
-			{
-				vm->tokenPtrCur->spec = Spec::SYMBOL;
-			}
+			vm->tokenPtrCur->spec = Spec::SYMBOL;
 		}
 
 		else if (TokIsLtrl(vm->tokenPtrCur))
 		{
-			vm->tokenPtrCur->spec = Spec::VALUE;
+			vm->tokenPtrCur->spec = Spec::LTRL;
 		}
 
 		else 
 		{
 			vm->tokenPtrCur->spec = Spec::SYMBOL;
 		}
-
-		prevTok = vm->tokenPtrCur;
 	}
 }

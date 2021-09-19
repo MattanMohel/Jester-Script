@@ -40,7 +40,7 @@ namespace jts
 
 		template<> Obj* AddConst(char value)
 		{
-			Obj* obj = new Obj { Type::CHAR, Spec::VALUE };
+			Obj* obj = new Obj { Type::CHAR, Spec::SYMBOL };
 			obj->flag.Set(SFlag::CONST, true);
 			obj->_char = value;
 
@@ -49,7 +49,7 @@ namespace jts
 
 		template<> Obj* AddConst(bool value)
 		{
-			Obj* obj = new Obj { Type::BOOL, Spec::VALUE };
+			Obj* obj = new Obj { Type::BOOL, Spec::SYMBOL };
 			obj->flag.Set(SFlag::CONST, true);
 			obj->_bool = value;
 
@@ -58,7 +58,7 @@ namespace jts
 
 		template<> Obj* AddConst(int  value)
 		{
-			Obj* obj = new Obj { Type::INT, Spec::VALUE };
+			Obj* obj = new Obj { Type::INT, Spec::SYMBOL };
 			obj->flag.Set(SFlag::CONST, true);
 			obj->_int = value;
 
@@ -67,7 +67,7 @@ namespace jts
 
 		template<> Obj* AddConst(float value)
 		{
-			Obj* obj = new Obj { Type::FLOAT, Spec::VALUE };
+			Obj* obj = new Obj { Type::FLOAT, Spec::SYMBOL };
 			obj->flag.Set(SFlag::CONST, true);
 			obj->_float = value;
 
@@ -76,7 +76,7 @@ namespace jts
 
 		template<> Obj* AddConst(std::nullptr_t value)
 		{
-			Obj* obj = new Obj { Type::NIL, Spec::VALUE, FnType::NIL };
+			Obj* obj = new Obj { Type::NIL, Spec::SYMBOL, FnType::NIL };
 			obj->flag.Set(SFlag::CONST, true);
 
 			return obj;
