@@ -24,7 +24,7 @@ namespace lib
 
 		env::AddSymbol(vm, "+", env::AddNative([](ObjNode* in)
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			auto* rest = in->args;
 
 			while (rest->next)
@@ -39,7 +39,7 @@ namespace lib
 
 		env::AddSymbol(vm, "-", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			auto* rest = in->args;
 
 			while (rest->next)
@@ -53,7 +53,7 @@ namespace lib
 
 		env::AddSymbol(vm, "*", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			auto* rest = in->args;
 
 			while (rest->next)
@@ -67,7 +67,7 @@ namespace lib
 
 		env::AddSymbol(vm, "/", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			auto* rest = in->args;
 
 			while (rest->next)
@@ -81,7 +81,7 @@ namespace lib
 		
 		env::AddSymbol(vm, "%", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			auto* rest = in->args;
 
 			while (rest->next)
@@ -170,37 +170,37 @@ namespace lib
 		
 		env::AddSymbol(vm, "sin", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			return UnaryOpObj<UnaryOp::SIN>(in->args);
 		}));		
 		
 		env::AddSymbol(vm, "asin", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			return UnaryOpObj<UnaryOp::ASIN>(in->args);
 		}));		
 		
 		env::AddSymbol(vm, "cos", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			return UnaryOpObj<UnaryOp::COS>(in->args);
 		}));		
 		
 		env::AddSymbol(vm, "acos", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			return UnaryOpObj<UnaryOp::ACOS>(in->args);
 		}));		
 		
 		env::AddSymbol(vm, "tan", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			return UnaryOpObj<UnaryOp::TAN>(in->args);
 		}));		
 		
 		env::AddSymbol(vm, "atan", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(in, in->args);
+			BinaryOpObj<BinaryOp::SET_VAL>(in, in->args);
 			return UnaryOpObj<UnaryOp::ATAN>(in->args);
 		}));
 	}
