@@ -79,8 +79,7 @@ namespace lib
 		
 		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			// make sure object is a quote
-			if (in->args->value->_quote->invocation)
+			if (in->args->value->type == Type::QUOTE && in->args->value->_quote->invocation)
 			{
 				return ExecObj(in->args->value->_quote);
 			}

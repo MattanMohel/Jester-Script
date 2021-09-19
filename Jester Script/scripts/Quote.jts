@@ -1,12 +1,8 @@
 (set x '(+ 5 5))
 (println (eval x))
-(set x '5)
-(println x)
-(set x +)
-(println (x 10 10))
 
-(defn Add (a b)
-	(+ a b))
+(set x '(+ 5 5 (+ 5 5)))
+(println (eval x))
 
-(set x Add)
-(print (x 35 35))
+(set y x)
+(println (eval y))

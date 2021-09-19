@@ -108,7 +108,7 @@ namespace jts
 
 			a->value->_quote = b;
 		}
-		else if (value->fnType == FnType::NIL)
+		else if (b->invocation || value->fnType == FnType::NIL)
 		{
 			a->value->type = value->type;
 			a->value->cell = value->cell;
@@ -118,6 +118,11 @@ namespace jts
 				case Type::FLOAT:
 
 					a->value->_float = CastObj<float>(value);
+					break;
+
+				case Type::QUOTE:
+
+					a->value->_quote = value->_quote;
 					break;
 
 				default: // CHAR, BOOL, INT
@@ -165,6 +170,11 @@ namespace jts
 				case Type::FLOAT:
 
 					a->value->_float = CastObj<float>(value);
+					break;
+
+				case Type::QUOTE:
+
+					a->value->_quote = value->_quote;
 					break;
 
 				default: // CHAR, BOOL, INT

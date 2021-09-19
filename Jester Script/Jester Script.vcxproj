@@ -170,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\Jester.jts" />
+    <None Include="scripts\Quote.jts" />
     <None Include="scripts\Testing.jts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
