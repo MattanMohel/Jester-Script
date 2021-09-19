@@ -12,24 +12,11 @@ namespace jts
 
 		str upperStr = "";
 
-		if (in->quoted || (value->fnType != FnType::NIL && !in->invocation))
-		{
-			for (auto c : *value->symbol)
-			{
-				upperStr += toupper(c);
-			}
-			std::cout << upperStr;
-
-			if (newLine) std::cout << '\n';
-			
-			return value;
-		}
-
 		switch (value->type)
 		{
 			case Type::QUOTE:
 
-				for (auto c : *value->_quote->value->symbol)
+				for (auto c : value->_quote->value->symbol)
 				{
 					upperStr += toupper(c);
 				}

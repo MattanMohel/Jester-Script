@@ -10,7 +10,7 @@ namespace jts
 		{
 			return NIL;
 		}
-		if (obj->invocation && !obj->quoted)
+		if (obj->invocation)
 		{
 			return ExecObj(obj);
 		}

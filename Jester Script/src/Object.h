@@ -11,7 +11,7 @@ namespace jts
 		Spec spec;
 		FnType fnType;
 
-		str* symbol;
+		str symbol;
 
 		union // Values
 		{
@@ -39,22 +39,36 @@ namespace jts
 
 	struct ObjNode
 	{
-		ObjNode(bool invoc = false, bool quoted = false) : 
-			value(new Obj()), invocation(invoc), quoted(quoted)
+		ObjNode() : 
+			value(new Obj())
 		{}		
 		
 		ObjNode(Obj* obj, bool invoc = false, bool quoted = false) :
-			value(obj), invocation(invoc), quoted(quoted)
+			value(obj), invocation(invoc)
 		{}
 
 		ObjNode* next = nullptr;
 		ObjNode* args = nullptr;
 
-		bool quoted = false;
 		bool invocation = false;
 
 		Obj* value = nullptr;
 	};
+
+	inline ObjNode* CreateNode(Obj* obj, str symbol, bool invoc, bool quoted)
+	{
+		obj->symbol = symbol;
+
+		if (quoted)
+		{
+			Obj* value = new Obj { Type::QUOTE, Spec::LTRL };
+			value->_quote = new ObjNode(obj, invoc, quoted);
+
+			return new ObjNode(value);
+		}
+		
+		return new ObjNode(obj, invoc, quoted);
+	}
 }
 
 #endif

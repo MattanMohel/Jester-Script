@@ -8,6 +8,7 @@
 #include "../Jts Libs/Standard.h"
 #include "../Jts Libs/Arithmetic.h"
 #include "../Jts Libs/Boolean.h"
+
 using namespace jts;
 
 int main(char** argc, int** argv)

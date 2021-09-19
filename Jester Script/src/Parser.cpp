@@ -53,6 +53,15 @@ namespace jts
 
 				// Mark next head as a call
 				case Spec::PARENTH_L:
+
+					if (it->next->spec == Spec::PARENTH_R)
+					{
+						(*head) = CreateNode(env::GetSymbol(vm, "nil"), "nil", false, false);
+						head = &(*head)->next;
+
+						it = it->next->next;
+						continue;
+					}
 					
 					onInvocation = true;
 
@@ -74,30 +83,36 @@ namespace jts
 			{
 				case Spec::SYMBOL:
 
-					if (env::GetSymbol(vm, it) == nullptr)
+					if (env::GetSymbol(vm, it->value) == nullptr)
 					{
 						vm->symbols.emplace(it->value, new Obj());
 
 						vm->symbols[it->value]->flag = it->flag;
 					}
 
-					(*head) = new ObjNode(env::GetSymbol(vm, it), onInvocation ,isQuoted);
+					(*head) = CreateNode(env::GetSymbol(vm, it->value), it->value, onInvocation, isQuoted);
 
 					break;
 
 				case Spec::LTRL:
 
-					(*head) = new ObjNode(TokToLtrl(it), onInvocation, isQuoted);
+					(*head) = CreateNode(TokToLtrl(it), it->value, onInvocation, isQuoted);
 
 					break;
 			}
 
-			(*head)->value->symbol = &it->value;
-
 			// Invocation --> emplace to args
 			if (onInvocation)
 			{
-				head = &(*head)->args;
+				if (isQuoted)
+				{
+					head = &(*head)->value->_quote->args;
+				}
+				else
+				{
+					head = &(*head)->args;
+				}
+
 				onInvocation = false;
 			}
 			// Otherwise --> emplace to next

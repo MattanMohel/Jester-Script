@@ -102,27 +102,21 @@ namespace jts
 	{
 		Obj* value = EvalObj(b);
 
-		if (b->quoted) 
-		{
-			a->value->type = Type::QUOTE;
-
-			a->value->_quote = b;
-		}
-		else if (b->invocation || value->fnType == FnType::NIL)
+		if (value->fnType == FnType::NIL)
 		{
 			a->value->type = value->type;
 			a->value->cell = value->cell;
 
 			switch (value->type)
 			{
-				case Type::FLOAT:
-
-					a->value->_float = CastObj<float>(value);
-					break;
-
 				case Type::QUOTE:
 
 					a->value->_quote = value->_quote;
+					break;
+
+				case Type::FLOAT:
+
+					a->value->_float = CastObj<float>(value);
 					break;
 
 				default: // CHAR, BOOL, INT
@@ -167,14 +161,14 @@ namespace jts
 
 			switch (value->type)
 			{
-				case Type::FLOAT:
-
-					a->value->_float = CastObj<float>(value);
-					break;
-
 				case Type::QUOTE:
 
 					a->value->_quote = value->_quote;
+					break;
+
+				case Type::FLOAT:
+
+					a->value->_float = CastObj<float>(value);
 					break;
 
 				default: // CHAR, BOOL, INT

@@ -126,7 +126,7 @@ namespace jts
 			vm->tokenPtrCur->flag.Set(SFlag::CONST);
 		}		
 
-		else if (env::GetSymbol(vm, vm->tokenPtrCur))
+		else if (env::GetSymbol(vm, vm->tokenPtrCur->value))
 		{
 			vm->tokenPtrCur->fnType = FnType::NATIVE;
 

@@ -36,7 +36,7 @@ namespace jts
 		template<> Obj* AddConst(float value);
 		template<> Obj* AddConst(std::nullptr_t value);
 
-		Obj* GetSymbol(VM* vm, Tok* tok);
+		Obj* GetSymbol(VM* vm, str symbol);
 
 		void BeginREPL(VM* vm);
 

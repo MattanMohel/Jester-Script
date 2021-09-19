@@ -86,11 +86,11 @@ namespace jts
 			return obj;
 		}
 
-		Obj* GetSymbol(VM* vm, Tok* tok)
+		Obj* GetSymbol(VM* vm, str symbol)
 		{
-			if (vm->symbols.find(tok->value) != vm->symbols.end())
+			if (vm->symbols.find(symbol) != vm->symbols.end()) 
 			{
-				return vm->symbols[tok->value];
+				return vm->symbols[symbol];
 			}
 
 			return nullptr;
