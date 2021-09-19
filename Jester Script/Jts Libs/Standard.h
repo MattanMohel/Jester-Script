@@ -74,8 +74,10 @@ namespace lib
 		
 		env::AddSymbol(vm, "rest", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			if (!in->args->value->cell) return NIL;
-			return in->args->value->cell->value;
+			auto* rest = EvalObj(in->args);
+
+			if (!rest->cell) return NIL;
+			return rest->cell->value;
 		}));		
 		
 		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* in) -> Obj*
@@ -149,11 +151,11 @@ namespace lib
 
 			while (beg->next)
 			{
-				PrintObj(beg, false);
+				PrintObj(EvalObj(beg), false);
 				beg = beg->next;
 			}
 
-			return 	PrintObj(beg, false);
+			return 	PrintObj(EvalObj(beg), false);
 		}));
 
 		env::AddSymbol(vm, "println", env::AddNative([](ObjNode* in) -> Obj*
@@ -162,11 +164,11 @@ namespace lib
 
 			while (beg->next)
 			{
-				PrintObj(beg, false);
+				PrintObj(EvalObj(beg), false);
 				beg = beg->next;
 			}
 
-			return 	PrintObj(beg, true);
+			return 	PrintObj(EvalObj(beg), true);
 		}));
 	}
 }

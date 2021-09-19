@@ -100,46 +100,48 @@ namespace jts
 	
 	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b)
 	{
-		Obj* value = EvalObj(b);
+		Obj* value2 = EvalObj(b);
 
-		if (value->fnType == FnType::NIL)
+		Obj* value1 = (a->args == b)? a->value : EvalObj(a);
+
+		value1->cell = value2->cell;
+
+		if (value2->fnType == FnType::NIL)
 		{
-			a->value->type = value->type;
-			a->value->cell = value->cell;
+			value1->type = value2->type;
 
-			switch (value->type)
+			switch (value2->type)
 			{
 				case Type::QUOTE:
 
-					a->value->_quote = value->_quote;
+					value1->_quote = value2->_quote;
 					break;
 
 				case Type::FLOAT:
 
-					a->value->_float = CastObj<float>(value);
+					value1->_float = CastObj<float>(value2);
 					break;
 
 				default: // CHAR, BOOL, INT
 
-					a->value->_int = CastObj<int>(value);
+					value1->_int = CastObj<int>(value2);
 					break;
 			}
 		}
 		else
 		{
-			a->value->fnType = value->fnType;
-			a->value->cell   = value->cell;
+			value1->fnType = value2->fnType;
 
-			switch (value->fnType)
+			switch (value2->fnType)
 			{
 				case FnType::NATIVE:
 
-					a->value->_native = value->_native;
+					value1->_native = value2->_native;
 					break;
 
 				case FnType::JTS:
 
-					a->value->_jtsFunc = value->_jtsFunc;
+					value1->_jtsFunc = value2->_jtsFunc;
 					break;
 
 				default: // C_BRIDGE
@@ -148,49 +150,51 @@ namespace jts
 			}
 		}
 
-		return a->value;
+		return value1;
 	}
 
 	template<> Obj* BinaryOpObj<BinaryOp::SET_VAL>(ObjNode* a, ObjNode* b)
 	{
-		Obj* value = EvalObj(b);
+		Obj* value2 = EvalObj(b);
 
-		if (value->fnType == FnType::NIL)
+		Obj* value1 = (a->args == b) ? a->value : EvalObj(a);
+
+		if (value2->fnType == FnType::NIL)
 		{
-			a->value->type = value->type;
+			value1->type = value2->type;
 
-			switch (value->type)
+			switch (value2->type)
 			{
 				case Type::QUOTE:
 
-					a->value->_quote = value->_quote;
+					value1->_quote = value2->_quote;
 					break;
 
 				case Type::FLOAT:
 
-					a->value->_float = CastObj<float>(value);
+					value1->_float = CastObj<float>(value2);
 					break;
 
 				default: // CHAR, BOOL, INT
 
-					a->value->_int = CastObj<int>(value);
+					value1->_int = CastObj<int>(value2);
 					break;
 			}
 		}
 		else
 		{
-			a->value->fnType = value->fnType;
+			value1->fnType = value2->fnType;
 
-			switch (value->fnType)
+			switch (value2->fnType)
 			{
 				case FnType::NATIVE:
 
-					a->value->_native = value->_native;
+					value1->_native = value2->_native;
 					break;
 
 				case FnType::JTS:
 
-					a->value->_jtsFunc = value->_jtsFunc;
+					value1->_jtsFunc = value2->_jtsFunc;
 					break;
 
 				default: // C_BRIDGE
@@ -199,7 +203,7 @@ namespace jts
 			}
 		}
 
-		return a->value;
+		return value1;
 	}
 
 	template<> Obj* BinaryOpObj<BinaryOp::SET_CON>(ObjNode* a, ObjNode* b)

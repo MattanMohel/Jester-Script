@@ -6,11 +6,14 @@
 
 namespace jts 
 {
-	Obj* PrintObj(ObjNode* in, bool newLine)
+	Obj* PrintObj(Obj* value, bool newLine, bool head)
 	{
-		Obj* value = EvalObj(in);
-
 		str upperStr = "";
+
+		if (value->cell && head)
+		{
+			std::cout << '(';
+		}
 
 		switch (value->type)
 		{
@@ -21,7 +24,7 @@ namespace jts
 					upperStr += toupper(c);
 				}
 
-				std::cout<<upperStr; 
+				std::cout << upperStr; 
 
 				break;
 
@@ -46,8 +49,30 @@ namespace jts
 				break;
 
 			default: // case NIL
-				std::cout << "nil";
-				break;
+
+				if (value->fnType != FnType::NIL)
+				{
+					for (auto c : value->symbol)
+					{
+						upperStr += toupper(c);
+					}
+
+					std::cout << upperStr;
+				}
+				else
+				{
+					std::cout << "nil";
+					break;
+				}
+		}
+
+		if (value->cell)
+		{
+			std::cout<< ' ';
+
+			PrintObj(value->cell->value, false, false);
+
+			if (head) std::cout << ')';
 		}
 
 		if (newLine) std::cout << '\n';

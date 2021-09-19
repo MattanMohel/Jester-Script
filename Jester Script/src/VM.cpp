@@ -119,7 +119,7 @@ namespace jts
 			}
 		}
 
-		ObjNode* RunVM(VM* vm)
+		Obj* RunVM(VM* vm)
 		{
 			vm->stackPtrCur = vm->stackPtrBeg;
 
@@ -130,7 +130,6 @@ namespace jts
 				vm->stackPtrCur = vm->stackPtrCur->next;
 			}
 
-			EvalObj(vm->stackPtrCur);
-			return vm->stackPtrCur;
+			return EvalObj(vm->stackPtrCur);
 		}
 }}

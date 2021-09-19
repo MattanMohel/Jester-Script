@@ -40,7 +40,7 @@ namespace jts
 
 		void BeginREPL(VM* vm);
 
-		ObjNode* RunVM(VM* vm);
+		Obj* RunVM(VM* vm);
 	}
 }
 
