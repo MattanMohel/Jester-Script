@@ -18,9 +18,10 @@ namespace jts
 		return false;
 	}
 
-	void TokenizeFile(VM* vm, FILE* file)
+	void TokenizeFile(VM* vm, str& src)
 	{
-		char ch =  ' ';
+		str::iterator ch = src.begin();
+
 		str lexer = "";
 		bool inLtrl = false;
 
@@ -42,16 +43,16 @@ namespace jts
 		while (true)
 		{
 			// Extract a single token
-			while (inLtrl || (!IsPrefix(ch) && ch != ' ' && ch != '\t' && ch != '\n' && ch != EOF))
+			while (inLtrl || (!IsPrefix(*ch) && *ch != ' ' && *ch != '\t' && *ch != '\n' && *ch != EOF))
 			{
-				if (ch == '\"')
+				if (*ch == '\"')
 				{
 					inLtrl = !inLtrl;
 				}
 
-				lexer += ch;
+				lexer += *ch;
 
-				ch = fgetc(file);
+				++ch;
 			}
 
 			if (!lexer.empty())
@@ -66,30 +67,30 @@ namespace jts
 				lexer.clear();
 			}
 
-			if (ch == '\n')
+			if (*ch == '\n')
 			{
 				++line;
 			}
-			else if (ch == '#')
+			else if (*ch == '#')
 			{
-				while (ch != '\n') { ch = fgetc(file); }
+				while (*ch != '\n') { ++ch; }
 				++line;
 			}
-			else if (ch == '(' || ch == ')' || ch == '\'')
+			else if (*ch == '(' || *ch == ')' || *ch == '\'')
 			{
-				vm->tokenPtrCur->value = ch;
+				vm->tokenPtrCur->value = *ch;
 				vm->tokenPtrCur->line = line;
 				MatchTokenType(vm);
 
 				vm->tokenPtrCur->next = new Tok();
 				vm->tokenPtrCur = vm->tokenPtrCur->next;
 			}
-			else if (ch == EOF)
+			else if (*ch == EOF)
 			{
 				break;
 			}
 
-			ch = fgetc(file);
+			++ch; 
 		}
 
 		vm->tokenPtrCur = vm->tokenPtrBeg;

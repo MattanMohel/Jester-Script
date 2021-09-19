@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\JtsFunc.cpp" />
     <ClCompile Include="src\Execute.cpp" />
     <ClCompile Include="src\Operations.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Jts Libs\Arithmetic.h" />
     <ClInclude Include="Jts Libs\Boolean.h" />
     <ClInclude Include="Jts Libs\Standard.h" />
+    <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\IterableStack.h" />
     <ClInclude Include="src\JtsFunc.h" />
     <ClInclude Include="src\Execute.h" />

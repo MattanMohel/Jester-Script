@@ -102,7 +102,7 @@ namespace jts
 	{
 		Obj* value = EvalObj(b);
 
-		if (b->quoted && b->invocation) 
+		if (b->quoted) 
 		{
 			a->value->type = Type::QUOTE;
 

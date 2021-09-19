@@ -38,7 +38,9 @@ namespace jts
 
 		Obj* GetSymbol(VM* vm, Tok* tok);
 
-		void RunVM(VM* vm);
+		void BeginREPL(VM* vm);
+
+		ObjNode* RunVM(VM* vm);
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "../src/Operations.h"
 #include "../src/Execute.h"
 #include "../src/JtsFunc.h"
+#include "../src/Log.h"
 
 #include <iostream>
 
@@ -144,90 +145,28 @@ namespace lib
 
 		env::AddSymbol(vm, "print", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			in = in->args;
+			auto* beg = in->args;
 
-			Obj* value = nullptr;
-
-			while (in)
+			while (beg->next)
 			{
-				value = EvalObj(in);
-
-				switch (value->type)
-				{
-					case Type::CHAR:
-
-						std::cout << value->_char;
-						break;
-
-					case Type::BOOL:
-
-						std::cout << (value->_bool ? "true" : "false");
-						break;
-
-					case Type::INT:
-
-						std::cout << value->_int;
-						break;
-
-					case Type::FLOAT:
-
-						std::cout << value->_float;
-						break;
-
-					default: // case NIL
-						std::cout << "nil";
-						break;
-				}
-
-				in = in->next;
+				PrintObj(beg, false);
+				beg = beg->next;
 			}
 
-			return value;
+			return 	PrintObj(beg, false);
 		}));
 
 		env::AddSymbol(vm, "println", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			in = in->args;
+			auto* beg = in->args;
 
-			Obj* value = nullptr;
-
-			while (in)
+			while (beg->next)
 			{
-				value = EvalObj(in);
-
-				switch (value->type)
-				{
-					case Type::CHAR:
-
-						std::cout << value->_char;
-						break;
-
-					case Type::BOOL:
-
-						std::cout << (value->_bool ? "true" : "false");
-						break;
-
-					case Type::INT:
-
-						std::cout << value->_int;
-						break;
-
-					case Type::FLOAT:
-
-						std::cout << value->_float;
-						break;
-
-					default: // case NIL
-						std::cout << "nil";
-						break;
-				}
-
-				in = in->next;
+				PrintObj(beg, false);
+				beg = beg->next;
 			}
 
-			std::cout << std::endl;
-
-			return value;
+			return 	PrintObj(beg, true);
 		}));
 	}
 }

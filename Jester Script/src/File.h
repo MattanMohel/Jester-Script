@@ -4,6 +4,7 @@
 
 namespace jts
 {
-	void ParseFile(VM* vm, str path);
+	str ReadSrc(VM* vm, const str& path);
+	void ParseSrc(VM* vm, str path);
 }
 

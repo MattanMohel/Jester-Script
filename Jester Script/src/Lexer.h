@@ -9,7 +9,7 @@ namespace jts
 
 	bool IsPrefix(char value);
 
-	void TokenizeFile(VM* vm, FILE* file);
+	void TokenizeFile(VM* vm, str& src);
 	void MatchTokenType(VM* vm);
 }
 

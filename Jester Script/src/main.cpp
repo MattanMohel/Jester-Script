@@ -18,6 +18,8 @@ int main(char** argc, int** argv)
 	env::AddLib(vm, lib::ArithmeticLib);
 	env::AddLib(vm, lib::BooleanLib);
 
-	ParseFile(vm, "scripts/Quote.jts");
-	env::RunVM(vm);
+	/*ParseSrc(vm, ReadSrc(vm, "scripts/Testing.jts"));
+	env::RunVM(vm);*/
+
+	env::BeginREPL(vm);
 }

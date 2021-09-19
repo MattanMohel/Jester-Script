@@ -2,6 +2,10 @@
 #include "Token.h"
 #include "Execute.h"
 #include "Object.h"
+#include "File.h"
+#include "Log.h"
+
+#include <iostream>
 
 namespace jts
 {
@@ -92,15 +96,41 @@ namespace jts
 			return nullptr;
 		}
 
-		void RunVM(VM* vm)
+		void BeginREPL(VM* vm)
+		{
+			str src;
+
+			size_t inputCount = 0;
+
+			while (1)
+			{
+				std::cout << "[" << inputCount++ << "]>> ";
+				std::getline(std::cin, src);
+				src += EOF;
+
+				if (src.empty()) continue;
+
+				ParseSrc(vm, src);
+
+				PrintObj(env::RunVM(vm), true);
+
+				vm->stackPtrBeg = vm->stackPtrCur = nullptr;
+				vm->tokenPtrBeg = vm->tokenPtrCur = nullptr;
+			}
+		}
+
+		ObjNode* RunVM(VM* vm)
 		{
 			vm->stackPtrCur = vm->stackPtrBeg;
 
-			while (vm->stackPtrCur)
+			while (vm->stackPtrCur->next)
 			{
 				EvalObj(vm->stackPtrCur);
 
 				vm->stackPtrCur = vm->stackPtrCur->next;
 			}
+
+			EvalObj(vm->stackPtrCur);
+			return vm->stackPtrCur;
 		}
 }}
