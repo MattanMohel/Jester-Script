@@ -36,10 +36,12 @@ namespace lib
 				
 		env::AddSymbol(vm, "bind", env::AddNative([](ObjNode* in) -> Obj*
 		{
-			in->args->value->cell = new ObjNode();
-			BinaryOpObj<BinaryOp::SET>(in->args->value->cell, in->args->next);
+			auto* beg = EvalObj(in->args);
+			beg->cell = new ObjNode();
 
-			return in->args->value;
+			BinaryOpObj<BinaryOp::SET>(beg->cell, in->args->next);
+
+			return beg;
 		}));	
 		
 		env::AddSymbol(vm, "list", env::AddNative([](ObjNode* in) -> Obj*
