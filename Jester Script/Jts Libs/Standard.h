@@ -19,158 +19,141 @@ namespace lib
 	{
 		env::AddSymbol(vm, "nil", env::AddConst(nullptr));
 
-		env::AddSymbol(vm, "set", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "set", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			return BinaryOpObj<BinaryOp::SET>(in->args, in->args->next);
+			return BinaryOpObj<BinaryOp::SET>(args, args->next);
 		}));		
-		
-		env::AddSymbol(vm, "setv", env::AddNative([](ObjNode* in) -> Obj*
-		{
-			return BinaryOpObj<BinaryOp::SET_VAL>(in->args, in->args->next);
-		}));	
-		
-		env::AddSymbol(vm, "setl", env::AddNative([](ObjNode* in) -> Obj*
-		{
-			return BinaryOpObj<BinaryOp::SET_CON>(in->args, in->args->next);
-		}));
 				
-		env::AddSymbol(vm, "bind", env::AddNative([](ObjNode* in) -> Obj*
+		//env::AddSymbol(vm, "bind", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		//{
+		//	auto* beg = EvalObj(in->args);
+		//	beg->cell = new ObjNode();
+
+		//	BinaryOpObj<BinaryOp::SET>(beg->cell, in->args->next);
+
+		//	return beg;
+		//}));	
+		//
+		//env::AddSymbol(vm, "list", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		//{
+		//	auto* cell = in->args;
+		//	auto* args = in->args;
+
+		//	while (args->next)
+		//	{
+		//		cell->value->cell = new ObjNode();
+		//		BinaryOpObj<BinaryOp::SET>(cell->value->cell, args->next);
+		//		cell = cell->value->cell;
+		//		args = args->next;
+		//	}
+
+		//	return in->args->value;
+		//}));
+		//
+		//env::AddSymbol(vm, "nth", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		//{
+		//	ObjNode* init = in->args->next;
+
+		//	for (int i = 0; i < CastObj<int>(EvalObj(in->args)); ++i)
+		//	{
+		//		init = init->value->cell;
+
+		//		if (!init) return NIL;
+		//	}
+
+		//	return init->value;
+		//}));		
+		//
+		//env::AddSymbol(vm, "rest", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		//{
+		//	auto* rest = EvalObj(in->args);
+
+		//	if (!rest->cell) return NIL;
+		//	return rest->cell->value;
+		//}));		
+		//
+		//env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		//{
+		//	if (in->args->value->type == Type::QUOTE && in->args->value->_quote->invocation)
+		//	{
+		//		return ExecObj(in->args->value->_quote);
+		//	}
+
+		//	return in->args->value;
+		//}));
+
+		env::AddSymbol(vm, "defn", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			auto* beg = EvalObj(in->args);
-			beg->cell = new ObjNode();
+			Obj* func = EvalObj(args);
 
-			BinaryOpObj<BinaryOp::SET>(beg->cell, in->args->next);
+			func->spec = Spec::SYMBOL;
+			func->fnType = FnType::JTS;
 
-			return beg;
-		}));	
-		
-		env::AddSymbol(vm, "list", env::AddNative([](ObjNode* in) -> Obj*
-		{
-			auto* cell = in->args;
-			auto* args = in->args;
+			func->_jtsFunc = new Func();
+			func->_jtsFunc->params = args->next;
+			func->_jtsFunc->codeBlock = args->next->next;
 
-			while (args->next)
-			{
-				cell->value->cell = new ObjNode();
-				BinaryOpObj<BinaryOp::SET>(cell->value->cell, args->next);
-				cell = cell->value->cell;
-				args = args->next;
-			}
-
-			return in->args->value;
-		}));
-		
-		env::AddSymbol(vm, "nth", env::AddNative([](ObjNode* in) -> Obj*
-		{
-			ObjNode* init = in->args->next;
-
-			for (int i = 0; i < CastObj<int>(EvalObj(in->args)); ++i)
-			{
-				init = init->value->cell;
-
-				if (!init) return NIL;
-			}
-
-			return init->value;
+			return func;
 		}));		
 		
-		env::AddSymbol(vm, "rest", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "loop", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			auto* rest = EvalObj(in->args);
+			auto* cond = args;
 
-			if (!rest->cell) return NIL;
-			return rest->cell->value;
-		}));		
-		
-		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* in) -> Obj*
-		{
-			if (in->args->value->type == Type::QUOTE && in->args->value->_quote->invocation)
-			{
-				return ExecObj(in->args->value->_quote);
-			}
-
-			return in->args->value;
-		}));
-
-		env::AddSymbol(vm, "defn", env::AddNative([](ObjNode* in) -> Obj*
-		{
-			Obj* fn = in->args->value;
-
-			fn->spec = Spec::SYMBOL; 
-			fn->fnType = FnType::JTS;
-
-			fn->_jtsFunc = new Func();
-			fn->_jtsFunc->params = in->args->next;
-			fn->_jtsFunc->codeBlock = in->args->next->next;
-
-			return fn;
-		}));		
-		
-		env::AddSymbol(vm, "loop", env::AddNative([](ObjNode* in) -> Obj*
-		{
-			auto* cond = in->args;
-			auto* block = cond->next;
-			auto* blockStart = block;
+			args = args->next;
+			auto* blockStart = args;
 
 			bool condState = isTrue(cond);
 
 			while (condState)
 			{
-				while (block->next)
+				while (args->next)
 				{
-					EvalObj(block);
-					block = block->next;
+					EvalObj(args);
+					args = args->next;
 				}
 
-				Obj* ret = EvalObj(block);
+				Obj* ret = EvalObj(args);
 
 				condState = isTrue(cond);
 
 				if (!condState) return ret;
 
-				block = blockStart;
+				args = blockStart;
 			}
 		}));		
 		
-		env::AddSymbol(vm, "progn", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "progn", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			auto* beg = in->args;
-
-			while (beg->next)
+			while (args->next)
 			{
-				EvalObj(beg);
-				beg = beg->next;
+				EvalObj(args);
+				args = args->next;
 			}
 
-			return EvalObj(beg);
+			return EvalObj(args);
 		}));
 
-
-
-		env::AddSymbol(vm, "print", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "print", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			auto* beg = in->args;
-
-			while (beg->next)
+			while (args->next)
 			{
-				PrintObj(EvalObj(beg), false);
-				beg = beg->next;
+				PrintObj(EvalObj(args), false);
+				args = args->next;
 			}
 
-			return 	PrintObj(EvalObj(beg), false);
+			return 	PrintObj(EvalObj(args), false);
 		}));
 
-		env::AddSymbol(vm, "println", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "println", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			auto* beg = in->args;
-
-			while (beg->next)
+			while (args->next)
 			{
-				PrintObj(EvalObj(beg), false);
-				beg = beg->next;
+				PrintObj(EvalObj(args), false);
+				args = args->next;
 			}
 
-			return 	PrintObj(EvalObj(beg), true);
+			return 	PrintObj(EvalObj(args), true);
 		}));
 	}
 }

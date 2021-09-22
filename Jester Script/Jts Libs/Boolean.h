@@ -12,84 +12,82 @@ namespace lib
 {
 	inline void BooleanLib(VM* vm)
 	{
-		env::AddSymbol(vm, "if", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "if", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			if (isTrue(in->args))
+			if (isTrue(args))
 			{
-				return EvalObj(in->args->next);
+				return EvalObj(args->next);
 			}
 
-			return EvalObj(in->args->next->next);
+			return EvalObj(args->next->next);
 		}));
 
-		env::AddSymbol(vm, "equal", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "equal", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			return SetState(in, isEqual(in->args, in->args->next));
+			return SetState(fn, isEqual(args, args->next));
 		}));			
 		
-		env::AddSymbol(vm, ">", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, ">", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			return SetState(in, isGreater(in->args, in->args->next));
+			return SetState(fn, isGreater(args, args->next));
 		}));			
 		
-		env::AddSymbol(vm, ">=", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, ">=", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			return SetState(in, isGreaterEq(in->args, in->args->next));
+			return SetState(fn, isGreaterEq(args, args->next));
 		}));				
 		
-		env::AddSymbol(vm, "<", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "<", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			return SetState(in, !isGreaterEq(in->args, in->args->next));
+			return SetState(fn, !isGreaterEq(args, args->next));
 		}));				
 		
-		env::AddSymbol(vm, "<=", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "<=", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			return SetState(in, !isGreater(in->args, in->args->next));
+			return SetState(fn, !isGreater(args, args->next));
 		}));				
 		
-		env::AddSymbol(vm, "not", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "not", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			return SetState(in, !isTrue(in->args));
+			return SetState(fn, !isTrue(args));
 		}));		
 		
-		env::AddSymbol(vm, "and", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "and", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			auto* rest = in->args;
 			bool state = false;
 
-			while (rest)
+			while (args)
 			{
-				state = isTrue(rest);
+				state = isTrue(args);
 
 				if (!state)
 				{
 					break;
 				}
 
-				rest = rest->next;
+				args = args->next;
 			}
 
-			return SetState(in, state);
+			return SetState(fn, state);
 		}));		
 		
-		env::AddSymbol(vm, "or", env::AddNative([](ObjNode* in) -> Obj*
+		env::AddSymbol(vm, "or", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			auto* rest = in->args;
 			bool state = false;
 
-			while (rest)
+			while (args)
 			{
-				state = isTrue(rest);
+				state = isTrue(args);
 
 				if (state)
 				{
 					break;
 				}
 
-				rest = rest->next;
+				args = args->next;
 			}
 
-			return SetState(in, state);
+			return SetState(fn, state);
 		}));
 	}
 }

@@ -25,7 +25,7 @@ namespace jts
 
 		union // Callables
 		{
-			Obj* (*_native)(ObjNode* args);
+			Obj* (*_native)(ObjNode* fn, ObjNode* args);
 			Func* _jtsFunc;
 		};
 

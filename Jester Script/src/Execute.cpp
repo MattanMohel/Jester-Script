@@ -24,7 +24,7 @@ namespace jts
 		{
 			case FnType::NATIVE:
 
-				return obj->value->_native(obj);
+				return obj->value->_native(obj, obj->args);
 
 			case FnType::JTS:
 
