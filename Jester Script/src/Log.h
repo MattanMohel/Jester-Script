@@ -5,7 +5,7 @@
 
 namespace jts
 {
-	Obj* PrintObj(Obj* value, bool newLine = false, bool head = true);
+	Obj* PrintObj(Obj* value, bool newLine = false);
 }
 
 #endif

@@ -15,8 +15,6 @@ namespace jts
 		MOD,		
 
 		SET,
-		SET_VAL,
-		SET_CON,
 	};
 
 	enum class UnaryOp
@@ -50,8 +48,6 @@ namespace jts
 	template<> Obj* BinaryOpObj<BinaryOp::DIV>(ObjNode* a, ObjNode* b);
 	template<> Obj* BinaryOpObj<BinaryOp::MOD>(ObjNode* a, ObjNode* b);
 	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b);
-	template<> Obj* BinaryOpObj<BinaryOp::SET_VAL>(ObjNode* a, ObjNode* b);
-	template<> Obj* BinaryOpObj<BinaryOp::SET_CON>(ObjNode* a, ObjNode* b);
 
 	template<> Obj* UnaryOpObj<UnaryOp::INCR>(ObjNode* a);
 	template<> Obj* UnaryOpObj<UnaryOp::DECR>(ObjNode* a);

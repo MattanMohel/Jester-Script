@@ -171,31 +171,31 @@ namespace lib
 		
 		env::AddSymbol(vm, "asin", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET_VAL>(fn, args);
+			BinaryOpObj<BinaryOp::SET>(fn, args);
 			return UnaryOpObj<UnaryOp::ASIN>(args);
 		}));		
 		
 		env::AddSymbol(vm, "cos", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET_VAL>(fn, args);
+			BinaryOpObj<BinaryOp::SET>(fn, args);
 			return UnaryOpObj<UnaryOp::COS>(args);
 		}));		
 		
 		env::AddSymbol(vm, "acos", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET_VAL>(fn, args);
+			BinaryOpObj<BinaryOp::SET>(fn, args);
 			return UnaryOpObj<UnaryOp::ACOS>(args);
 		}));		
 		
 		env::AddSymbol(vm, "tan", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET_VAL>(fn, args);
+			BinaryOpObj<BinaryOp::SET>(fn, args);
 			return UnaryOpObj<UnaryOp::TAN>(args);
 		}));		
 		
 		env::AddSymbol(vm, "atan", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET_VAL>(fn, args);
+			BinaryOpObj<BinaryOp::SET>(fn, args);
 			return UnaryOpObj<UnaryOp::ATAN>(args);
 		}));
 	}

@@ -24,31 +24,35 @@ namespace lib
 			return BinaryOpObj<BinaryOp::SET>(args, args->next);
 		}));		
 				
-		//env::AddSymbol(vm, "bind", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
-		//{
-		//	auto* beg = EvalObj(in->args);
-		//	beg->cell = new ObjNode();
+		env::AddSymbol(vm, "bind", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		{
+			Obj* first = EvalObj(args);
+			first->_list = new ObjNode();
 
-		//	BinaryOpObj<BinaryOp::SET>(beg->cell, in->args->next);
+			BinaryOpObj<BinaryOp::SET>(first->_list, args->next);
 
-		//	return beg;
-		//}));	
-		//
-		//env::AddSymbol(vm, "list", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
-		//{
-		//	auto* cell = in->args;
-		//	auto* args = in->args;
+			return first;
+		}));	
+		
+		env::AddSymbol(vm, "list", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		{
+			fn->value->_list = new ObjNode();
+			BinaryOpObj<BinaryOp::SET>(fn->value->_list, args);
+			fn->value->type = Type::LIST;
 
-		//	while (args->next)
-		//	{
-		//		cell->value->cell = new ObjNode();
-		//		BinaryOpObj<BinaryOp::SET>(cell->value->cell, args->next);
-		//		cell = cell->value->cell;
-		//		args = args->next;
-		//	}
+			auto* cell = fn->value->_list;
 
-		//	return in->args->value;
-		//}));
+			while (args->next)
+			{
+				cell->next = new ObjNode();
+				BinaryOpObj<BinaryOp::SET>(cell->next, args->next);
+
+				cell = cell->next;
+				args = args->next;
+			}
+
+			return fn->value;
+		}));
 		//
 		//env::AddSymbol(vm, "nth", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		//{
@@ -72,15 +76,33 @@ namespace lib
 		//	return rest->cell->value;
 		//}));		
 		//
-		//env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
-		//{
-		//	if (in->args->value->type == Type::QUOTE && in->args->value->_quote->invocation)
-		//	{
-		//		return ExecObj(in->args->value->_quote);
-		//	}
+		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		{
+			if (args->value->type == Type::LIST)
+			{
+				switch (args->value->fnType)
+				{
+					case FnType::NATIVE:
 
-		//	return in->args->value;
-		//}));
+						return args->value->_native(args, args->next);
+
+					case FnType::JTS:
+
+						return ExecJtsFunc(args);
+
+					default: // case C_BRIDGE
+
+						return nullptr;
+				}
+			}
+
+			if (args->invocation && args->value->fnType != FnType::NIL)
+			{
+				return ExecObj(args);
+			}
+
+			return args->value;
+		}));
 
 		env::AddSymbol(vm, "defn", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{

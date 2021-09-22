@@ -1,8 +1,11 @@
-(setv x 1)
-(list x 2 3 4 5)
 
-(set val x)
 
-(loop val
-	(println val)
-	(set val (rest val)))
+(+ 5 5) --> 10
+
+(+ 5 5) --> + -> 5 -> 5
+
+(list + 5 5) + -> 5 -> 5
+
+(set x (list + 5 5))
+
+(eval x) --> 10

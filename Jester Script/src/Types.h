@@ -26,6 +26,7 @@ namespace jts
 		INT,
 		FLOAT,
 		QUOTE,
+		LIST,
 
 		// needs attending to
 		STRING,

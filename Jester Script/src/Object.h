@@ -20,6 +20,8 @@ namespace jts
 			int _int;
 			float _float;
 
+			ObjNode* _list;
+
 			ObjNode* _quote;
 		};
 
@@ -29,11 +31,11 @@ namespace jts
 			Func* _jtsFunc;
 		};
 
-		ObjNode* cell = nullptr;
-
 		Flag<SFlag, ENUM_SIZE(SFlag)> flag;
 		bool initialized = false;
 	};
+
+	// (set x (quote + 5 5)
 
 	static Obj* NIL = new Obj { Type::NIL, Spec::SYMBOL, FnType::NIL };
 

@@ -1,30 +1,13 @@
-﻿  Execute.cpp
-  File.cpp
-  JtsFunc.cpp
-  Lexer.cpp
-  Log.cpp
-  Operations.cpp
+﻿  Operations.cpp
 C:\repo\Jester Script\Jester Script\src\Operations.cpp(89,46): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=int
           ]
-C:\repo\Jester Script\Jester Script\src\Operations.cpp(261,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\repo\Jester Script\Jester Script\src\Operations.cpp(279,26): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\repo\Jester Script\Jester Script\src\Operations.cpp(297,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\repo\Jester Script\Jester Script\src\Operations.cpp(315,26): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\repo\Jester Script\Jester Script\src\Operations.cpp(333,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\repo\Jester Script\Jester Script\src\Operations.cpp(351,26): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-  Parser.cpp
-  StrCon.cpp
-C:\repo\Jester Script\Jester Script\src\StrCon.cpp(98,77): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-C:\repo\Jester Script\Jester Script\src\StrCon.cpp(111,82): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-  VM.cpp
-  main.cpp
-C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(19,53): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(21,65): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(23,65): warning C4305: 'argument': truncation from 'double' to 'float'
-  Generating Code...
-C:\repo\Jester Script\Jester Script\Jts Libs\Standard.h(124): warning C4715: '<lambda_4c87ef7bbaf9fc869a44f67746bc6787>::operator()': not all control paths return a value
-C:\repo\Jester Script\Jester Script\src\IterableStack.h(34): warning C4172: returning address of local variable or temporary: value
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(204,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(222,26): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(240,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(258,26): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(276,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(294,26): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
   Jester Script.vcxproj -> C:\repo\Jester Script\Debug\Jester Script.exe

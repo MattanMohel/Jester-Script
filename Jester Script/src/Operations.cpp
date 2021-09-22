@@ -104,8 +104,6 @@ namespace jts
 
 		Obj* value1 = (a->args == b)? a->value : EvalObj(a);
 
-		value1->cell = value2->cell;
-
 		if (value2->fnType == FnType::NIL)
 		{
 			value1->type = value2->type;
@@ -115,6 +113,11 @@ namespace jts
 				case Type::QUOTE:
 
 					value1->_quote = value2->_quote;
+					break;
+
+				case Type::LIST:
+
+					value1->_list = value2->_list;
 					break;
 
 				case Type::FLOAT:
@@ -151,66 +154,6 @@ namespace jts
 		}
 
 		return value1;
-	}
-
-	template<> Obj* BinaryOpObj<BinaryOp::SET_VAL>(ObjNode* a, ObjNode* b)
-	{
-		Obj* value2 = EvalObj(b);
-
-		Obj* value1 = (a->args == b) ? a->value : EvalObj(a);
-
-		if (value2->fnType == FnType::NIL)
-		{
-			value1->type = value2->type;
-
-			switch (value2->type)
-			{
-				case Type::QUOTE:
-
-					value1->_quote = value2->_quote;
-					break;
-
-				case Type::FLOAT:
-
-					value1->_float = CastObj<float>(value2);
-					break;
-
-				default: // CHAR, BOOL, INT
-
-					value1->_int = CastObj<int>(value2);
-					break;
-			}
-		}
-		else
-		{
-			value1->fnType = value2->fnType;
-
-			switch (value2->fnType)
-			{
-				case FnType::NATIVE:
-
-					value1->_native = value2->_native;
-					break;
-
-				case FnType::JTS:
-
-					value1->_jtsFunc = value2->_jtsFunc;
-					break;
-
-				default: // C_BRIDGE
-
-					break;
-			}
-		}
-
-		return value1;
-	}
-
-	template<> Obj* BinaryOpObj<BinaryOp::SET_CON>(ObjNode* a, ObjNode* b)
-	{
-		a->value->cell = EvalObj(b)->cell;
-
-		return a->value;
 	}
 
 	template<> Obj* UnaryOpObj<UnaryOp::INCR>(ObjNode* a)

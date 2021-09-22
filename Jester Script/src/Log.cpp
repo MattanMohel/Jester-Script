@@ -6,74 +6,82 @@
 
 namespace jts 
 {
-	Obj* PrintObj(Obj* value, bool newLine, bool head)
+	Obj* PrintObj(Obj* value, bool newLine)
 	{
 		str upperStr = "";
+		ObjNode* elem = nullptr;
 
-		if (value->cell && head)
+		if (/*value->fnType == FnType::NIL*/ true)
 		{
-			std::cout << '(';
-		}
+			switch (value->type)
+			{
+				case Type::QUOTE:
 
-		switch (value->type)
-		{
-			case Type::QUOTE:
-
-				for (auto c : value->_quote->value->symbol)
-				{
-					upperStr += toupper(c);
-				}
-
-				std::cout << upperStr; 
-
-				break;
-
-			case Type::CHAR:
-
-				std::cout << value->_char;
-				break;
-
-			case Type::BOOL:
-
-				std::cout << (value->_bool ? "true" : "false");
-				break;
-
-			case Type::INT:
-
-				std::cout << value->_int;
-				break;
-
-			case Type::FLOAT:
-
-				std::cout << value->_float;
-				break;
-
-			default: // case NIL
-
-				if (value->fnType != FnType::NIL)
-				{
-					for (auto c : value->symbol)
+					for (auto c : value->_quote->value->symbol)
 					{
 						upperStr += toupper(c);
 					}
 
 					std::cout << upperStr;
-				}
-				else
-				{
+
+					break;
+
+				case Type::LIST:
+
+					std::cout << "(";
+
+					elem = value->_list;
+
+					while (elem->next)
+					{
+						PrintObj(elem->value);
+						std::cout << " ";
+
+						elem = elem->next;
+					}
+
+					PrintObj(elem->value);
+
+					std::cout << ")";
+
+					break;
+
+				case Type::CHAR:
+
+					std::cout << value->_char;
+					break;
+
+				case Type::BOOL:
+
+					std::cout << (value->_bool ? "true" : "false");
+					break;
+
+				case Type::INT:
+
+					std::cout << value->_int;
+					break;
+
+				case Type::FLOAT:
+
+					std::cout << value->_float;
+					break;
+
+				default: // case NIL
+
 					std::cout << "nil";
 					break;
-				}
+			}
 		}
-
-		if (value->cell)
+		else
 		{
-			std::cout<< ' ';
+			for (auto c : value->symbol)
+			{
+				upperStr += toupper(c);
+			}
 
-			PrintObj(value->cell->value, false, false);
-
-			if (head) std::cout << ')';
+			std::cout << upperStr;
 		}
+
 
 		if (newLine) std::cout << '\n';
 
