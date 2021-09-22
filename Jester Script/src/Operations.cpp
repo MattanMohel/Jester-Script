@@ -104,7 +104,7 @@ namespace jts
 
 		Obj* value1 = (a->args == b)? a->value : EvalObj(a);
 
-		if (value2->fnType == FnType::NIL)
+		if (/*value2->fnType == FnType::NIL*/true)
 		{
 			value1->type = value2->type;
 

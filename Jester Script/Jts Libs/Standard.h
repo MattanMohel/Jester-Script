@@ -45,7 +45,13 @@ namespace lib
 			while (args->next)
 			{
 				cell->next = new ObjNode();
-				BinaryOpObj<BinaryOp::SET>(cell->next, args->next);
+
+				// So recursive fn->_list is maintained
+				auto* curArgs = fn->value->_list;
+				auto* curList =   cell->next;
+
+				BinaryOpObj<BinaryOp::SET>(curList, args->next);
+				fn->value->_list = curArgs;
 
 				cell = cell->next;
 				args = args->next;
@@ -53,29 +59,37 @@ namespace lib
 
 			return fn->value;
 		}));
-		//
-		//env::AddSymbol(vm, "nth", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
-		//{
-		//	ObjNode* init = in->args->next;
+		
+		env::AddSymbol(vm, "nth", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		{
+			auto* elem = EvalObj(args->next)->_list;
 
-		//	for (int i = 0; i < CastObj<int>(EvalObj(in->args)); ++i)
-		//	{
-		//		init = init->value->cell;
+			for (int i = 0; i < CastObj<int>(EvalObj(args)); ++i)
+			{
+				elem = elem->next;
 
-		//		if (!init) return NIL;
-		//	}
+				if (!elem) return NIL;
+			}
 
-		//	return init->value;
-		//}));		
-		//
-		//env::AddSymbol(vm, "rest", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
-		//{
-		//	auto* rest = EvalObj(in->args);
+			return elem->value;
+		}));		
+		
+		env::AddSymbol(vm, "rest", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		{
+			auto* rest = EvalObj(args)->_list->next;
 
-		//	if (!rest->cell) return NIL;
-		//	return rest->cell->value;
-		//}));		
-		//
+			if (!rest) return NIL;
+			return rest->value;
+		}));			
+		
+		env::AddSymbol(vm, "head", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		{
+			auto* head = args->value->_list;
+
+			if (!head) return NIL;
+			return head->value;
+		}));		
+		
 		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
 			if (args->value->type == Type::LIST)
