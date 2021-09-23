@@ -30,57 +30,16 @@ namespace jts
 
 		Tok* it = vm->tokenPtrBeg;
 
-		bool onInvocation = false;
-		bool isQuoted = false;
-
 		while (it->spec != Spec::NIL)
 		{
-			switch (it->spec)
+ 		    switch (it->spec)
 			{
-				case Spec::FLAG:
-					
-					it->next->flag += it->flag;
+				case Spec::CALL_BEG:
 
-					it = it->next;
-					continue;
+					(*head) = new ObjNode(Spec::CALL_BEG);
 
-				case Spec::QUOTE:
+					break;
 
-					isQuoted = true;
-
-					it = it->next;
-					continue;
-
-				// Mark next head as a call
-				case Spec::PARENTH_L:
-
-					if (it->next->spec == Spec::PARENTH_R)
-					{
-						(*head) = CreateNode(env::GetSymbol(vm, "nil"), "nil", false, false);
-						head = &(*head)->next;
-
-						it = it->next->next;
-						continue;
-					}
-					
-					onInvocation = true;
-
-					funcHead.emplace(head);
-
-					it = it->next;
-					continue;
-
-				// Return head to previous function head
-				case Spec::PARENTH_R:
-
-					head = &(*funcHead.pop())->next;
-
-					it = it->next;
-					continue;
-			}
-
-			switch (it->spec)
-			{
 				case Spec::SYMBOL:
 
 					if (env::GetSymbol(vm, it->value) == nullptr)
@@ -90,39 +49,37 @@ namespace jts
 						vm->symbols[it->value]->flag = it->flag;
 					}
 
-					(*head) = CreateNode(env::GetSymbol(vm, it->value), it->value, onInvocation, isQuoted);
+					(*head) = CreateNode(env::GetSymbol(vm, it->value), it->value);
 
 					break;
 
-				case Spec::LTRL:
+				case Spec::VALUE:
 
-					(*head) = CreateNode(TokToLtrl(it), it->value, onInvocation, isQuoted);
+					(*head) = CreateNode(TokToLtrl(it), it->value);
 
 					break;
 			}
 
-			// Invocation --> emplace to args
-			if (onInvocation)
+			switch (it->spec)
 			{
-				if (isQuoted)
-				{
-					head = &(*head)->value->_quote->args;
-				}
-				else
-				{
+				case Spec::CALL_BEG:
+					
+					funcHead.emplace(head);
 					head = &(*head)->args;
-				}
+					break;
 
-				onInvocation = false;
+				case Spec::CALL_END:
+					
+					head = &(*funcHead.pop())->next;
+					break;
+
+				default:
+					
+					head = &(*head)->next;
+					break;
+
 			}
-			// Otherwise --> emplace to next
-			else
-			{
-				head = &(*head)->next;
-			}
-
-			isQuoted = false;
-
+			
 			it = it->next;
 		}
 	}

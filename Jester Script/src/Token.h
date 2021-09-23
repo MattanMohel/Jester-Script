@@ -14,7 +14,6 @@ namespace jts
 
 		Type type;
 		Spec spec;
-		FnType fnType;
 
 		Flag<SFlag, ENUM_SIZE(SFlag)> flag;
 	};

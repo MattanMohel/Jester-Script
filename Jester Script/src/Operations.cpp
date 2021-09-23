@@ -102,55 +102,45 @@ namespace jts
 	{
 		Obj* value2 = EvalObj(b);
 
-		Obj* value1 = (a->args == b)? a->value : EvalObj(a);
+		Obj* value1 = (a->value->spec == Spec::CALL_BEG)? a->value : EvalObj(a);
 
-		if (/*value2->fnType == FnType::NIL*/true)
+		value1->type = value2->type;
+
+		switch (value2->type)
 		{
-			value1->type = value2->type;
+			case Type::QUOTE:
 
-			switch (value2->type)
-			{
-				case Type::QUOTE:
+				value1->_quote = value2->_quote;
+				break;
 
-					value1->_quote = value2->_quote;
-					break;
+			case Type::LIST:
 
-				case Type::LIST:
+				value1->_list = value2->_list;
+				break;
 
-					value1->_list = value2->_list;
-					break;
+			case Type::NATIVE:
 
-				case Type::FLOAT:
+				value1->_native = value2->_native;
+				break;
 
-					value1->_float = CastObj<float>(value2);
-					break;
+			case Type::JTS:
+					
+				value1->_jtsFunc = value2->_jtsFunc;
+				break;
 
-				default: // CHAR, BOOL, INT
+			case Type::C_BRIDGE:
+				// assign
+				break;
 
-					value1->_int = CastObj<int>(value2);
-					break;
-			}
-		}
-		else
-		{
-			value1->fnType = value2->fnType;
+			case Type::FLOAT:
 
-			switch (value2->fnType)
-			{
-				case FnType::NATIVE:
+				value1->_float = CastObj<float>(value2);
+				break;
 
-					value1->_native = value2->_native;
-					break;
+			default: // CHAR, BOOL, INT
 
-				case FnType::JTS:
-
-					value1->_jtsFunc = value2->_jtsFunc;
-					break;
-
-				default: // C_BRIDGE
-
-					break;
-			}
+				value1->_int = CastObj<int>(value2);
+				break;
 		}
 
 		return value1;

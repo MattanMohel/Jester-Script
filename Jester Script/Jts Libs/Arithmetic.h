@@ -86,8 +86,8 @@ namespace lib
 			}
 
 			return fn->value;
-		}));
-
+		}));		
+		
 		env::AddSymbol(vm, "+=", env::AddNative([](ObjNode* fn, ObjNode* args)
 		{
 			auto* first = args;

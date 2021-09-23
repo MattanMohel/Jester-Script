@@ -107,12 +107,12 @@ namespace jts
 
 		else if (value == "(")
 		{
-			vm->tokenPtrCur->spec = Spec::PARENTH_L;
+			vm->tokenPtrCur->spec = Spec::CALL_BEG;
 		}		
 		
 		else if (value == ")")
 		{
-			vm->tokenPtrCur->spec = Spec::PARENTH_R;
+			vm->tokenPtrCur->spec = Spec::CALL_END;
 		}		
 		
 		else if (value == "'")
@@ -128,14 +128,14 @@ namespace jts
 
 		else if (env::GetSymbol(vm, vm->tokenPtrCur->value))
 		{
-			vm->tokenPtrCur->fnType = FnType::NATIVE;
+			vm->tokenPtrCur->type = Type::NATIVE;
 
 			vm->tokenPtrCur->spec = Spec::SYMBOL;
 		}
 
 		else if (TokIsLtrl(vm->tokenPtrCur))
 		{
-			vm->tokenPtrCur->spec = Spec::LTRL;
+			vm->tokenPtrCur->spec = Spec::VALUE;
 		}
 
 		else 

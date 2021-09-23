@@ -9,12 +9,12 @@ namespace jts
 	{
 		Type type;
 		Spec spec;
-		FnType fnType;
 
 		str symbol;
 
-		union // Values
+		union 
 		{
+			// Values
 			char _char;
 			bool _bool;
 			int _int;
@@ -23,21 +23,16 @@ namespace jts
 			ObjNode* _list;
 
 			ObjNode* _quote;
-		};
 
-		union // Callables
-		{
+			// Callables
 			Obj* (*_native)(ObjNode* fn, ObjNode* args);
 			Func* _jtsFunc;
 		};
 
 		Flag<SFlag, ENUM_SIZE(SFlag)> flag;
-		bool initialized = false;
 	};
 
-	// (set x (quote + 5 5)
-
-	static Obj* NIL = new Obj { Type::NIL, Spec::SYMBOL, FnType::NIL };
+	static Obj* NIL = new Obj { Type::NIL, Spec::SYMBOL };
 
 	struct ObjNode
 	{
@@ -45,31 +40,25 @@ namespace jts
 			value(new Obj())
 		{}		
 		
-		ObjNode(Obj* obj, bool invoc = false, bool quoted = false) :
-			value(obj), invocation(invoc)
+		ObjNode(Obj* obj) :
+			value(obj)
+		{}		
+		
+		ObjNode(Spec spec) :
+			value(new Obj { Type::NIL, spec })
 		{}
 
 		ObjNode* next = nullptr;
 		ObjNode* args = nullptr;
 
-		bool invocation = false;
-
 		Obj* value = nullptr;
 	};
 
-	inline ObjNode* CreateNode(Obj* obj, str symbol, bool invoc, bool quoted)
+	inline ObjNode* CreateNode(Obj* obj, str symbol)
 	{
 		obj->symbol = symbol;
-
-		if (quoted)
-		{
-			Obj* value = new Obj { Type::QUOTE, Spec::LTRL };
-			value->_quote = new ObjNode(obj, invoc, quoted);
-
-			return new ObjNode(value);
-		}
 		
-		return new ObjNode(obj, invoc, quoted);
+		return new ObjNode(obj);
 	}
 }
 

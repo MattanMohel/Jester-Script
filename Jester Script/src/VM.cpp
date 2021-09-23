@@ -37,7 +37,7 @@ namespace jts
 			Obj* obj = new Obj();
 			
 			obj->_native = native;
-			obj->fnType = FnType::NATIVE;
+			obj->type = Type::NATIVE;
 			obj->spec = Spec::SYMBOL;
 
 			return obj;
@@ -81,7 +81,7 @@ namespace jts
 
 		template<> Obj* AddConst(std::nullptr_t value)
 		{
-			Obj* obj = new Obj { Type::NIL, Spec::SYMBOL, FnType::NIL };
+			Obj* obj = new Obj { Type::NIL, Spec::SYMBOL };
 			obj->flag.Set(SFlag::CONST, true);
 
 			return obj;

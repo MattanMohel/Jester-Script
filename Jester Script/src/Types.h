@@ -28,6 +28,10 @@ namespace jts
 		QUOTE,
 		LIST,
 
+		NATIVE,
+		C_BRIDGE,
+		JTS,
+
 		// needs attending to
 		STRING,
 	};
@@ -38,20 +42,11 @@ namespace jts
 
 		SYMBOL,
 		QUOTE,
-		LTRL,
+		VALUE,
 		FLAG,
 
-		PARENTH_L,
-		PARENTH_R,
-	};
-
-	enum class FnType
-	{
-		NIL = 0,
-
-		NATIVE,
-		C_BRIDGE,
-		JTS,
+		CALL_BEG,
+		CALL_END,
 	};
 
 	enum class SFlag

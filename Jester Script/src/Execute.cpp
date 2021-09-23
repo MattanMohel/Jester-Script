@@ -6,28 +6,35 @@ namespace jts
 {
 	Obj* EvalObj(ObjNode* obj)
 	{
-		if (!obj)
-		{
-			return NIL;
-		}
+		if (!obj) return NIL;
 
-		if (obj->invocation && obj->value->fnType != FnType::NIL)
+		switch (obj->value->spec)
 		{
-			return ExecObj(obj);
-		}
+			case Spec::CALL_BEG:
 
-		return obj->value;
+				return ExecObj(obj);
+
+			default:
+
+				return obj->value;
+		}
 	}
 
 	Obj* ExecObj(ObjNode* obj)
 	{
-		switch (obj->value->fnType)
+		if (obj->value->type == Type::LIST)
 		{
-			case FnType::NATIVE:
+			auto* ret = new ObjNode(); //memory leak
+			return obj->value->_list->value->_native(ret, obj->value->_list->next);
+		}
 
-				return obj->value->_native(obj, obj->args);
+		switch (obj->args->value->type)
+		{
+			case Type::NATIVE:
 
-			case FnType::JTS:
+				return obj->args->value->_native(obj, obj->args->next);
+
+			case Type::JTS:
 
 				return ExecJtsFunc(obj);
 

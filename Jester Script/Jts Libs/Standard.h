@@ -50,7 +50,7 @@ namespace lib
 				auto* curArgs = fn->value->_list;
 				auto* curList =   cell->next;
 
-				BinaryOpObj<BinaryOp::SET>(curList, args->next);
+				curList->value = EvalObj(args->next);
 				fn->value->_list = curArgs;
 
 				cell = cell->next;
@@ -92,30 +92,9 @@ namespace lib
 		
 		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
 		{
-			if (args->value->type == Type::LIST)
-			{
-				switch (args->value->fnType)
-				{
-					case FnType::NATIVE:
+			if (args->value->type == Type::LIST) return ExecObj(args);
 
-						return args->value->_native(args, args->next);
-
-					case FnType::JTS:
-
-						return ExecJtsFunc(args);
-
-					default: // case C_BRIDGE
-
-						return nullptr;
-				}
-			}
-
-			if (args->invocation && args->value->fnType != FnType::NIL)
-			{
-				return ExecObj(args);
-			}
-
-			return args->value;
+			return EvalObj(args);
 		}));
 
 		env::AddSymbol(vm, "defn", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
@@ -123,7 +102,7 @@ namespace lib
 			Obj* func = EvalObj(args);
 
 			func->spec = Spec::SYMBOL;
-			func->fnType = FnType::JTS;
+			func->type = Type::JTS;
 
 			func->_jtsFunc = new Func();
 			func->_jtsFunc->params = args->next;
