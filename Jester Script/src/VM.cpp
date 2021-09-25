@@ -32,7 +32,7 @@ namespace jts
 			vm->symbols.emplace(key, value);
 		}
 
-		Obj* AddNative(Obj* (*native)(ObjNode* fn, ObjNode* args))
+		Obj* AddNative(Obj* (*native)(ObjNode* fn, ObjNode* args, bool eval))
 		{
 			Obj* obj = new Obj();
 			
@@ -46,7 +46,6 @@ namespace jts
 		template<> Obj* AddConst(char value)
 		{
 			Obj* obj = new Obj { Type::CHAR, Spec::SYMBOL };
-			obj->flag.Set(SFlag::CONST, true);
 			obj->_char = value;
 
 			return obj;
@@ -55,7 +54,6 @@ namespace jts
 		template<> Obj* AddConst(bool value)
 		{
 			Obj* obj = new Obj { Type::BOOL, Spec::SYMBOL };
-			obj->flag.Set(SFlag::CONST, true);
 			obj->_bool = value;
 
 			return obj;
@@ -64,7 +62,6 @@ namespace jts
 		template<> Obj* AddConst(int  value)
 		{
 			Obj* obj = new Obj { Type::INT, Spec::SYMBOL };
-			obj->flag.Set(SFlag::CONST, true);
 			obj->_int = value;
 
 			return obj;
@@ -73,7 +70,6 @@ namespace jts
 		template<> Obj* AddConst(float value)
 		{
 			Obj* obj = new Obj { Type::FLOAT, Spec::SYMBOL };
-			obj->flag.Set(SFlag::CONST, true);
 			obj->_float = value;
 
 			return obj;
@@ -82,7 +78,6 @@ namespace jts
 		template<> Obj* AddConst(std::nullptr_t value)
 		{
 			Obj* obj = new Obj { Type::NIL, Spec::SYMBOL };
-			obj->flag.Set(SFlag::CONST, true);
 
 			return obj;
 		}

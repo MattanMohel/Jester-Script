@@ -1,6 +1,21 @@
-﻿  main.cpp
+﻿  Operations.cpp
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(89,46): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(107,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(112,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(210,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(228,26): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(246,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(264,26): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(282,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\repo\Jester Script\Jester Script\src\Operations.cpp(300,26): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  main.cpp
 C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(19,53): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(21,65): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(23,65): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\repo\Jester Script\Jester Script\Jts Libs\Standard.h(163): warning C4715: '<lambda_4c87ef7bbaf9fc869a44f67746bc6787>::operator()': not all control paths return a value
+  Generating Code...
+C:\repo\Jester Script\Jester Script\Jts Libs\Standard.h(142): warning C4715: '<lambda_10b58c116096f5341d4b945e81f94ee6>::operator()': not all control paths return a value
   Jester Script.vcxproj -> C:\repo\Jester Script\Debug\Jester Script.exe

@@ -4,15 +4,17 @@
 
 namespace jts
 {
-	Obj* EvalObj(ObjNode* obj)
+	Obj* EvalObj(ObjNode* obj, bool eval)
 	{
 		if (!obj) return NIL;
+
+		if (!eval && obj->value->type == Type::LIST) return obj->value;
 
 		switch (obj->value->spec)
 		{
 			case Spec::CALL_BEG:
 
-				return ExecObj(obj);
+				return ExecObj(obj->value->ret, obj->value->_args, eval);
 
 			default:
 
@@ -20,23 +22,17 @@ namespace jts
 		}
 	}
 
-	Obj* ExecObj(ObjNode* obj)
+	Obj* ExecObj(ObjNode* ret, ObjNode* args, bool eval) 
 	{
-		if (obj->value->type == Type::LIST)
-		{
-			auto* ret = new ObjNode(); //memory leak
-			return obj->value->_list->value->_native(ret, obj->value->_list->next);
-		}
-
-		switch (obj->args->value->type)
+		switch (args->value->type)
 		{
 			case Type::NATIVE:
 
-				return obj->args->value->_native(obj, obj->args->next);
+				return args->value->_native(ret, args->next);
 
 			case Type::JTS:
 
-				return ExecJtsFunc(obj);
+				return ExecJtsFunc(ret);
 
 			default: // case C_BRIDGE
 

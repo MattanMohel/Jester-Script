@@ -21,8 +21,8 @@ namespace jts
 			translates to:
 
 			(set) --> next: (println) --> next: (null)
-			   `--> args: (x +)  `--> args: (x)
-			                  `--> args: 5, 5
+			   `--> args: (x, +)  `--> args: (x)
+			                  `--> args: (5, 5)
 		*/
 
 		ObjNode** head = &vm->stackPtrBeg;
@@ -38,34 +38,35 @@ namespace jts
 
 					(*head) = new ObjNode(Spec::CALL_BEG);
 
+					// Create ret value for call instance
+					(*head)->value->ret = new ObjNode(new Obj());
+
 					break;
 
 				case Spec::SYMBOL:
 
-					if (env::GetSymbol(vm, it->value) == nullptr)
-					{
-						vm->symbols.emplace(it->value, new Obj());
+					if (!env::GetSymbol(vm, it->value)) vm->symbols.emplace(it->value, new Obj());
 
-						vm->symbols[it->value]->flag = it->flag;
-					}
-
-					(*head) = CreateNode(env::GetSymbol(vm, it->value), it->value);
+					(*head) = new ObjNode(env::GetSymbol(vm, it->value));
+					(*head)->value->symbol = it->value;
 
 					break;
 
 				case Spec::VALUE:
 
-					(*head) = CreateNode(TokToLtrl(it), it->value);
+					(*head) = new ObjNode(TokToLtrl(it));
+					(*head)->value->symbol = it->value;
 
 					break;
 			}
+
 
 			switch (it->spec)
 			{
 				case Spec::CALL_BEG:
 					
 					funcHead.emplace(head);
-					head = &(*head)->args;
+					head = &(*head)->value->_args;
 					break;
 
 				case Spec::CALL_END:

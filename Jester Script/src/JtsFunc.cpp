@@ -9,7 +9,7 @@ namespace jts
 	{
 		ObjNode* block = func->value->_jtsFunc->codeBlock;	
 
-		if (func->value->_jtsFunc->params)
+	/*	if (func->value->_jtsFunc->params)
 		{
 			ObjNode* params = func->value->_jtsFunc->params;
 			ObjNode* paramInput = func->args;
@@ -30,7 +30,7 @@ namespace jts
 			EvalObj(block);
 
 			block = block->next;
-		}
+		}*/
 
 		return EvalObj(block);
 	}

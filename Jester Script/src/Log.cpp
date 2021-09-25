@@ -15,9 +15,10 @@ namespace jts
 		{
 			switch (value->type)
 			{
-				case Type::QUOTE:
+				case Type::JTS:
+				case Type::NATIVE:
 
-					for (auto c : value->_quote->value->symbol)
+					for (auto c : value->symbol)
 					{
 						upperStr += toupper(c);
 					}
@@ -30,7 +31,7 @@ namespace jts
 
 					std::cout << "(";
 
-					elem = value->_list;
+					elem = value->_args;
 
 					while (elem->next)
 					{

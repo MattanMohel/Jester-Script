@@ -59,32 +59,6 @@ namespace jts
 
 		END,
 	};
-
-	template<typename E, size_t S>
-	struct Flag
-	{
-		std::bitset<S> bits = 0;
-
-		bool Get(const E enumerator) const
-		{
-			return bits[(size_t)enumerator];
-		}
-		bool Set(const E enumerator, bool state = true)
-		{
-			bits[(size_t)enumerator] = state;
-			return state;
-		}
-
-		void operator=  (Flag& flag)
-		{
-			bits = flag.bits;
-		}
-
-		void operator+= (Flag& flag)
-		{
-			bits |= flag.bits;
-		}
-	};
 }
 
 #endif

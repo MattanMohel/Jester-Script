@@ -120,12 +120,6 @@ namespace jts
 			vm->tokenPtrCur->spec = Spec::QUOTE;
 		}
 
-		else if (value == "const")
-		{
-			vm->tokenPtrCur->spec = Spec::FLAG;
-			vm->tokenPtrCur->flag.Set(SFlag::CONST);
-		}		
-
 		else if (env::GetSymbol(vm, vm->tokenPtrCur->value))
 		{
 			vm->tokenPtrCur->type = Type::NATIVE;

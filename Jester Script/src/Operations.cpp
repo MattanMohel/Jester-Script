@@ -97,6 +97,24 @@ namespace jts
 
 		return a->value;
 	}
+
+	template<> Obj* BinaryOpObj<BinaryOp::POW>(ObjNode* a, ObjNode* b)
+	{
+		switch (a->value->type)
+		{
+			case Type::FLOAT:
+
+				a->value->_float = pow(a->value->_float, CastObj<int>(EvalObj(b)));
+				break;
+
+			default: // CHAR, BOOL, INT
+
+				a->value->_int = pow(a->value->_int, CastObj<int>(EvalObj(b)));
+				break;
+		}
+
+		return a->value;
+	}
 	
 	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b)
 	{
@@ -108,14 +126,12 @@ namespace jts
 
 		switch (value2->type)
 		{
-			case Type::QUOTE:
-
-				value1->_quote = value2->_quote;
-				break;
-
 			case Type::LIST:
 
-				value1->_list = value2->_list;
+				value1->ret   = value2->ret;
+				value1->spec  = value2->spec;
+				value1->_args = value2->_args;
+
 				break;
 
 			case Type::NATIVE:

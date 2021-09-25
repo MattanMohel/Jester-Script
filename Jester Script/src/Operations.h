@@ -12,7 +12,8 @@ namespace jts
 		SUB,
 		MUL,
 		DIV,
-		MOD,		
+		MOD,
+		POW,
 
 		SET,
 	};
@@ -47,6 +48,8 @@ namespace jts
 	template<> Obj* BinaryOpObj<BinaryOp::MUL>(ObjNode* a, ObjNode* b);
 	template<> Obj* BinaryOpObj<BinaryOp::DIV>(ObjNode* a, ObjNode* b);
 	template<> Obj* BinaryOpObj<BinaryOp::MOD>(ObjNode* a, ObjNode* b);
+	template<> Obj* BinaryOpObj<BinaryOp::POW>(ObjNode* a, ObjNode* b);
+
 	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b);
 
 	template<> Obj* UnaryOpObj<UnaryOp::INCR>(ObjNode* a);

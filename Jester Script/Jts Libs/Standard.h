@@ -19,50 +19,55 @@ namespace lib
 	{
 		env::AddSymbol(vm, "nil", env::AddConst(nullptr));
 
-		env::AddSymbol(vm, "set", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "set", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
 			return BinaryOpObj<BinaryOp::SET>(args, args->next);
 		}));		
 				
-		env::AddSymbol(vm, "bind", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "bind", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
 			Obj* first = EvalObj(args);
-			first->_list = new ObjNode();
+			first->_args = new ObjNode();
 
-			BinaryOpObj<BinaryOp::SET>(first->_list, args->next);
+			BinaryOpObj<BinaryOp::SET>(first->_args, args->next);
 
 			return first;
 		}));	
 		
-		env::AddSymbol(vm, "list", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "list", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
-			fn->value->_list = new ObjNode();
-			BinaryOpObj<BinaryOp::SET>(fn->value->_list, args);
-			fn->value->type = Type::LIST;
+			ret->value->ret = new ObjNode();
+			ret->value->_args = new ObjNode();
 
-			auto* cell = fn->value->_list;
+			BinaryOpObj<BinaryOp::SET>(ret->value->_args, args);
+			ret->value->_args->value->symbol = args->value->symbol;
+
+			ret->value->type = Type::LIST;
+			ret->value->spec = Spec::CALL_BEG;
+
+			auto* cell = ret->value->_args;
 
 			while (args->next)
 			{
 				cell->next = new ObjNode();
 
-				// So recursive fn->_list is maintained
-				auto* curArgs = fn->value->_list;
+				// So recursive ret->_list is maintained
+				auto* curArgs = ret->value->_args;
 				auto* curList =   cell->next;
 
 				curList->value = EvalObj(args->next);
-				fn->value->_list = curArgs;
+				ret->value->_args = curArgs;
 
 				cell = cell->next;
 				args = args->next;
 			}
 
-			return fn->value;
+			return ret->value;
 		}));
 		
-		env::AddSymbol(vm, "nth", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "nth", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
-			auto* elem = EvalObj(args->next)->_list;
+			auto* elem = EvalObj(args->next)->_args;
 
 			for (int i = 0; i < CastObj<int>(EvalObj(args)); ++i)
 			{
@@ -74,30 +79,28 @@ namespace lib
 			return elem->value;
 		}));		
 		
-		env::AddSymbol(vm, "rest", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "rest", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
-			auto* rest = EvalObj(args)->_list->next;
+			auto* rest = EvalObj(args)->_args->next;
 
 			if (!rest) return NIL;
 			return rest->value;
 		}));			
 		
-		env::AddSymbol(vm, "head", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "head", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
-			auto* head = args->value->_list;
+			auto* head = args->value->_args;
 
 			if (!head) return NIL;
 			return head->value;
 		}));		
 		
-		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
-			if (args->value->type == Type::LIST) return ExecObj(args);
-
-			return EvalObj(args);
+			return EvalObj(args, true);
 		}));
 
-		env::AddSymbol(vm, "defn", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "defn", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
 			Obj* func = EvalObj(args);
 
@@ -111,7 +114,7 @@ namespace lib
 			return func;
 		}));		
 		
-		env::AddSymbol(vm, "loop", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "loop", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
 			auto* cond = args;
 
@@ -138,7 +141,7 @@ namespace lib
 			}
 		}));		
 		
-		env::AddSymbol(vm, "progn", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "progn", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
 			while (args->next)
 			{
@@ -149,7 +152,7 @@ namespace lib
 			return EvalObj(args);
 		}));
 
-		env::AddSymbol(vm, "print", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "print", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
 			while (args->next)
 			{
@@ -160,7 +163,7 @@ namespace lib
 			return 	PrintObj(EvalObj(args), false);
 		}));
 
-		env::AddSymbol(vm, "println", env::AddNative([](ObjNode* fn, ObjNode* args) -> Obj*
+		env::AddSymbol(vm, "println", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
 			while (args->next)
 			{
