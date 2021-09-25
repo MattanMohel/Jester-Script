@@ -14,12 +14,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->value->_float += CastObj<float>(EvalObj(b));
+				a->value->_float += CastObj<float>(RetOf(b));
 				break;
 			
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int += CastObj<int>(EvalObj(b));
+				a->value->_int += CastObj<int>(RetOf(b));
 				break;
 		}
 
@@ -32,12 +32,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->value->_float -= CastObj<float>(EvalObj(b));
+				a->value->_float -= CastObj<float>(RetOf(b));
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int -= CastObj<int>(EvalObj(b));
+				a->value->_int -= CastObj<int>(RetOf(b));
 				break;
 		}
 
@@ -50,12 +50,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->value->_float *= CastObj<float>(EvalObj(b));
+				a->value->_float *= CastObj<float>(RetOf(b));
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int *= CastObj<int>(EvalObj(b));
+				a->value->_int *= CastObj<int>(RetOf(b));
 				break;
 		}
 
@@ -68,12 +68,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->value->_float /= CastObj<float>(EvalObj(b));
+				a->value->_float /= CastObj<float>(RetOf(b));
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int /= CastObj<int>(EvalObj(b));
+				a->value->_int /= CastObj<int>(RetOf(b));
 				break;
 		}
 
@@ -86,12 +86,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->value->_float = (int)a->value->_float % CastObj<int>(EvalObj(b));
+				a->value->_float = (int)a->value->_float % CastObj<int>(RetOf(b));
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int %= CastObj<int>(EvalObj(b));
+				a->value->_int %= CastObj<int>(RetOf(b));
 				break;
 		}
 
@@ -104,12 +104,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->value->_float = pow(a->value->_float, CastObj<int>(EvalObj(b)));
+				a->value->_float = pow(a->value->_float, CastObj<int>(RetOf(b)));
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->value->_int = pow(a->value->_int, CastObj<int>(EvalObj(b)));
+				a->value->_int = pow(a->value->_int, CastObj<int>(RetOf(b)));
 				break;
 		}
 
@@ -118,9 +118,9 @@ namespace jts
 	
 	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b)
 	{
-		Obj* value2 = EvalObj(b);
+		Obj* value2 = RetOf(b);
 
-		Obj* value1 = (a->value->spec == Spec::CALL_BEG)? a->value : EvalObj(a);
+		Obj* value1 = a->value;
 
 		value1->type = value2->type;
 
@@ -306,7 +306,7 @@ namespace jts
 
 	bool isTrue(ObjNode* a)
 	{
-		Obj* value = EvalObj(a);
+		Obj* value = RetOf(a);
 
 		switch (value->type)
 		{
@@ -324,8 +324,8 @@ namespace jts
 
 	bool isEqual(ObjNode* a, ObjNode* b)
 	{
-		Obj* val1 = EvalObj(a);
-		Obj* val2 = EvalObj(b);
+		Obj* val1 = RetOf(a);
+		Obj* val2 = RetOf(b);
 
 		switch (val1->type)
 		{
@@ -341,8 +341,8 @@ namespace jts
 
 	bool isGreater(ObjNode* a, ObjNode* b)
 	{
-		Obj* val1 = EvalObj(a);
-		Obj* val2 = EvalObj(b);
+		Obj* val1 = RetOf(a);
+		Obj* val2 = RetOf(b);
 
 		switch (val1->type)
 		{
@@ -360,8 +360,8 @@ namespace jts
 
 	bool isGreaterEq(ObjNode* a, ObjNode* b)
 	{
-		Obj* val1 = EvalObj(a);
-		Obj* val2 = EvalObj(b);
+		Obj* val1 = RetOf(a);
+		Obj* val2 = RetOf(b);
 
 		switch (val1->type)
 		{

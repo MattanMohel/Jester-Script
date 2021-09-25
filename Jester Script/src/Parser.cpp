@@ -50,12 +50,16 @@ namespace jts
 					(*head) = new ObjNode(env::GetSymbol(vm, it->value));
 					(*head)->value->symbol = it->value;
 
+					(*head)->value->ret = new ObjNode(new Obj());
+
 					break;
 
 				case Spec::VALUE:
 
 					(*head) = new ObjNode(TokToLtrl(it));
 					(*head)->value->symbol = it->value;
+
+					(*head)->value->ret = new ObjNode(new Obj());
 
 					break;
 			}

@@ -11,9 +11,7 @@ namespace jts
 		Spec spec;
 
 		str symbol;
-
-		ObjNode* ret;
-		 
+	 
 		union 
 		{
 			// Values
@@ -26,9 +24,11 @@ namespace jts
 			ObjNode* _args;
 
 			// Callables
-			Obj* (*_native)(ObjNode* ret, ObjNode* args, bool eval);
+			Obj* (*_native)(ObjNode* ret, ObjNode* args);
 			Func* _jtsFunc;
 		};
+		
+		ObjNode* ret = nullptr;
 	};
 
 	static Obj* NIL = new Obj { Type::NIL, Spec::SYMBOL };

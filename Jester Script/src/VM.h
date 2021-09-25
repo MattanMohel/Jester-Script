@@ -29,7 +29,7 @@ namespace jts
 		void AddLib(VM* vm, void(*lib)(VM* vm));
 		void AddSymbol(VM* vm, str key, Obj* value);
 
-		Obj* AddNative(Obj* (*native)(ObjNode* fn, ObjNode* args, bool eval));
+		Obj* AddNative(Obj* (*native)(ObjNode* fn, ObjNode* args));
 		template<> Obj* AddConst(char  value);
 		template<> Obj* AddConst(bool  value);
 		template<> Obj* AddConst(int   value);

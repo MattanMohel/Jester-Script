@@ -24,11 +24,19 @@ namespace jts
 
 	Obj* ExecObj(ObjNode* ret, ObjNode* args, bool eval) 
 	{
-		switch (args->value->type)
+		auto* arg = args;
+
+		while (arg)
+		{
+			RetOf(arg) = EvalObj(arg, eval);
+			arg = arg->next;
+		}
+
+		switch (RetOf(args)->type)
 		{
 			case Type::NATIVE:
 
-				return args->value->_native(ret, args->next);
+				return RetOf(args)->_native(ret, args->next);
 
 			case Type::JTS:
 

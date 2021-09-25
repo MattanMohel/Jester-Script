@@ -36,14 +36,15 @@ namespace lib
 		
 		env::AddSymbol(vm, "list", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
+			ret->value->type = Type::LIST;
+			ret->value->spec = Spec::CALL_BEG;
+
 			ret->value->ret = new ObjNode();
 			ret->value->_args = new ObjNode();
 
 			BinaryOpObj<BinaryOp::SET>(ret->value->_args, args);
 			ret->value->_args->value->symbol = args->value->symbol;
-
-			ret->value->type = Type::LIST;
-			ret->value->spec = Spec::CALL_BEG;
+			ret->value->_args->value->ret = new ObjNode();
 
 			auto* cell = ret->value->_args;
 
@@ -51,11 +52,13 @@ namespace lib
 			{
 				cell->next = new ObjNode();
 
-				// So recursive ret->_list is maintained
-				auto* curArgs = ret->value->_args;
-				auto* curList =   cell->next;
+				cell->next->value->ret = new ObjNode();
+				cell->next->value->symbol = args->next->value->symbol;
 
-				curList->value = EvalObj(args->next);
+				auto* curArgs = ret->value->_args;
+
+				BinaryOpObj<BinaryOp::SET>(cell->next, args->next);
+
 				ret->value->_args = curArgs;
 
 				cell = cell->next;
@@ -97,6 +100,7 @@ namespace lib
 		
 		env::AddSymbol(vm, "eval", env::AddNative([](ObjNode* ret, ObjNode* args) -> Obj*
 		{
+			RetOf(args) = new Obj();
 			return EvalObj(args, true);
 		}));
 
