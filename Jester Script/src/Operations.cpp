@@ -162,6 +162,47 @@ namespace jts
 
 		return a;
 	}
+	
+	template<> Obj* BinaryOpObj<BinaryOp::QUOTE>(Obj* a, Obj* b)
+	{
+		ObjNode* cell = nullptr;
+		ObjNode* args = nullptr;
+
+		switch (b->spec)
+		{
+			case Spec::HEAD:
+
+				args = b->_args;
+
+				a->type = Type::LIST;
+				a->spec = Spec::HEAD;
+
+				a->ret = new Obj();
+
+				a->_args = new ObjNode(new Obj { Type::QUOTE, Spec::VALUE });
+				a->_args->value->_quote = args->value;
+
+				cell = a->_args;
+
+				while (args->next)
+				{
+					cell->next = new ObjNode(BinaryOpObj<BinaryOp::QUOTE>(args->next->value->ret, args->next->value));
+
+					args = args->next;
+
+					cell = cell->next;
+				}
+
+				return a; 
+
+			default:
+
+				Obj* quote = new Obj { Type::QUOTE, Spec::VALUE };
+				quote->_quote = b;
+
+				return quote;
+		}
+	}
 
 	template<> Obj* UnaryOpObj<UnaryOp::INCR>(Obj* a)
 	{

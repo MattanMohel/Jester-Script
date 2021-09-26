@@ -18,7 +18,10 @@ namespace lib
 {
 	inline void StandardLib(VM* vm)
 	{
-		env::AddSymbol(vm, "quote", env::AddNative(Quote));
+		env::AddSymbol(vm, "quote", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			return BinaryOpObj<BinaryOp::QUOTE>(ret, args->value);
+		}));
 
 		env::AddSymbol(vm, "nil", env::AddConst(nullptr));
 

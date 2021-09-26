@@ -13,8 +13,6 @@ namespace jts
 
 		Obj* operator() (ObjNode* args, bool eval);
 	};
-
-	Obj* Quote(Obj* ret, ObjNode* args, bool eval);
 }
 
 #endif

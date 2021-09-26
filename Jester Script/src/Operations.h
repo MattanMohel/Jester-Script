@@ -16,6 +16,8 @@ namespace jts
 		POW,
 
 		SET,
+
+		QUOTE,
 	};
 
 	enum class UnaryOp
@@ -51,6 +53,8 @@ namespace jts
 	template<> Obj* BinaryOpObj<BinaryOp::POW>(Obj* a, Obj* b);
 
 	template<> Obj* BinaryOpObj<BinaryOp::SET>(Obj* a, Obj* b);
+
+	template<> Obj* BinaryOpObj<BinaryOp::QUOTE>(Obj* a, Obj* b);
 
 	template<> Obj* UnaryOpObj<UnaryOp::INCR>(Obj* a);
 	template<> Obj* UnaryOpObj<UnaryOp::DECR>(Obj* a);

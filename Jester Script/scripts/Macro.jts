@@ -1,9 +1,37 @@
 
-(defm for (x from lower below upper)
-	(set (eval x) (eval lower))
-	(loop (< (eval x) (eval upper))
-		(println x)
-		(++ (eval x))
-		nil))
+(defn range (n)
+	(set index 0)
+	(set lst (0))
+	
+	(loop (< index (- n 1))
+		(++ index)
+		(append index lst))
+	
+	lst)
+	
+(defn reverse (lst)
+	(set size 0)
+	(set index 0)
+	
+	(iterate value lst (++ size))
 		
-(for x from 3 below 8)
+	(loop (< index (/ 2 size))
+				
+		(set prev (nth index lst))
+		(set (nth index lst) (nth (- size (+ index 1)) lst))
+		(set(nth (- size (+ index 1)) lst) prev)
+		
+		(++ index))
+	
+	lst)
+	
+
+
+(set dict (create-dict
+	(key value)
+	(key1 value1)
+	
+))
+
+dict -> ('my-key 10) -> ('my-second-key 20)
+	

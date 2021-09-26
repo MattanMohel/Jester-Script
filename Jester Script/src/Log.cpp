@@ -13,6 +13,7 @@ namespace jts
 
 		switch (value->type)
 		{
+			case Type::MACRO:
 			case Type::JTS_FN:
 			case Type::NATIVE:
 

@@ -1,19 +1,4 @@
-(defn range (n) 
 
-	(set range-list 0)
-	(set i 0)
-
-	(loop (< i n)
-		(++ i)
-		(bind (nth (- i 1) range-list) i))
-
-	range-list)
-
-(set r (range 5))
-
-
-{
-	"Area": "S1"
-	"Commons": [1]
-	"Uncommons": 
-}
+(set dict 
+	
+)
