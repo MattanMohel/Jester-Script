@@ -6,7 +6,7 @@
 *.ipch
 *.obj
 *.pdb 
-*.Jester Script/Debug
-*.Debug
-*.vs
-*.suo
+*.Jester Script/Debug\
+*.Debug\
+*.vs\
+*.suo\
