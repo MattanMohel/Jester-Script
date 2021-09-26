@@ -1,8 +1,4 @@
 
-.vs/Jester Script/v16/Browse.VC.db
-.vs/Jester Script/v16/Browse.VC.db-shm
-.vs/Jester Script/v16/Browse.VC.db-wal
-.vs/Jester Script/v16/Browse.VC.opendb
 *.ipch
 *.obj
 *.pdb
@@ -10,3 +6,9 @@
 *.pdb
 *.log
 *.idb
+
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
