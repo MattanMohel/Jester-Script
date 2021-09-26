@@ -39,6 +39,17 @@ namespace jts
 
 					default:
 
+						// iterate over list elements and evaluate
+
+						auto* elem = obj->value->_args;
+
+						while (elem->next)
+						{
+							// memory leak
+							elem->value = EvalObj(elem, eval);
+							elem = elem->next;
+						}
+
 						return obj->value;
 				}
 

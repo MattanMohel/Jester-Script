@@ -65,6 +65,42 @@ namespace lib
 		{
 			return BinaryOpObj<BinaryOp::SET>(EvalObj(args, eval), EvalObj(args->next, eval));
 		}));	
+		
+		env::AddSymbol(vm, "first", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			auto* elem = EvalObj(args, eval)->_args;
+
+			if (!elem) return NIL;
+
+			return elem->value;
+		}));			
+		
+		env::AddSymbol(vm, "next", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			auto* elem = EvalObj(args, eval)->_args;
+
+			if (!elem || !elem->next) return NIL;
+
+			return elem->next->value;
+		}));		
+		
+		env::AddSymbol(vm, "nth", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			Obj* head = EvalObj(args->next, eval);
+
+			if (!head) return NIL;
+
+			auto* elem = head->_args;
+			
+			for (int i = 0; i < CastObj<int>(EvalObj(args, eval)); ++i)
+			{
+				elem = elem->next;
+
+				if (!elem) return NIL;
+			}
+
+			return elem->value;
+		}));
 
 		env::AddSymbol(vm, "defn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{

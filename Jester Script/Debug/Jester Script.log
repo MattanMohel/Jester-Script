@@ -1,7 +1,2 @@
 ﻿  Execute.cpp
-  main.cpp
-C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(19,53): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(21,65): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(23,65): warning C4305: 'argument': truncation from 'double' to 'float'
-  Generating Code...
   Jester Script.vcxproj -> C:\repo\Jester Script\Debug\Jester Script.exe
