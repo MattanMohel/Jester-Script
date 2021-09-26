@@ -45,6 +45,9 @@
     <ClCompile Include="src\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\JtsMacro.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Types.h">
@@ -95,10 +98,14 @@
     <ClInclude Include="src\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\JtsMacro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\Jester.jts" />
     <None Include="scripts\Quote.jts" />
     <None Include="scripts\Testing.jts" />
+    <None Include="scripts\Macro.jts" />
   </ItemGroup>
 </Project>

@@ -15,6 +15,7 @@ namespace jts
 	struct Tok;
 	struct Obj;
 	struct Func;
+	struct Macro;
 	struct ObjNode;
 
 	enum class Type
@@ -31,6 +32,7 @@ namespace jts
 		NATIVE,
 		CPP_FN,
 		JTS_FN,
+		MACRO,
 
 		// needs attending to
 		STRING,

@@ -1,5 +1,6 @@
 #include "Execute.h"
 #include "JtsFunc.h"
+#include "JtsMacro.h"
 #include "Object.h"
 #include "Operations.h"
 
@@ -15,6 +16,7 @@ namespace jts
 
 				switch (obj->value->_args->value->type)
 				{
+					case Type::MACRO:
 					case Type::NATIVE:
 					case Type::JTS_FN:
 					case Type::CPP_FN:
@@ -75,6 +77,10 @@ namespace jts
 			case Type::JTS_FN:
 
 				return (*args->value->_jtsFunc)(args, eval);
+
+			case Type::MACRO:
+
+				return (*args->value->_jtsMacro)(args, eval);
 
 			case Type::CPP_FN:
 

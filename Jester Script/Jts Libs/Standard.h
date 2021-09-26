@@ -8,6 +8,7 @@
 #include "../src/Execute.h"
 #include "../src/JtsFunc.h"
 #include "../src/Log.h"
+#include "../src/JtsMacro.h"
 
 #include <iostream>
 
@@ -15,46 +16,6 @@ using namespace jts;
 
 namespace lib
 {
-	Obj* Quote(Obj* ret, ObjNode* args, bool eval)
-	{
-		ObjNode* cell = nullptr;
-
-		switch (args->value->spec)
-		{
-			case Spec::HEAD:
-
-				args = args->value->_args;
-
-				ret->type = Type::LIST;
-				ret->spec = Spec::HEAD;
-				
-				ret->ret = new Obj();
-
-				ret->_args = new ObjNode(new Obj { Type::QUOTE, Spec::VALUE });
-				ret->_args->value->_quote = args->value;
-
-				cell = ret->_args;
-
-				while (args->next)
-				{
-					cell->next = new ObjNode(Quote(args->next->value->ret, args->next, eval));
-
-					args = args->next;
-
-					cell = cell->next;
-				}
-
-				return ret;
-
-			default:
-
-				Obj* quote = new Obj { Type::QUOTE, Spec::VALUE };
-				quote->_quote = args->value;
-
-				return quote;
-		}
-	}
-
 	inline void StandardLib(VM* vm)
 	{
 		env::AddSymbol(vm, "quote", env::AddNative(Quote));
@@ -75,14 +36,14 @@ namespace lib
 			return elem->value;
 		}));			
 		
-		env::AddSymbol(vm, "next", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "rest", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			auto* elem = EvalObj(args, eval)->_args;
 
 			if (!elem || !elem->next) return NIL;
 
 			return elem->next->value;
-		}));		
+		}));				
 		
 		env::AddSymbol(vm, "nth", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
@@ -92,7 +53,7 @@ namespace lib
 
 			auto* elem = head->_args;
 			
-			for (int i = 0; i < CastObj<int>(EvalObj(args, eval)); ++i)
+			for (size_t i = 0; i < CastObj<int>(EvalObj(args, eval)); ++i)
 			{
 				elem = elem->next;
 
@@ -100,6 +61,50 @@ namespace lib
 			}
 
 			return elem->value;
+		}));		
+		
+		env::AddSymbol(vm, "append", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			// (append value list)
+
+			Obj* head = EvalObj(args->next, eval);
+
+			if (!head) return NIL;
+
+			auto* elem = head->_args;
+			
+			while (elem->next)
+			{
+				elem = elem->next;
+			}
+
+			elem->next = new ObjNode(new Obj());
+			
+			return BinaryOpObj<BinaryOp::SET>(elem->next->value, EvalObj(args, eval));
+		}));		
+		
+		env::AddSymbol(vm, "insert", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			// (insert index value list)
+
+			Obj* head = EvalObj(args->next->next, eval);
+			 
+			if (!head) return NIL;
+
+			auto* elem = head->_args;
+			
+			for (size_t i = 1; i < CastObj<int>(EvalObj(args, eval)); ++i)
+			{
+				elem = elem->next;
+
+				if (!elem) return NIL;
+			}
+
+			auto* prev = elem->next;
+			elem->next = new ObjNode(new Obj());
+			elem->next->next = prev;
+
+			return BinaryOpObj<BinaryOp::SET>(elem->next->value, EvalObj(args->next, eval));
 		}));
 
 		env::AddSymbol(vm, "defn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
@@ -115,7 +120,22 @@ namespace lib
 			func->_jtsFunc->codeBlock = args->next->next;
 
 			return func;
-		}));				
+		}));
+
+		env::AddSymbol(vm, "defm", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			// (defn id (args) code)
+			Obj* func = args->value;
+
+			func->spec = Spec::SYMBOL;
+			func->type = Type::MACRO;
+
+			func->_jtsMacro = new Macro();
+			func->_jtsMacro->params = args->next;
+			func->_jtsMacro->codeBlock = args->next->next;
+
+			return func;
+		}));					
 		
 		env::AddSymbol(vm, "eval", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
@@ -146,6 +166,32 @@ namespace lib
 				if (!state) return loopRet;
 
 				block = args->next;
+			}
+		}));	
+		
+		env::AddSymbol(vm, "iterate", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			// (loop cond code)
+
+			auto* list = args->next->value->_args;
+			auto* block = args->next->next;
+
+			while (list)
+			{
+				BinaryOpObj<BinaryOp::SET>(args->value, EvalObj(list, eval));
+
+				while (block->next)
+				{
+					EvalObj(block, eval);
+					block = block->next;
+				}
+
+				Obj* loopRet = EvalObj(block, eval);
+
+				if (!list->next) return loopRet;
+
+				list = list->next;
+				block = args->next->next;
 			}
 		}));		
 		

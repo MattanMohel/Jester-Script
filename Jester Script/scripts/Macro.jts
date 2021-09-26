@@ -1,0 +1,9 @@
+
+(defm for (x from lower below upper)
+	(set (eval x) (eval lower))
+	(loop (< (eval x) (eval upper))
+		(println x)
+		(++ (eval x))
+		nil))
+		
+(for x from 3 below 8)

@@ -12,8 +12,7 @@ namespace jts
 		ObjNode* params    = nullptr;
 
 		Obj* operator() (ObjNode* args, bool eval);
-	};
-
+	};	
 }
 
 #endif

@@ -28,6 +28,7 @@ namespace jts
 
 			// Callables
 			Obj* (*_native)(Obj* ret, ObjNode* args, bool eval);
+			Macro* _jtsMacro;
 			Func* _jtsFunc;
 		};
 		
