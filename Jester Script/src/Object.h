@@ -19,13 +19,13 @@ namespace jts
 			// Values
 			char _char;
 			bool _bool;
-			int _int;
-			float _float;
+			j_int _int;
+			j_float _float;
 
 			// Argument holders
 			ObjNode* _args;
 			Obj* _quote;
-
+			
 			// Callables
 			Obj* (*_native)(Obj* ret, ObjNode* args, bool eval);
 			Macro* _jtsMacro;

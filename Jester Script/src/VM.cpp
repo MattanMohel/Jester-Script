@@ -43,7 +43,7 @@ namespace jts
 			return obj;
 		}
 
-		template<> Obj* AddConst(char value)
+		template<> Obj* AddConst(j_char value)
 		{
 			Obj* obj = new Obj { Type::CHAR, Spec::SYMBOL };
 			obj->_char = value;
@@ -51,7 +51,7 @@ namespace jts
 			return obj;
 		}
 
-		template<> Obj* AddConst(bool value)
+		template<> Obj* AddConst(j_bool value)
 		{
 			Obj* obj = new Obj { Type::BOOL, Spec::SYMBOL };
 			obj->_bool = value;
@@ -59,7 +59,7 @@ namespace jts
 			return obj;
 		}
 
-		template<> Obj* AddConst(int  value)
+		template<> Obj* AddConst(j_int  value)
 		{
 			Obj* obj = new Obj { Type::INT, Spec::SYMBOL };
 			obj->_int = value;
@@ -67,7 +67,7 @@ namespace jts
 			return obj;
 		}
 
-		template<> Obj* AddConst(float value)
+		template<> Obj* AddConst(j_float value)
 		{
 			Obj* obj = new Obj { Type::FLOAT, Spec::SYMBOL };
 			obj->_float = value;

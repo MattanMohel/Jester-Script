@@ -31,6 +31,8 @@ namespace jts
 		ASIN,
 		TAN,
 		ATAN,
+
+		HASH,
 	};
 
 	template<BinaryOp op>
@@ -66,6 +68,8 @@ namespace jts
 	template<> Obj* UnaryOpObj<UnaryOp::TAN>(Obj* a);
 	template<> Obj* UnaryOpObj<UnaryOp::ATAN>(Obj* a);
 
+	template<> Obj* UnaryOpObj<UnaryOp::HASH>(Obj* a);
+
 	bool isTrue (Obj* a);
 	bool isEqual(Obj* a, Obj* b);
 	bool isGreater(Obj* a, Obj* b);
@@ -98,19 +102,19 @@ namespace jts
 	template<typename T>
 	inline Type GetType()
 	{
-		if (std::is_same<T, char>::value)
+		if (std::is_same<T, j_char>::value)
 		{
 			return Type::INT;
 		}
-		else if (std::is_same<T, bool>::value)
+		else if (std::is_same<T, j_bool>::value)
 		{
 			return Type::BOOL;
 		}
-		else if (std::is_same<T, int>::value)
+		else if (std::is_same<T, j_int>::value)
 		{
 			return Type::INT;
 		}
-		else if (std::is_same<T, float>::value)
+		else if (std::is_same<T, j_float>::value)
 		{
 			return Type::FLOAT;
 		}

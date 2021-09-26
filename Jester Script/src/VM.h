@@ -30,10 +30,10 @@ namespace jts
 		void AddSymbol(VM* vm, str key, Obj* value);
 
 		Obj* AddNative(Obj* (*native)(Obj* ret, ObjNode* args, bool eval));
-		template<> Obj* AddConst(char  value);
-		template<> Obj* AddConst(bool  value);
-		template<> Obj* AddConst(int   value);
-		template<> Obj* AddConst(float value);
+		template<> Obj* AddConst(j_char  value);
+		template<> Obj* AddConst(j_bool  value);
+		template<> Obj* AddConst(j_int   value);
+		template<> Obj* AddConst(j_float value);
 		template<> Obj* AddConst(std::nullptr_t value);
 
 		Obj* GetSymbol(VM* vm, str symbol);

@@ -19,8 +19,8 @@ int main(char** argc, int** argv)
 	env::AddLib(vm, lib::ArithmeticLib);
 	env::AddLib(vm, lib::BooleanLib);
 
-	ParseSrc(vm, ReadSrc(vm, "scripts/Macro.jts"));
-	env::RunVM(vm);
+	//ParseSrc(vm, ReadSrc(vm, "scripts/Testing.jts"));
+	//env::RunVM(vm);
 
 	env::BeginREPL(vm);
 }

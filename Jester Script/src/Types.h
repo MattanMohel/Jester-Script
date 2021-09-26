@@ -11,6 +11,11 @@ namespace jts
 {
 	using str = std::string;
 
+	using j_int = int64_t;
+	using j_bool = bool;
+	using j_char = char;
+	using j_float = double;
+
 	struct VM;
 	struct Tok;
 	struct Obj;

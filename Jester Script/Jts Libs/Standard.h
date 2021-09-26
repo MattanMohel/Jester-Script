@@ -28,7 +28,7 @@ namespace lib
 		env::AddSymbol(vm, "set", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return BinaryOpObj<BinaryOp::SET>(EvalObj(args, eval), EvalObj(args->next, eval));
-		}));	
+		}));
 		
 		env::AddSymbol(vm, "first", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
@@ -56,7 +56,7 @@ namespace lib
 
 			auto* elem = head->_args;
 			
-			for (size_t i = 0; i < CastObj<int>(EvalObj(args, eval)); ++i)
+			for (size_t i = 0; i < CastObj<j_int>(EvalObj(args, eval)); ++i)
 			{
 				elem = elem->next;
 
@@ -96,7 +96,7 @@ namespace lib
 
 			auto* elem = head->_args;
 			
-			for (size_t i = 1; i < CastObj<int>(EvalObj(args, eval)); ++i)
+			for (size_t i = 1; i < CastObj<j_int>(EvalObj(args, eval)); ++i)
 			{
 				elem = elem->next;
 
@@ -207,6 +207,36 @@ namespace lib
 			}
 
 			return EvalObj(args, eval);
+		}));		
+		
+		env::AddSymbol(vm, "dictionary", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			// (dictionary (key value) (key value)...)
+
+			ret->type = Type::LIST;
+			ret->_args = new ObjNode(new Obj());
+
+			auto* elem = ret->_args;
+
+			while (args)
+			{
+				elem->value->_args = new ObjNode(new Obj());
+				elem->value->_args->next = new ObjNode(new Obj());
+
+				BinaryOpObj<BinaryOp::SET>(elem->value->_args->value, args->value->_args->value);
+				BinaryOpObj<BinaryOp::SET>(elem->value->_args->next->value, args->value->_args->next->value);
+
+				args = args->next;
+				elem = elem->next;
+			}
+
+			return ret;
+		}));		
+		
+		env::AddSymbol(vm, "hash", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
+			return UnaryOpObj<UnaryOp::HASH>(ret);
 		}));
 
 		env::AddSymbol(vm, "print", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*

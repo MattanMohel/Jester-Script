@@ -16,11 +16,11 @@ namespace lib
 {
 	inline void ArithmeticLib(VM* vm)
 	{
-		env::AddSymbol(vm, "pi", env::AddConst<float>(M_PI));
+		env::AddSymbol(vm, "pi", env::AddConst<j_float>(M_PI));
 
-		env::AddSymbol(vm, "rad2deg", env::AddConst<float>(180.0f/M_PI));
+		env::AddSymbol(vm, "rad2deg", env::AddConst<j_float>(180.0f/M_PI));
 		
-		env::AddSymbol(vm, "deg2rad", env::AddConst<float>(M_PI/180.0f));
+		env::AddSymbol(vm, "deg2rad", env::AddConst<j_float>(M_PI/180.0f));
 
 		env::AddSymbol(vm, "+", env::AddNative([](Obj* ret, ObjNode* args, bool eval)
 		{
@@ -178,32 +178,38 @@ namespace lib
 		
 		env::AddSymbol(vm, "sin", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return UnaryOpObj<UnaryOp::SIN>(EvalObj(args, eval));
+			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
+			return UnaryOpObj<UnaryOp::SIN>(ret);
 		}));		
 		
 		env::AddSymbol(vm, "asin", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return UnaryOpObj<UnaryOp::ASIN>(EvalObj(args, eval));
-		}));		
+			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
+			return UnaryOpObj<UnaryOp::ASIN>(ret);
+		}));
 		
 		env::AddSymbol(vm, "cos", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return UnaryOpObj<UnaryOp::COS>(EvalObj(args, eval));
-		}));		
+			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
+			return UnaryOpObj<UnaryOp::COS>(ret);
+		}));
 		
 		env::AddSymbol(vm, "acos", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return UnaryOpObj<UnaryOp::ACOS>(EvalObj(args, eval));
-		}));		
+			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
+			return UnaryOpObj<UnaryOp::ACOS>(ret);
+		}));
 		
 		env::AddSymbol(vm, "tan", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return UnaryOpObj<UnaryOp::TAN>(EvalObj(args, eval));
-		}));		
+			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
+			return UnaryOpObj<UnaryOp::TAN>(ret);
+		}));
 		
 		env::AddSymbol(vm, "atan", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return UnaryOpObj<UnaryOp::ATAN>(EvalObj(args, eval));
+			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
+			return UnaryOpObj<UnaryOp::ATAN>(ret);
 		}));
 	}
 }

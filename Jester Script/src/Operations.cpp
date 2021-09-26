@@ -14,12 +14,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->_float += CastObj<float>(b);
+				a->_float += CastObj<j_float>(b);
 				break;
 			
 			default: // CHAR, BOOL, INT
 				
-				a->_int += CastObj<int>(b);
+				a->_int += CastObj<j_int>(b);
 				break;
 		}
 
@@ -32,12 +32,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->_float -= CastObj<float>(b);
+				a->_float -= CastObj<j_float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->_int -= CastObj<int>(b);
+				a->_int -= CastObj<j_int>(b);
 				break;
 		}
 
@@ -50,12 +50,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->_float *= CastObj<float>(b);
+				a->_float *= CastObj<j_float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->_int *= CastObj<int>(b);
+				a->_int *= CastObj<j_int>(b);
 				break;
 		}
 
@@ -68,12 +68,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->_float /= CastObj<float>(b);
+				a->_float /= CastObj<j_float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->_int /= CastObj<int>(b);
+				a->_int /= CastObj<j_int>(b);
 				break;
 		}
 
@@ -86,12 +86,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->_float = (int)a->_float % CastObj<int>(b);
+				a->_float = (j_int)a->_float % CastObj<j_int>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->_int %= CastObj<int>(b);
+				a->_int %= CastObj<j_int>(b);
 				break;
 		}
 
@@ -104,12 +104,12 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->_float = pow(a->_float, CastObj<int>(b));
+				a->_float = pow(a->_float, CastObj<j_int>(b));
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->_int = pow(a->_int, CastObj<int>(b));
+				a->_int = pow(a->_int, CastObj<j_int>(b));
 				break;
 		}
 
@@ -151,12 +151,12 @@ namespace jts
 
 			case Type::FLOAT:
 
-				a->_float = CastObj<float>(b);
+				a->_float = CastObj<j_float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->_int = CastObj<int>(b);
+				a->_int = CastObj<j_int>(b);
 				break;
 		}
 
@@ -346,18 +346,52 @@ namespace jts
 		return a;
 	}
 
+	template<> Obj* UnaryOpObj<UnaryOp::HASH>(Obj* a)
+	{
+		switch (a->type) 
+		{
+			case Type::INT:
+			{
+				std::hash<j_int> hash;
+				a->_int = hash(a->_int); 
+
+				break;
+			}
+
+			case Type::FLOAT:
+			{
+				std::hash<j_float> hash;
+				a->_int = hash(a->_float); 
+
+				break;
+			}
+
+			case Type::QUOTE:
+			{
+				std::hash<str> hash;
+				a->_int = hash(a->_quote->symbol); 
+
+				break;
+			}
+		}
+
+		a->type = Type::INT;
+
+		return a;
+	}
+
 	bool isTrue(Obj* a)
 	{
 		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				return (bool)a->_float;
+				return (j_bool)a->_float;
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				return (bool)a->_int;
+				return (j_bool)a->_int;
 				break;
 		}
 	}
@@ -382,11 +416,11 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				return a->_float > CastObj<float>(b);
+				return a->_float > CastObj<j_float>(b);
 
 			default: // CHAR, BOOL, INT
 
-				return a->_int > CastObj<int>(b);
+				return a->_int > CastObj<j_int>(b);
 		}
 
 		return false;
@@ -398,11 +432,11 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				return a->_float >= CastObj<float>(b);
+				return a->_float >= CastObj<j_float>(b);
 
 			default: // CHAR, BOOL, INT
 
-				return a->_int >= CastObj<int>(b);
+				return a->_int >= CastObj<j_int>(b);
 		}
 
 		return false;
