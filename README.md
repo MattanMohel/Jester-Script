@@ -103,6 +103,7 @@ When you write to the console, it evaluates and returns the ```progn``` of your 
 ```
 
 Notice the last exampe: ```(println x)``` and how it outputs the same answer twice. The issue here is that there is no need for a print statement, it is obselete. So what happens is that ```(println)``` prints ```x``` to the console, returns ```x```, and then ```x``` is printed again due to the REPL integration
+***
 
 ### Quoting
 
