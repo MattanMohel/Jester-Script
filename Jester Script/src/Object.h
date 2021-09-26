@@ -3,6 +3,8 @@
 
 #include "Types.h"
 
+#define RetVal(objNode) objNode->value->ret->value
+
 namespace jts
 {
 	struct Obj
@@ -22,13 +24,14 @@ namespace jts
 
 			// Argument holders
 			ObjNode* _args;
+			Obj* _quote;
 
 			// Callables
-			Obj* (*_native)(ObjNode* ret, ObjNode* args);
+			Obj* (*_native)(Obj* ret, ObjNode* args, bool eval);
 			Func* _jtsFunc;
 		};
 		
-		ObjNode* ret = nullptr;
+		Obj* ret = nullptr;
 	};
 
 	static Obj* NIL = new Obj { Type::NIL, Spec::SYMBOL };
@@ -41,10 +44,6 @@ namespace jts
 		
 		ObjNode(Obj* obj) :
 			value(obj)
-		{}
-		
-		ObjNode(Spec spec) :
-			value(new Obj { Type::NIL, spec })
 		{}
 
 		ObjNode* next = nullptr;

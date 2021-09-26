@@ -1,6 +1,7 @@
-﻿  main.cpp
+﻿  Execute.cpp
+  main.cpp
 C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(19,53): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(21,65): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\repo\Jester Script\Jester Script\Jts Libs\Arithmetic.h(23,65): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\repo\Jester Script\Jester Script\Jts Libs\Standard.h(146): warning C4715: '<lambda_10b58c116096f5341d4b945e81f94ee6>::operator()': not all control paths return a value
+  Generating Code...
   Jester Script.vcxproj -> C:\repo\Jester Script\Debug\Jester Script.exe

@@ -34,12 +34,11 @@ namespace jts
 		{
  		    switch (it->spec)
 			{
-				case Spec::CALL_BEG:
+				case Spec::HEAD:
 
-					(*head) = new ObjNode(Spec::CALL_BEG);
+					(*head) = new ObjNode(new Obj{ Type::LIST, Spec::HEAD });
 
-					// Create ret value for call instance
-					(*head)->value->ret = new ObjNode(new Obj());
+					(*head)->value->ret = new Obj();
 
 					break;
 
@@ -50,7 +49,7 @@ namespace jts
 					(*head) = new ObjNode(env::GetSymbol(vm, it->value));
 					(*head)->value->symbol = it->value;
 
-					(*head)->value->ret = new ObjNode(new Obj());
+					(*head)->value->ret = new Obj();
 
 					break;
 
@@ -59,7 +58,7 @@ namespace jts
 					(*head) = new ObjNode(TokToLtrl(it));
 					(*head)->value->symbol = it->value;
 
-					(*head)->value->ret = new ObjNode(new Obj());
+					(*head)->value->ret = new Obj();
 
 					break;
 			}
@@ -67,13 +66,13 @@ namespace jts
 
 			switch (it->spec)
 			{
-				case Spec::CALL_BEG:
+				case Spec::HEAD:
 					
 					funcHead.emplace(head);
 					head = &(*head)->value->_args;
 					break;
 
-				case Spec::CALL_END:
+				case Spec::END:
 					
 					head = &(*funcHead.pop())->next;
 					break;

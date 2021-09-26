@@ -1,6 +1,7 @@
 #include "Execute.h"
 #include "JtsFunc.h"
 #include "Object.h"
+#include "Operations.h"
 
 namespace jts
 {
@@ -8,13 +9,43 @@ namespace jts
 	{
 		if (!obj) return NIL;
 
-		if (!eval && obj->value->type == Type::LIST) return obj->value;
-
-		switch (obj->value->spec)
+		switch (obj->value->type)
 		{
-			case Spec::CALL_BEG:
+			case Type::LIST:
 
-				return ExecObj(obj->value->ret, obj->value->_args, eval);
+				switch (obj->value->_args->value->type)
+				{
+					case Type::NATIVE:
+					case Type::JTS_FN:
+					case Type::CPP_FN:
+						
+						return ExecObj(obj->value->ret, obj->value->_args, eval);
+
+					case Type::QUOTE:
+
+						if (eval)
+						{
+							switch (obj->value->_args->value->_quote->type)
+							{
+								case Type::NATIVE:
+								case Type::JTS_FN:
+								case Type::CPP_FN:
+
+									return ExecObj(obj->value->ret, obj->value->_args, eval);
+							}
+						}
+
+						return obj->value;
+
+					default:
+
+						return obj->value;
+				}
+
+			case Type::QUOTE:
+
+				if (eval) return obj->value->_quote;
+				return obj->value;
 
 			default:
 
@@ -22,29 +53,40 @@ namespace jts
 		}
 	}
 
-	Obj* ExecObj(ObjNode* ret, ObjNode* args, bool eval) 
+	Obj* ExecObj(Obj* ret, ObjNode* args, bool eval) 
 	{
-		auto* arg = args;
-
-		while (arg)
-		{
-			RetOf(arg) = EvalObj(arg, eval);
-			arg = arg->next;
-		}
-
-		switch (RetOf(args)->type)
+		switch (args->value->type)
 		{
 			case Type::NATIVE:
 
-				return RetOf(args)->_native(ret, args->next);
+				return args->value->_native(ret, args->next, eval);
 
-			case Type::JTS:
+			case Type::JTS_FN:
 
 				return ExecJtsFunc(ret);
 
-			default: // case C_BRIDGE
+			case Type::CPP_FN:
 
 				return nullptr;
+
+			case Type::QUOTE:
+				
+				if (eval)
+				{
+					switch (args->value->_quote->type)
+					{
+						case Type::NATIVE:
+						case Type::JTS_FN:
+						case Type::CPP_FN:
+
+							// add other cases later
+							return args->value->_quote->_native(ret, args->next, eval);
+					}
+				}
+
+				break;
 		}
+
+		return nullptr;
 	}
 }

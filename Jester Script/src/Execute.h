@@ -2,14 +2,13 @@
 #define EXECUTE_H
 
 #define JTS_DEBUG 1
-#define RetOf(objNode) objNode->value->ret->value
 
 #include "Types.h"
 
 namespace jts
 {
 	Obj* EvalObj(ObjNode* obj, bool eval = false);
-	Obj* ExecObj(ObjNode* ret, ObjNode* args, bool eval);
+	Obj* ExecObj(Obj* ret, ObjNode* args, bool eval);
 }
 
 #endif

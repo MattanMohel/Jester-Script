@@ -107,18 +107,13 @@ namespace jts
 
 		else if (value == "(")
 		{
-			vm->tokenPtrCur->spec = Spec::CALL_BEG;
+			vm->tokenPtrCur->spec = Spec::HEAD;
 		}		
 		
 		else if (value == ")")
 		{
-			vm->tokenPtrCur->spec = Spec::CALL_END;
+			vm->tokenPtrCur->spec = Spec::END;
 		}		
-		
-		else if (value == "'")
-		{
-			vm->tokenPtrCur->spec = Spec::QUOTE;
-		}
 
 		else if (env::GetSymbol(vm, vm->tokenPtrCur->value))
 		{

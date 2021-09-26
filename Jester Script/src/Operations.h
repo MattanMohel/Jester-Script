@@ -32,41 +32,41 @@ namespace jts
 	};
 
 	template<BinaryOp op>
-	inline Obj* BinaryOpObj(ObjNode* a, ObjNode* b)
+	inline Obj* BinaryOpObj(Obj* a, Obj* b)
 	{
 		static_assert(false, "binary operator not supported");
 	}
 
 	template<UnaryOp op>
-	inline Obj* UnaryOpObj(ObjNode* a)
+	inline Obj* UnaryOpObj(Obj* a)
 	{
 		static_assert(false, "unary operator not supported");
 	}	
 	
-	template<> Obj* BinaryOpObj<BinaryOp::ADD>(ObjNode* a, ObjNode* b);
-	template<> Obj* BinaryOpObj<BinaryOp::SUB>(ObjNode* a, ObjNode* b);
-	template<> Obj* BinaryOpObj<BinaryOp::MUL>(ObjNode* a, ObjNode* b);
-	template<> Obj* BinaryOpObj<BinaryOp::DIV>(ObjNode* a, ObjNode* b);
-	template<> Obj* BinaryOpObj<BinaryOp::MOD>(ObjNode* a, ObjNode* b);
-	template<> Obj* BinaryOpObj<BinaryOp::POW>(ObjNode* a, ObjNode* b);
+	template<> Obj* BinaryOpObj<BinaryOp::ADD>(Obj* a, Obj* b);
+	template<> Obj* BinaryOpObj<BinaryOp::SUB>(Obj* a, Obj* b);
+	template<> Obj* BinaryOpObj<BinaryOp::MUL>(Obj* a, Obj* b);
+	template<> Obj* BinaryOpObj<BinaryOp::DIV>(Obj* a, Obj* b);
+	template<> Obj* BinaryOpObj<BinaryOp::MOD>(Obj* a, Obj* b);
+	template<> Obj* BinaryOpObj<BinaryOp::POW>(Obj* a, Obj* b);
 
-	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b);
+	template<> Obj* BinaryOpObj<BinaryOp::SET>(Obj* a, Obj* b);
 
-	template<> Obj* UnaryOpObj<UnaryOp::INCR>(ObjNode* a);
-	template<> Obj* UnaryOpObj<UnaryOp::DECR>(ObjNode* a);
+	template<> Obj* UnaryOpObj<UnaryOp::INCR>(Obj* a);
+	template<> Obj* UnaryOpObj<UnaryOp::DECR>(Obj* a);
 	
-	template<> Obj* UnaryOpObj<UnaryOp::SIN>(ObjNode* a);
-	template<> Obj* UnaryOpObj<UnaryOp::COS>(ObjNode* a);
-	template<> Obj* UnaryOpObj<UnaryOp::ACOS>(ObjNode* a);
-	template<> Obj* UnaryOpObj<UnaryOp::ASIN>(ObjNode* a);
-	template<> Obj* UnaryOpObj<UnaryOp::TAN>(ObjNode* a);
-	template<> Obj* UnaryOpObj<UnaryOp::ATAN>(ObjNode* a);
+	template<> Obj* UnaryOpObj<UnaryOp::SIN>(Obj* a);
+	template<> Obj* UnaryOpObj<UnaryOp::COS>(Obj* a);
+	template<> Obj* UnaryOpObj<UnaryOp::ACOS>(Obj* a);
+	template<> Obj* UnaryOpObj<UnaryOp::ASIN>(Obj* a);
+	template<> Obj* UnaryOpObj<UnaryOp::TAN>(Obj* a);
+	template<> Obj* UnaryOpObj<UnaryOp::ATAN>(Obj* a);
 
-	bool isTrue (ObjNode* a);
-	bool isEqual(ObjNode* a, ObjNode* b);
-	bool isGreater(ObjNode* a, ObjNode* b);
-	bool isGreaterEq(ObjNode* a, ObjNode* b);
-	Obj* SetState(ObjNode* a, bool state);
+	bool isTrue (Obj* a);
+	bool isEqual(Obj* a, Obj* b);
+	bool isGreater(Obj* a, Obj* b);
+	bool isGreaterEq(Obj* a, Obj* b);
+	Obj* SetState(Obj* a, bool state);
 
 	template<typename T>
 	inline T CastObj(Obj* obj)

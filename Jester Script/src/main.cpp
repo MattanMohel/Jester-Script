@@ -11,6 +11,14 @@
 
 using namespace jts;
 
+// list x VS quote x
+
+// (list x): list with value of evaluated x
+// (quote x): list with value of literal x obj*
+
+// (list + x x): list with value of +, num, num
+// (quote (+ x x)): list with value of +, ltrl x, ltrl x 
+
 int main(char** argc, int** argv)
 {
 	VM* vm = new VM();	

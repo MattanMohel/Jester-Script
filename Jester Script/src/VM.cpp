@@ -32,7 +32,7 @@ namespace jts
 			vm->symbols.emplace(key, value);
 		}
 
-		Obj* AddNative(Obj* (*native)(ObjNode* fn, ObjNode* args))
+		Obj* AddNative(Obj* (*native)(Obj* ret, ObjNode* args, bool eval))
 		{
 			Obj* obj = new Obj();
 			

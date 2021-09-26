@@ -29,8 +29,8 @@ namespace jts
 		LIST,
 
 		NATIVE,
-		C_BRIDGE,
-		JTS,
+		CPP_FN,
+		JTS_FN,
 
 		// needs attending to
 		STRING,
@@ -41,12 +41,10 @@ namespace jts
 		NIL = 0,
 
 		SYMBOL,
-		QUOTE,
 		VALUE,
-		FLAG,
 
-		CALL_BEG,
-		CALL_END,
+		HEAD,
+		END,
 	};
 
 	enum class SFlag

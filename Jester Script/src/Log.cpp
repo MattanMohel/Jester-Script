@@ -11,78 +11,78 @@ namespace jts
 		str upperStr = "";
 		ObjNode* elem = nullptr;
 
-		if (/*value->fnType == FnType::NIL*/ true)
+		switch (value->type)
 		{
-			switch (value->type)
-			{
-				case Type::JTS:
-				case Type::NATIVE:
+			case Type::JTS_FN:
+			case Type::NATIVE:
 
-					for (auto c : value->symbol)
-					{
-						upperStr += toupper(c);
-					}
+				for (auto c : value->symbol)
+				{
+					upperStr += toupper(c);
+				}
 
-					std::cout << upperStr;
+				std::cout << upperStr;
 
-					break;
+				break;
 
-				case Type::LIST:
+			case Type::QUOTE:
 
-					std::cout << "(";
+				if (value->spec == Spec::HEAD) break;
+				
+				for (auto c : value->_quote->symbol)
+				{
+					upperStr += toupper(c);
+				}
 
-					elem = value->_args;
+				std::cout << upperStr;
 
-					while (elem->next)
-					{
-						PrintObj(elem->value);
-						std::cout << " ";
+				break;
 
-						elem = elem->next;
-					}
+			case Type::LIST:
 
+				std::cout << "(";
+
+				elem = value->_args;
+
+				while (elem->next)
+				{
 					PrintObj(elem->value);
+					std::cout << " ";
 
-					std::cout << ")";
+					elem = elem->next;
+				}
 
-					break;
+				PrintObj(elem->value);
 
-				case Type::CHAR:
+				std::cout << ")";
 
-					std::cout << value->_char;
-					break;
+				break;
 
-				case Type::BOOL:
+			case Type::CHAR:
 
-					std::cout << (value->_bool ? "true" : "false");
-					break;
+				std::cout << value->_char;
+				break;
 
-				case Type::INT:
+			case Type::BOOL:
 
-					std::cout << value->_int;
-					break;
+				std::cout << (value->_bool ? "true" : "false");
+				break;
 
-				case Type::FLOAT:
+			case Type::INT:
 
-					std::cout << value->_float;
-					break;
+				std::cout << value->_int;
+				break;
 
-				default: // case NIL
+			case Type::FLOAT:
 
-					std::cout << "nil";
-					break;
-			}
+				std::cout << value->_float;
+				break;
+
+			default: // case NIL
+
+				std::cout << "nil";
+				break;
 		}
-		else
-		{
-			for (auto c : value->symbol)
-			{
-				upperStr += toupper(c);
-			}
-
-			std::cout << upperStr;
-		}
-
 
 		if (newLine) std::cout << '\n';
 

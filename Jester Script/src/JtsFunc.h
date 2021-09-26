@@ -12,7 +12,7 @@ namespace jts
 		ObjNode* params    = nullptr;
 	};
 
-	Obj* ExecJtsFunc(ObjNode* func);
+	Obj* ExecJtsFunc(Obj* func);
 }
 
 #endif

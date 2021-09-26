@@ -8,380 +8,370 @@
 
 namespace jts
 {
-	template<> Obj* BinaryOpObj<BinaryOp::ADD>(ObjNode* a, ObjNode* b)
+	template<> Obj* BinaryOpObj<BinaryOp::ADD>(Obj* a, Obj* b)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float += CastObj<float>(RetOf(b));
+				a->_float += CastObj<float>(b);
 				break;
 			
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int += CastObj<int>(RetOf(b));
+				a->_int += CastObj<int>(b);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 
-	template<> Obj* BinaryOpObj<BinaryOp::SUB>(ObjNode* a, ObjNode* b)
+	template<> Obj* BinaryOpObj<BinaryOp::SUB>(Obj* a, Obj* b)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float -= CastObj<float>(RetOf(b));
+				a->_float -= CastObj<float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int -= CastObj<int>(RetOf(b));
+				a->_int -= CastObj<int>(b);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}		
 	
-	template<> Obj* BinaryOpObj<BinaryOp::MUL>(ObjNode* a, ObjNode* b)
+	template<> Obj* BinaryOpObj<BinaryOp::MUL>(Obj* a, Obj* b)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float *= CastObj<float>(RetOf(b));
+				a->_float *= CastObj<float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int *= CastObj<int>(RetOf(b));
+				a->_int *= CastObj<int>(b);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}		
 	
-	template<> Obj* BinaryOpObj<BinaryOp::DIV>(ObjNode* a, ObjNode* b)
+	template<> Obj* BinaryOpObj<BinaryOp::DIV>(Obj* a, Obj* b)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float /= CastObj<float>(RetOf(b));
+				a->_float /= CastObj<float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int /= CastObj<int>(RetOf(b));
+				a->_int /= CastObj<int>(b);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}	
 
-	template<> Obj* BinaryOpObj<BinaryOp::MOD>(ObjNode* a, ObjNode* b)
+	template<> Obj* BinaryOpObj<BinaryOp::MOD>(Obj* a, Obj* b)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float = (int)a->value->_float % CastObj<int>(RetOf(b));
+				a->_float = (int)a->_float % CastObj<int>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int %= CastObj<int>(RetOf(b));
+				a->_int %= CastObj<int>(b);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 
-	template<> Obj* BinaryOpObj<BinaryOp::POW>(ObjNode* a, ObjNode* b)
+	template<> Obj* BinaryOpObj<BinaryOp::POW>(Obj* a, Obj* b)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float = pow(a->value->_float, CastObj<int>(RetOf(b)));
+				a->_float = pow(a->_float, CastObj<int>(b));
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->value->_int = pow(a->value->_int, CastObj<int>(RetOf(b)));
+				a->_int = pow(a->_int, CastObj<int>(b));
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 	
-	template<> Obj* BinaryOpObj<BinaryOp::SET>(ObjNode* a, ObjNode* b)
+	template<> Obj* BinaryOpObj<BinaryOp::SET>(Obj* a, Obj* b)
 	{
-		Obj* value2 = RetOf(b);
+		a->type = b->type;
 
-		Obj* value1 = a->value;
-
-		value1->type = value2->type;
-
-		switch (value2->type)
+		switch (b->type)
 		{
 			case Type::LIST:
 
-				value1->ret   = value2->ret;
-				value1->spec  = value2->spec;
-				value1->_args = value2->_args;
+				a->ret = b->ret;
+				a->spec = b->spec;
+				a->_args = b->_args;
 
 				break;
 
 			case Type::NATIVE:
 
-				value1->_native = value2->_native;
+				a->_native = b->_native;
 				break;
 
-			case Type::JTS:
-					
-				value1->_jtsFunc = value2->_jtsFunc;
+			case Type::JTS_FN:
+
+				a->_jtsFunc = b->_jtsFunc;
 				break;
 
-			case Type::C_BRIDGE:
+			case Type::CPP_FN:
 				// assign
 				break;
 
+			case Type::QUOTE:
+
+				a->_quote = b->_quote;
+				break;
+
 			case Type::FLOAT:
 
-				value1->_float = CastObj<float>(value2);
+				a->_float = CastObj<float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				value1->_int = CastObj<int>(value2);
+				a->_int = CastObj<int>(b);
 				break;
 		}
 
-		return value1;
+		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::INCR>(ObjNode* a)
+	template<> Obj* UnaryOpObj<UnaryOp::INCR>(Obj* a)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				++a->value->_float;
+				++a->_float;
 				break;
 
 			default: // CHAR, BOOL, INT
-				++a->value->_int;
+				++a->_int;
 				break;
 		}
 
-		return a->value;
+		return a;
 	}	
 	
-	template<> Obj* UnaryOpObj<UnaryOp::DECR>(ObjNode* a)
+	template<> Obj* UnaryOpObj<UnaryOp::DECR>(Obj* a)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				--a->value->_float;
+				--a->_float;
 				break;
 
 			default: // CHAR, BOOL, INT
-				--a->value->_int;
+				--a->_int;
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::SIN>(ObjNode* a)
+	template<> Obj* UnaryOpObj<UnaryOp::SIN>(Obj* a)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float = sin(a->value->_float);
+				a->_float = sin(a->_float);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->value->_int = sin(a->value->_int);
+				a->_int = sin(a->_int);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::ASIN>(ObjNode* a)
+	template<> Obj* UnaryOpObj<UnaryOp::ASIN>(Obj* a)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float = asin(a->value->_float);
+				a->_float = asin(a->_float);
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->value->_int = asin(a->value->_int); 
+				a->_int = asin(a->_int);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::COS>(ObjNode* a)
+	template<> Obj* UnaryOpObj<UnaryOp::COS>(Obj* a)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float = cos(a->value->_float);
+				a->_float = cos(a->_float);
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->value->_int = cos(a->value->_int);
+				a->_int = cos(a->_int);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::ACOS>(ObjNode* a)
+	template<> Obj* UnaryOpObj<UnaryOp::ACOS>(Obj* a)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float = acos(a->value->_float);
+				a->_float = acos(a->_float);
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->value->_int = acos(a->value->_int);
+				a->_int = acos(a->_int);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::TAN>(ObjNode* a)
+	template<> Obj* UnaryOpObj<UnaryOp::TAN>(Obj* a)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float = tan(a->value->_float);
+				a->_float = tan(a->_float);
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->value->_int = tan(a->value->_int);
+				a->_int = tan(a->_int);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::ATAN>(ObjNode* a)
+	template<> Obj* UnaryOpObj<UnaryOp::ATAN>(Obj* a)
 	{
-		switch (a->value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->value->_float = atan(a->value->_float);
+				a->_float = atan(a->_float);
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->value->_int = atan(a->value->_int);
+				a->_int = atan(a->_int);
 				break;
 		}
 
-		return a->value;
+		return a;
 	}
 
-	bool isTrue(ObjNode* a)
+	bool isTrue(Obj* a)
 	{
-		Obj* value = RetOf(a);
-
-		switch (value->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				return (bool)value->_float;
+				return (bool)a->_float;
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				return (bool)value->_int;
+				return (bool)a->_int;
 				break;
 		}
 	}
 
-	bool isEqual(ObjNode* a, ObjNode* b)
+	bool isEqual(Obj* a, Obj* b)
 	{
-		Obj* val1 = RetOf(a);
-		Obj* val2 = RetOf(b);
-
-		switch (val1->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				return val1->_float == val2->_float;
+				return a->_float == b->_float;
 
 			default: // CHAR, BOOL, INT
 
-				return val1->_int == val2->_int;
+				return a->_int == b->_int;
 		}
 	}
 
-	bool isGreater(ObjNode* a, ObjNode* b)
+	bool isGreater(Obj* a, Obj* b)
 	{
-		Obj* val1 = RetOf(a);
-		Obj* val2 = RetOf(b);
-
-		switch (val1->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				return val1->_float > CastObj<float>(val2);
+				return a->_float > CastObj<float>(b);
 
 			default: // CHAR, BOOL, INT
 
-				return val1->_int > CastObj<int>(val2);
+				return a->_int > CastObj<int>(b);
 		}
 
 		return false;
 	}
 
-	bool isGreaterEq(ObjNode* a, ObjNode* b)
+	bool isGreaterEq(Obj* a, Obj* b)
 	{
-		Obj* val1 = RetOf(a);
-		Obj* val2 = RetOf(b);
-
-		switch (val1->type)
+		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				return val1->_float >= CastObj<float>(val2);
+				return a->_float >= CastObj<float>(b);
 
 			default: // CHAR, BOOL, INT
 
-				return val1->_int >= CastObj<int>(val2);
+				return a->_int >= CastObj<int>(b);
 		}
 
 		return false;
 	}
 
-	Obj* SetState(ObjNode* a, bool state)
+	Obj* SetState(Obj* a, bool state)
 	{
-		a->value->type = Type::BOOL;
-		a->value->_bool = state;
+		a->type = Type::BOOL;
+		a->_bool = state;
 
-		return a->value;
+		return a;
 	}
 }
