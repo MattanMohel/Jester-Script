@@ -10,9 +10,10 @@ namespace jts
 		ObjNode* codeBlock = nullptr;
 		
 		ObjNode* params    = nullptr;
+
+		Obj* operator() (ObjNode* args, bool eval);
 	};
 
-	Obj* ExecJtsFunc(Obj* func);
 }
 
 #endif

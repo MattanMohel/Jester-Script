@@ -6,3 +6,7 @@
 *.ipch
 *.obj
 *.pdb
+*.ilk
+*.pdb
+*.log
+*.idb

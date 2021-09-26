@@ -44,7 +44,7 @@ namespace jts
 
 				case Spec::SYMBOL:
 
-					if (!env::GetSymbol(vm, it->value)) vm->symbols.emplace(it->value, new Obj());
+					if (!env::GetSymbol(vm, it->value)) env::AddSymbol(vm, it->value, new Obj { Type::NIL, Spec::SYMBOL });
 
 					(*head) = new ObjNode(env::GetSymbol(vm, it->value));
 					(*head)->value->symbol = it->value;

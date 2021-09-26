@@ -104,7 +104,8 @@ namespace lib
 
 		env::AddSymbol(vm, "defn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* func = args->value->ret;
+			// (defn id (args) code)
+			Obj* func = args->value;
 
 			func->spec = Spec::SYMBOL;
 			func->type = Type::JTS_FN;
@@ -123,7 +124,29 @@ namespace lib
 					
 		env::AddSymbol(vm, "loop", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return nullptr;
+			// (loop cond code)
+
+			auto* cond = args;
+			auto* block = args->next;
+
+			bool state = isTrue(EvalObj(cond, eval));
+
+			while (state)
+			{
+				while (block->next)
+				{
+					EvalObj(block, eval);
+					block = block->next;
+				}
+
+				state = isTrue(EvalObj(cond, eval));
+
+				Obj* loopRet = EvalObj(block, eval);
+
+				if (!state) return loopRet;
+
+				block = args->next;
+			}
 		}));		
 		
 		env::AddSymbol(vm, "progn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*

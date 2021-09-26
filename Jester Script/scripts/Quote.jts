@@ -1,8 +1,13 @@
-(set x '(+ 5 5))
-(println (eval x))
+(defn when (cond result)
+	(if cond
+		(eval result)
+		nil))
+		
+(println (when true (print 1)))  # prints '11'
+(println (when false (print 1))) # prints '1nil'
 
-(set x '(+ 5 5 (+ 5 5)))
-(println (eval x))
+(println (when true (quote (print 1))))  # prints just '1'
+(println (when false (quote (print 1)))) # prints just 'nil'
 
-(set y x)
-(println (eval y))
+# happens as unless '(print 1)' is quoted, it evaluates, 
+# prints one, and returns one again if the cond is met

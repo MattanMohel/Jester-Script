@@ -74,7 +74,7 @@ namespace jts
 
 			case Type::JTS_FN:
 
-				return ExecJtsFunc(ret);
+				return (*args->value->_jtsFunc)(args, eval);
 
 			case Type::CPP_FN:
 
