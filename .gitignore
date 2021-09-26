@@ -5,4 +5,8 @@
 .vs/Jester Script/v16/Browse.VC.opendb
 *.ipch
 *.obj
-*.pdb
+*.pdb 
+*.Jester Script/Debug
+*.Debug
+*.vs
+*.suo
