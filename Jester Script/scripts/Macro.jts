@@ -1,37 +1,20 @@
 
-(defn range (n)
-	(set index 0)
-	(set lst (0))
-	
-	(loop (< index (- n 1))
-		(++ index)
-		(append index lst))
-	
-	lst)
-	
-(defn reverse (lst)
-	(set size 0)
-	(set index 0)
-	
-	(iterate value lst (++ size))
+(defm when (cond res)
+	(if cond
+		res
+		nil))
 		
-	(loop (< index (/ 2 size))
-				
-		(set prev (nth index lst))
-		(set (nth index lst) (nth (- size (+ index 1)) lst))
-		(set(nth (- size (+ index 1)) lst) prev)
-		
-		(++ index))
-	
-	lst)
-	
+#(when true (+ 2 2))
 
-
-(set dict (create-dict
-	(key value)
-	(key1 value1)
+(defm lcomp (for var in list conditional test)
 	
-))
-
-dict -> ('my-key 10) -> ('my-second-key 20)
+	(set result nil)
 	
+	(iterate var list
+		(conditional test
+			(append var result)
+			nil))
+	
+	result)
+	
+(lcomp for x in (1 2 3 4 5) if (equal (mod x 2) 0))

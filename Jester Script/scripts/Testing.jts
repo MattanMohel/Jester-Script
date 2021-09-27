@@ -1,11 +1,13 @@
 
-(defm when (cond result)
-	(if (eval cond)
-		(eval result)
-		nil))
-		
-(defm for (x from lower below upper)
-	(set (eval x) (eval lower))
-	(loop (< (eval x) (eval upper))
-		(print (eval x))
-		(++ (eval x))))
+
+(defm limit (eq x point)
+	(set x-delta 0.001)
+
+	(set (eval x) (* 1.0 (eval point)))
+	(set d1 (eval eq))
+	(set (eval x) (+ x-delta (eval point)))
+	(set d2 (eval eq))
+	
+	(set y-delta (- d2 d1))
+
+	(/ y-delta x-delta))

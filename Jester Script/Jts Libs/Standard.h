@@ -18,12 +18,12 @@ namespace lib
 {
 	inline void StandardLib(VM* vm)
 	{
+		env::AddSymbol(vm, "nil", env::AddConst(nullptr));
+
 		env::AddSymbol(vm, "quote", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return BinaryOpObj<BinaryOp::QUOTE>(ret, args->value);
 		}));
-
-		env::AddSymbol(vm, "nil", env::AddConst(nullptr));
 
 		env::AddSymbol(vm, "set", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
@@ -72,7 +72,14 @@ namespace lib
 
 			Obj* head = EvalObj(args->next, eval);
 
-			if (!head) return NIL;
+			if (head->type != Type::LIST)
+			{
+				head->type = Type::LIST;
+
+				head->_args = new ObjNode(new Obj());
+
+				return BinaryOpObj<BinaryOp::SET>(head->_args->value, EvalObj(args, eval));
+			}
 
 			auto* elem = head->_args;
 			
@@ -135,6 +142,7 @@ namespace lib
 
 			func->_jtsMacro = new Macro();
 			func->_jtsMacro->params = args->next;
+
 			func->_jtsMacro->codeBlock = args->next->next;
 
 			return func;
@@ -174,14 +182,14 @@ namespace lib
 		
 		env::AddSymbol(vm, "iterate", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			// (loop cond code)
+			// (loop value code)
 
-			auto* list = args->next->value->_args;
+			auto* list = EvalObj(args->next, eval)->_args;
 			auto* block = args->next->next;
 
 			while (list)
 			{
-				BinaryOpObj<BinaryOp::SET>(args->value, EvalObj(list, eval));
+				BinaryOpObj<BinaryOp::SET>(EvalObj(args, eval), EvalObj(list, eval));
 
 				while (block->next)
 				{

@@ -12,6 +12,10 @@ namespace lib
 {
 	inline void BooleanLib(VM* vm)
 	{
+		env::AddSymbol(vm, "T", env::AddConst<bool>(true));
+
+		env::AddSymbol(vm, "F", env::AddConst<bool>(false));
+
 		env::AddSymbol(vm, "if", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			if (isTrue(EvalObj(args, eval)))

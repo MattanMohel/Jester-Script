@@ -14,16 +14,13 @@ namespace jts
             tok->type = Type::CHAR;
             return true;
         }
+
         if (tok->value[0] == '\"' && tok->value[len - 1] == '\"')
         {
             tok->type = Type::STRING;
             return true;
         }
-        if (tok->value == "true" || tok->value == "false")
-        {
-            tok->type = Type::BOOL;
-            return true;
-        }
+
         else
         {
             size_t perCount = 0;

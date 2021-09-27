@@ -28,10 +28,10 @@ namespace jts
 
 		while (block->next)
 		{
-			EvalObj(block, eval);
+			EvalObj(block, true);
 			block = block->next;
 		}
 
-		return 	EvalObj(block, eval);
+		return 	EvalObj(block, true);
 	}
 }

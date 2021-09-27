@@ -18,6 +18,8 @@ namespace lib
 	{
 		env::AddSymbol(vm, "pi", env::AddConst<j_float>(M_PI));
 
+		env::AddSymbol(vm, "e", env::AddConst<j_float>(M_E));
+
 		env::AddSymbol(vm, "rad2deg", env::AddConst<j_float>(180.0f/M_PI));
 		
 		env::AddSymbol(vm, "deg2rad", env::AddConst<j_float>(M_PI/180.0f));
@@ -75,7 +77,7 @@ namespace lib
 			return ret;
 		}));		
 		
-		env::AddSymbol(vm, "%", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "mod", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
 

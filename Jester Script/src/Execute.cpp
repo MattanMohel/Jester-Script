@@ -14,6 +14,8 @@ namespace jts
 		{
 			case Type::LIST:
 
+				if (!obj->value->_args) return NIL;
+
 				switch (obj->value->_args->value->type)
 				{
 					case Type::MACRO:

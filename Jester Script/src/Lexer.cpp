@@ -67,6 +67,7 @@ namespace jts
 				lexer.clear();
 			}
 
+
 			if (*ch == '\n')
 			{
 				++line;
