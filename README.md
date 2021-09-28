@@ -176,4 +176,4 @@ and just like that we get our expected result. ```(print false)``` here is evalu
 - [ ] C-Bridge Functions  
 - [ ] User-Defined Classes  
 - [ ] C-Bridge Classes  
-- [ ] Memory management (reference counting)  
+- [ ] Memory management (reference counting)  ||  Memory pool --> creating instances for lists would be cleaner && could create return values inside functions rather than the return type being in the Obj {}
