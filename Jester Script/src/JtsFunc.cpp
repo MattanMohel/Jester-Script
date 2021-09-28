@@ -12,13 +12,13 @@ namespace jts
 		if (params)
 		{
 			auto* paramsIn = args->next;
-			auto* paramBeg = params->value->_args;
+			auto* paramCur = params->value->_args;
 
-			while (paramBeg)
+			while (paramCur)
 			{
-				BinaryOpObj<BinaryOp::SET>(paramBeg->value, EvalObj(paramsIn, eval));
+				BinaryOpObj<BinaryOp::SET>(paramCur->value, EvalObj(paramsIn, eval));
 
-				paramBeg = paramBeg->next;
+				paramCur = paramCur->next;
 
 				paramsIn = paramsIn->next;
 			}

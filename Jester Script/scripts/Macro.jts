@@ -1,11 +1,4 @@
 
-(defm when (cond res)
-	(if cond
-		res
-		nil))
-		
-#(when true (+ 2 2))
-
 (defm lcomp (for var in list conditional test)
 	
 	(set result nil)
@@ -17,4 +10,16 @@
 	
 	result)
 	
-(lcomp for x in (1 2 3 4 5) if (equal (mod x 2) 0))
+(defm foreach (var in list action)
+	(set new-list nil)
+	
+	(iterate var list
+		(... action)
+		(append var new-list))
+	
+	new-list)
+	
+(defn fac (n)
+	(if (equal n 1)
+		1
+		(* n (fac (- n 1)))))

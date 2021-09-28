@@ -46,6 +46,18 @@ namespace lib
 			if (!elem || !elem->next) return NIL;
 
 			return elem->next->value;
+		}));			
+		
+		env::AddSymbol(vm, "...", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			auto* head = EvalObj(args, eval);
+			auto* elem = head->_args;
+
+			if (!elem || !elem->next) return NIL;
+
+			head->_args = elem->next;
+
+			return elem->value;
 		}));				
 		
 		env::AddSymbol(vm, "nth", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*

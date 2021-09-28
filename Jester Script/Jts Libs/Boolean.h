@@ -26,7 +26,7 @@ namespace lib
 			return EvalObj(args->next->next, eval);
 		}));
 
-		env::AddSymbol(vm, "equal", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "=", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return SetState(ret, isEqual(EvalObj(args, eval), EvalObj(args->next, eval)));
 		}));			
