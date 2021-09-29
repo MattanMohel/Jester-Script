@@ -9,6 +9,7 @@
 #define _USE_MATH_DEFINES
 
 #include <math.h>
+#include <limits>
 
 using namespace jts;
 
@@ -17,6 +18,8 @@ namespace lib
 	inline void ArithmeticLib(VM* vm)
 	{
 		env::AddSymbol(vm, "pi", env::AddConst<j_float>(M_PI));
+
+		env::AddSymbol(vm, "epsilon", env::AddConst<j_float>(std::numeric_limits<j_float>::epsilon()));
 
 		env::AddSymbol(vm, "e", env::AddConst<j_float>(M_E));
 
@@ -101,6 +104,26 @@ namespace lib
 			}
 
 			return ret;
+		}));		
+				
+		
+		env::AddSymbol(vm, "log", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
+
+			while (args->next)
+			{
+				BinaryOpObj<BinaryOp::LOG>(ret, EvalObj(args->next, eval));
+				args = args->next;
+			}
+
+			return ret;
+		}));			
+		
+		env::AddSymbol(vm, "ln", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
+			return UnaryOpObj<UnaryOp::LN>(ret);
 		}));		
 		
 		env::AddSymbol(vm, "+=", env::AddNative([](Obj* ret, ObjNode* args, bool eval)

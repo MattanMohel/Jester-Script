@@ -104,12 +104,32 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				a->_float = pow(a->_float, CastObj<j_int>(b));
+				a->_float = pow(a->_float, CastObj<j_float>(b));
 				break;
 
 			default: // CHAR, BOOL, INT
 
 				a->_int = pow(a->_int, CastObj<j_int>(b));
+				break;
+		}
+
+		return a;
+	}	
+	
+	template<> Obj* BinaryOpObj<BinaryOp::LOG>(Obj* a, Obj* b)
+	{
+		// (log 2.0 4.0) = 2
+
+		switch (a->type)
+		{
+			case Type::FLOAT:
+
+				a->_float = (j_float)(log(CastObj<j_float>(b)) / log(CastObj<j_float>(a)));
+				break;
+
+			default: // CHAR, BOOL, INT
+
+				a->_int = (j_int)(log(CastObj<j_float>(b)) / log(CastObj<j_float>(a)));
 				break;
 		}
 
@@ -340,6 +360,26 @@ namespace jts
 			default: // CHAR, BOOL, INT
 
 				a->_int = atan(a->_int);
+				break;
+		}
+
+		return a;
+	}
+
+	template<> Obj* UnaryOpObj<UnaryOp::LN>(Obj* a)
+	{
+		// (log 2.0 4.0) = 2
+
+		switch (a->type)
+		{
+			case Type::FLOAT:
+
+				a->_float = (j_float)log(CastObj<j_float>(a));
+				break;
+
+			default: // CHAR, BOOL, INT
+
+				a->_int = (j_int)log(CastObj<j_float>(a));
 				break;
 		}
 

@@ -14,6 +14,7 @@ namespace jts
 		DIV,
 		MOD,
 		POW,
+		LOG,
 
 		SET,
 
@@ -31,6 +32,7 @@ namespace jts
 		ASIN,
 		TAN,
 		ATAN,
+		LN,
 
 		HASH,
 	};
@@ -53,6 +55,7 @@ namespace jts
 	template<> Obj* BinaryOpObj<BinaryOp::DIV>(Obj* a, Obj* b);
 	template<> Obj* BinaryOpObj<BinaryOp::MOD>(Obj* a, Obj* b);
 	template<> Obj* BinaryOpObj<BinaryOp::POW>(Obj* a, Obj* b);
+	template<> Obj* BinaryOpObj<BinaryOp::LOG>(Obj* a, Obj* b);
 
 	template<> Obj* BinaryOpObj<BinaryOp::SET>(Obj* a, Obj* b);
 
@@ -67,6 +70,7 @@ namespace jts
 	template<> Obj* UnaryOpObj<UnaryOp::ASIN>(Obj* a);
 	template<> Obj* UnaryOpObj<UnaryOp::TAN>(Obj* a);
 	template<> Obj* UnaryOpObj<UnaryOp::ATAN>(Obj* a);
+	template<> Obj* UnaryOpObj<UnaryOp::LN>(Obj* a);
 
 	template<> Obj* UnaryOpObj<UnaryOp::HASH>(Obj* a);
 

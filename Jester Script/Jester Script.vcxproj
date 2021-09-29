@@ -152,11 +152,13 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\VM.cpp" />
     <ClCompile Include="src\StrCon.cpp" />
+    <ClCompile Include="utils\Pool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Jts Libs\Arithmetic.h" />
     <ClInclude Include="Jts Libs\Boolean.h" />
     <ClInclude Include="Jts Libs\Standard.h" />
+    <ClInclude Include="utils\Pool.h" />
     <ClInclude Include="src\JtsMacro.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\IterableStack.h" />
