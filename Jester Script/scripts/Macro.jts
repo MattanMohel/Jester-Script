@@ -36,3 +36,11 @@
 	(set y2 expr)
 	
 	(/ (- y2 y1) min-delta))
+	
+(defm infix (args)
+	(set lst nil)
+	(iterate x args
+		(append (quote x) lst))
+		
+	lst)
+	

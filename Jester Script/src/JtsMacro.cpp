@@ -5,7 +5,7 @@
 
 namespace jts
 {
-	Obj* Macro::operator() (ObjNode* args, bool eval)
+	Obj* Macro::Call (ObjNode* args, bool eval)
 	{
 		// (defm id (args) code)
 
@@ -16,7 +16,7 @@ namespace jts
 
 			while (paramBeg)
 			{
-				BinaryOpObj<BinaryOp::SET>(paramBeg->value, BinaryOpObj<BinaryOp::QUOTE>(paramsIn->value->ret, paramsIn->value));
+				BinaryOp<Binary::SET>(paramBeg->value, BinaryOp<Binary::QUOTE>(paramsIn->value->ret, paramsIn->value));
 
 				paramBeg = paramBeg->next;
 

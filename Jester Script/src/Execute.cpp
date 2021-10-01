@@ -3,6 +3,7 @@
 #include "JtsMacro.h"
 #include "Object.h"
 #include "Operations.h"
+#include "cppFunc.h"
 
 namespace jts
 {
@@ -78,15 +79,15 @@ namespace jts
 
 			case Type::JTS_FN:
 
-				return (*args->value->_jtsFunc)(args, eval);
+				return args->value->_jtsFunc->Call(args, eval);
 
 			case Type::MACRO:
 
-				return (*args->value->_jtsMacro)(args, eval);
+				return args->value->_jtsMacro->Call(args, eval);
 
 			case Type::CPP_FN:
 
-				return nullptr;
+				return args->value->_cppFunc->Call(ret, args);
 
 			case Type::QUOTE:
 				

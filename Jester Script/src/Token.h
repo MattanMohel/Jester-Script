@@ -5,6 +5,8 @@
 
 namespace jts
 {
+	// Used for lexical analysis
+	// --Precursor to Obj in parsing hierarchy
 	struct Tok
 	{
 		Tok* next = nullptr;

@@ -6,7 +6,7 @@
 
 namespace jts
 {
-	enum class BinaryOp
+	enum class Binary
 	{
 		ADD,
 		SUB,
@@ -21,7 +21,7 @@ namespace jts
 		QUOTE,
 	};
 
-	enum class UnaryOp
+	enum class Unary
 	{
 		INCR,
 		DECR,
@@ -37,92 +37,62 @@ namespace jts
 		HASH,
 	};
 
-	template<BinaryOp op>
-	inline Obj* BinaryOpObj(Obj* a, Obj* b)
+	// Preforms binary Obj operations
+	template<Binary op>
+	inline Obj* BinaryOp(Obj* a, Obj* b)
 	{
 		static_assert(false, "binary operator not supported");
 	}
 
-	template<UnaryOp op>
-	inline Obj* UnaryOpObj(Obj* a)
+	// Preforms unary Obj operations
+	template<Unary op>
+	inline Obj* UnaryOp(Obj* a)
 	{
 		static_assert(false, "unary operator not supported");
-	}	
+	}
+
+	// Sets Obj to given integral type
+	template<typename T>
+	inline Obj* SetTo(Obj* a, T value)
+	{
+		static_assert(false, "object type not supported");
+	}
+
+	// Implementations...
 	
-	template<> Obj* BinaryOpObj<BinaryOp::ADD>(Obj* a, Obj* b);
-	template<> Obj* BinaryOpObj<BinaryOp::SUB>(Obj* a, Obj* b);
-	template<> Obj* BinaryOpObj<BinaryOp::MUL>(Obj* a, Obj* b);
-	template<> Obj* BinaryOpObj<BinaryOp::DIV>(Obj* a, Obj* b);
-	template<> Obj* BinaryOpObj<BinaryOp::MOD>(Obj* a, Obj* b);
-	template<> Obj* BinaryOpObj<BinaryOp::POW>(Obj* a, Obj* b);
-	template<> Obj* BinaryOpObj<BinaryOp::LOG>(Obj* a, Obj* b);
+	template<> Obj* BinaryOp<Binary::ADD>(Obj* a, Obj* b);
+	template<> Obj* BinaryOp<Binary::SUB>(Obj* a, Obj* b);
+	template<> Obj* BinaryOp<Binary::MUL>(Obj* a, Obj* b);
+	template<> Obj* BinaryOp<Binary::DIV>(Obj* a, Obj* b);
+	template<> Obj* BinaryOp<Binary::MOD>(Obj* a, Obj* b);
+	template<> Obj* BinaryOp<Binary::POW>(Obj* a, Obj* b);
+	template<> Obj* BinaryOp<Binary::LOG>(Obj* a, Obj* b);
+	template<> Obj* BinaryOp<Binary::SET>(Obj* a, Obj* b);
+	template<> Obj* BinaryOp<Binary::QUOTE>(Obj* a, Obj* b);
 
-	template<> Obj* BinaryOpObj<BinaryOp::SET>(Obj* a, Obj* b);
+	template<> Obj* UnaryOp<Unary::INCR>(Obj* a);
+	template<> Obj* UnaryOp<Unary::DECR>(Obj* a);
+	template<> Obj* UnaryOp<Unary::SIN>(Obj* a);
+	template<> Obj* UnaryOp<Unary::COS>(Obj* a);
+	template<> Obj* UnaryOp<Unary::ACOS>(Obj* a);
+	template<> Obj* UnaryOp<Unary::ASIN>(Obj* a);
+	template<> Obj* UnaryOp<Unary::TAN>(Obj* a);
+	template<> Obj* UnaryOp<Unary::ATAN>(Obj* a);
+	template<> Obj* UnaryOp<Unary::LN>(Obj* a);
+	template<> Obj* UnaryOp<Unary::HASH>(Obj* a);
 
-	template<> Obj* BinaryOpObj<BinaryOp::QUOTE>(Obj* a, Obj* b);
+	template<> Obj* SetTo<j_char>(Obj* a, j_char value);
+	template<> Obj* SetTo<j_bool>(Obj* a, j_bool value);
+	template<> Obj* SetTo<j_int>(Obj* a, j_int value);
+	template<> Obj* SetTo<j_float>(Obj* a, j_float value);
+	template<> Obj* SetTo<nullptr_t>(Obj* a, nullptr_t value);
 
-	template<> Obj* UnaryOpObj<UnaryOp::INCR>(Obj* a);
-	template<> Obj* UnaryOpObj<UnaryOp::DECR>(Obj* a);
-	
-	template<> Obj* UnaryOpObj<UnaryOp::SIN>(Obj* a);
-	template<> Obj* UnaryOpObj<UnaryOp::COS>(Obj* a);
-	template<> Obj* UnaryOpObj<UnaryOp::ACOS>(Obj* a);
-	template<> Obj* UnaryOpObj<UnaryOp::ASIN>(Obj* a);
-	template<> Obj* UnaryOpObj<UnaryOp::TAN>(Obj* a);
-	template<> Obj* UnaryOpObj<UnaryOp::ATAN>(Obj* a);
-	template<> Obj* UnaryOpObj<UnaryOp::LN>(Obj* a);
-
-	template<> Obj* UnaryOpObj<UnaryOp::HASH>(Obj* a);
+	// Boolean operations
 
 	bool isTrue (Obj* a);
 	bool isEqual(Obj* a, Obj* b);
 	bool isGreater(Obj* a, Obj* b);
 	bool isGreaterEq(Obj* a, Obj* b);
-	Obj* SetState(Obj* a, bool state);
-
-	template<typename T>
-	inline T CastObj(Obj* obj)
-	{
-		switch (obj->type)
-		{
-			case Type::CHAR:
-
-				return static_cast<T>(obj->_char);
-			
-			case Type::BOOL:
-
-				return static_cast<T>(obj->_bool);
-
-			case Type::INT:
-
-				return static_cast<T>(obj->_int);
-
-			default: // case FLOAT
-
-				return static_cast<T>(obj->_float);
-		}
-	}
-
-	template<typename T>
-	inline Type GetType()
-	{
-		if (std::is_same<T, j_char>::value)
-		{
-			return Type::INT;
-		}
-		else if (std::is_same<T, j_bool>::value)
-		{
-			return Type::BOOL;
-		}
-		else if (std::is_same<T, j_int>::value)
-		{
-			return Type::INT;
-		}
-		else if (std::is_same<T, j_float>::value)
-		{
-			return Type::FLOAT;
-		}
-	}
 }
 
 #endif

@@ -8,7 +8,7 @@
 
 namespace jts
 {
-	template<> Obj* BinaryOpObj<BinaryOp::ADD>(Obj* a, Obj* b)
+	template<> Obj* BinaryOp<Binary::ADD>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
@@ -26,7 +26,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* BinaryOpObj<BinaryOp::SUB>(Obj* a, Obj* b)
+	template<> Obj* BinaryOp<Binary::SUB>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
@@ -44,7 +44,7 @@ namespace jts
 		return a;
 	}		
 	
-	template<> Obj* BinaryOpObj<BinaryOp::MUL>(Obj* a, Obj* b)
+	template<> Obj* BinaryOp<Binary::MUL>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
@@ -62,7 +62,7 @@ namespace jts
 		return a;
 	}		
 	
-	template<> Obj* BinaryOpObj<BinaryOp::DIV>(Obj* a, Obj* b)
+	template<> Obj* BinaryOp<Binary::DIV>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
@@ -80,7 +80,7 @@ namespace jts
 		return a;
 	}	
 
-	template<> Obj* BinaryOpObj<BinaryOp::MOD>(Obj* a, Obj* b)
+	template<> Obj* BinaryOp<Binary::MOD>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
@@ -98,7 +98,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* BinaryOpObj<BinaryOp::POW>(Obj* a, Obj* b)
+	template<> Obj* BinaryOp<Binary::POW>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
@@ -116,10 +116,8 @@ namespace jts
 		return a;
 	}	
 	
-	template<> Obj* BinaryOpObj<BinaryOp::LOG>(Obj* a, Obj* b)
+	template<> Obj* BinaryOp<Binary::LOG>(Obj* a, Obj* b)
 	{
-		// (log 2.0 4.0) = 2
-
 		switch (a->type)
 		{
 			case Type::FLOAT:
@@ -136,7 +134,7 @@ namespace jts
 		return a;
 	}
 	
-	template<> Obj* BinaryOpObj<BinaryOp::SET>(Obj* a, Obj* b)
+	template<> Obj* BinaryOp<Binary::SET>(Obj* a, Obj* b)
 	{
 		a->type = b->type;
 
@@ -183,7 +181,7 @@ namespace jts
 		return a;
 	}
 	
-	template<> Obj* BinaryOpObj<BinaryOp::QUOTE>(Obj* a, Obj* b)
+	template<> Obj* BinaryOp<Binary::QUOTE>(Obj* a, Obj* b)
 	{
 		ObjNode* cell = nullptr;
 		ObjNode* args = nullptr;
@@ -206,7 +204,7 @@ namespace jts
 
 				while (args->next)
 				{
-					cell->next = new ObjNode(BinaryOpObj<BinaryOp::QUOTE>(args->next->value->ret, args->next->value));
+					cell->next = new ObjNode(BinaryOp<Binary::QUOTE>(args->next->value->ret, args->next->value));
 
 					args = args->next;
 
@@ -224,7 +222,7 @@ namespace jts
 		}
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::INCR>(Obj* a)
+	template<> Obj* UnaryOp<Unary::INCR>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -241,7 +239,7 @@ namespace jts
 		return a;
 	}	
 	
-	template<> Obj* UnaryOpObj<UnaryOp::DECR>(Obj* a)
+	template<> Obj* UnaryOp<Unary::DECR>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -258,7 +256,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::SIN>(Obj* a)
+	template<> Obj* UnaryOp<Unary::SIN>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -276,7 +274,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::ASIN>(Obj* a)
+	template<> Obj* UnaryOp<Unary::ASIN>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -294,7 +292,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::COS>(Obj* a)
+	template<> Obj* UnaryOp<Unary::COS>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -312,7 +310,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::ACOS>(Obj* a)
+	template<> Obj* UnaryOp<Unary::ACOS>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -330,7 +328,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::TAN>(Obj* a)
+	template<> Obj* UnaryOp<Unary::TAN>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -348,7 +346,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::ATAN>(Obj* a)
+	template<> Obj* UnaryOp<Unary::ATAN>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -366,10 +364,8 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::LN>(Obj* a)
+	template<> Obj* UnaryOp<Unary::LN>(Obj* a)
 	{
-		// (log 2.0 4.0) = 2
-
 		switch (a->type)
 		{
 			case Type::FLOAT:
@@ -386,7 +382,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOpObj<UnaryOp::HASH>(Obj* a)
+	template<> Obj* UnaryOp<Unary::HASH>(Obj* a)
 	{
 		switch (a->type) 
 		{
@@ -416,6 +412,46 @@ namespace jts
 		}
 
 		a->type = Type::INT;
+
+		return a;
+	}
+
+	template<> Obj* SetTo<j_char>(Obj* a, j_char value)
+	{
+		a->type = Type::CHAR;
+		a->_char = value;
+
+		return a;
+	}
+
+	template<> Obj* SetTo<j_bool>(Obj* a, j_bool value)
+	{
+		a->type = Type::BOOL;
+		a->_bool = value;
+
+		return a;
+	}
+
+	template<> Obj* SetTo<j_int>(Obj* a, j_int value)
+	{
+		a->type = Type::INT;
+		a->_int = value;
+
+		return a;
+	}
+
+	template<> Obj* SetTo<j_float>(Obj* a, j_float value)
+	{
+		a->type = Type::FLOAT;
+		a->_float = value;
+
+		return a;
+	}
+
+	template<> Obj* SetTo<nullptr_t>(Obj* a, nullptr_t value)
+	{
+		a->type = Type::NIL;
+		a->_int = 0;
 
 		return a;
 	}
@@ -480,13 +516,5 @@ namespace jts
 		}
 
 		return false;
-	}
-
-	Obj* SetState(Obj* a, bool state)
-	{
-		a->type = Type::BOOL;
-		a->_bool = state;
-
-		return a;
 	}
 }

@@ -11,18 +11,22 @@ namespace jts
 {
 	using str = std::string;
 
-	using j_int = int64_t;
+	// JTS integral types
+
+	using j_int = int;
 	using j_bool = bool;
 	using j_char = char;
-	using j_float = double;
+	using j_float = float;
 
 	struct VM;
 	struct Tok;
 	struct Obj;
 	struct Func;
 	struct Macro;
+	struct CppFn;
 	struct ObjNode;
 
+	// Symbol type
 	enum class Type
 	{
 		NIL = 0,
@@ -39,10 +43,10 @@ namespace jts
 		JTS_FN,
 		MACRO,
 
-		// needs attending to
 		STRING,
 	};
 
+	// Symbol specialization
 	enum class Spec
 	{
 		NIL = 0,
@@ -54,6 +58,7 @@ namespace jts
 		END,
 	};
 
+	// Symbol flags
 	enum class SFlag
 	{
 		NIL = 0,

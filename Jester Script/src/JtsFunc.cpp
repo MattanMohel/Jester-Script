@@ -5,7 +5,7 @@
 
 namespace jts
 {
-	Obj* Func::operator() (ObjNode* args, bool eval)
+	Obj* Func::Call (ObjNode* args, bool eval)
 	{
 		// (defn id (args) code)
 
@@ -16,7 +16,7 @@ namespace jts
 
 			while (paramCur)
 			{
-				BinaryOpObj<BinaryOp::SET>(paramCur->value, EvalObj(paramsIn, eval));
+				BinaryOp<Binary::SET>(paramCur->value, EvalObj(paramsIn, eval));
 
 				paramCur = paramCur->next;
 

@@ -8,24 +8,7 @@
 
 #include <iostream>
 
-namespace jts
-{
-	namespace env
-	{
-		void Assert(VM* vm, bool assertion, str message)
-		{
-			if (assertion)
-			{
-				// print assertion and quit
-			}
-		}
-
-		void AddLib(VM* vm, void(*lib)(VM* vm))
-		{
-			vm->libs.emplace_back(lib);
-
-			lib(vm);
-		}
+namespace jts { namespace env {
 
 		void AddSymbol(VM* vm, str key, Obj* value)
 		{
@@ -80,6 +63,13 @@ namespace jts
 			Obj* obj = new Obj { Type::NIL, Spec::SYMBOL };
 
 			return obj;
+		}
+
+		void AddLib(VM* vm, void(*lib)(VM* vm))
+		{
+			vm->libs.emplace_back(lib);
+
+			lib(vm);
 		}
 
 		Obj* GetSymbol(VM* vm, str symbol)

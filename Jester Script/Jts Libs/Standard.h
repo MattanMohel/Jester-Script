@@ -22,12 +22,12 @@ namespace lib
 
 		env::AddSymbol(vm, "quote", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return BinaryOpObj<BinaryOp::QUOTE>(ret, args->value);
+			return BinaryOp<Binary::QUOTE>(ret, args->value);
 		}));
 
 		env::AddSymbol(vm, "set", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return BinaryOpObj<BinaryOp::SET>(EvalObj(args, eval), EvalObj(args->next, eval));
+			return BinaryOp<Binary::SET>(EvalObj(args, eval), EvalObj(args->next, eval));
 		}));
 		
 		env::AddSymbol(vm, "first", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
@@ -90,7 +90,7 @@ namespace lib
 
 				head->_args = new ObjNode(new Obj());
 
-				return BinaryOpObj<BinaryOp::SET>(head->_args->value, EvalObj(args, eval));
+				return BinaryOp<Binary::SET>(head->_args->value, EvalObj(args, eval));
 			}
 
 			auto* elem = head->_args;
@@ -102,7 +102,7 @@ namespace lib
 
 			elem->next = new ObjNode(new Obj());
 			
-			return BinaryOpObj<BinaryOp::SET>(elem->next->value, EvalObj(args, eval));
+			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args, eval));
 		}));		
 		
 		env::AddSymbol(vm, "insert", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
@@ -126,7 +126,7 @@ namespace lib
 			elem->next = new ObjNode(new Obj());
 			elem->next->next = prev;
 
-			return BinaryOpObj<BinaryOp::SET>(elem->next->value, EvalObj(args->next, eval));
+			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args->next, eval));
 		}));
 
 		env::AddSymbol(vm, "defn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
@@ -201,7 +201,7 @@ namespace lib
 
 			while (list)
 			{
-				BinaryOpObj<BinaryOp::SET>(EvalObj(args, eval), EvalObj(list, eval));
+				BinaryOp<Binary::SET>(EvalObj(args, eval), EvalObj(list, eval));
 
 				while (block->next)
 				{
@@ -243,8 +243,8 @@ namespace lib
 				elem->value->_args = new ObjNode(new Obj());
 				elem->value->_args->next = new ObjNode(new Obj());
 
-				BinaryOpObj<BinaryOp::SET>(elem->value->_args->value, args->value->_args->value);
-				BinaryOpObj<BinaryOp::SET>(elem->value->_args->next->value, args->value->_args->next->value);
+				BinaryOp<Binary::SET>(elem->value->_args->value, args->value->_args->value);
+				BinaryOp<Binary::SET>(elem->value->_args->next->value, args->value->_args->next->value);
 
 				args = args->next;
 				elem = elem->next;
@@ -255,8 +255,8 @@ namespace lib
 		
 		env::AddSymbol(vm, "hash", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			BinaryOpObj<BinaryOp::SET>(ret, EvalObj(args, eval));
-			return UnaryOpObj<UnaryOp::HASH>(ret);
+			BinaryOp<Binary::SET>(ret, EvalObj(args, eval));
+			return UnaryOp<Unary::HASH>(ret);
 		}));
 
 		env::AddSymbol(vm, "print", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
