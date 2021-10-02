@@ -11,12 +11,6 @@ namespace jts
 
 	struct VM
 	{
-		VM() : objectPool(25)
-		{}		
-		
-		VM(size_t poolSize) : objectPool(poolSize)
-		{}
-
 		ObjNode* stackPtrCur = nullptr;
 		ObjNode* stackPtrBeg = nullptr;
 
@@ -26,16 +20,23 @@ namespace jts
 		std::unordered_map<str, Obj*> symbols;
 
 		std::vector<void(*)(VM* vm)> libs;
-
-		Pool<Obj> objectPool;
 	};
 
 	namespace env
 	{
+		static Pool<Obj> glbl_objectPool(100, [](Obj* value) -> Obj*
+		{
+			value->type = Type::NIL;
+			value->spec = Spec::NIL;
+			value->_int = 0;
+
+			return value;
+		});
+
 		// Takes a key and value, emplaces to Vm as a key-value pair
 		void AddSymbol(VM* vm, str key, Obj* value);
 
-		Obj* AddNative(Obj* (*native)(Obj* ret, ObjNode* args, bool eval));
+		Obj* AddNative(Obj* (*native)(Obj*, ObjNode*, bool));
 
 		template<typename T>
 		inline Obj* AddConst(T value)

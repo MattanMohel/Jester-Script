@@ -25,7 +25,7 @@ namespace jts
 
 			// Callable values
 
-			Obj* (*_native)(Obj* ret, ObjNode* args, bool eval);
+			Obj* (*_native)(Obj*, ObjNode*, bool);
 			CppFn* _cppFunc;
 			Macro* _jtsMacro;
 			Func* _jtsFunc;

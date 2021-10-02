@@ -15,7 +15,7 @@ namespace jts { namespace env {
 			vm->symbols.emplace(key, value);
 		}
 
-		Obj* AddNative(Obj* (*native)(Obj* ret, ObjNode* args, bool eval))
+		Obj* AddNative(Obj* (*native)(Obj*, ObjNode*, bool))
 		{
 			Obj* obj = new Obj();
 			

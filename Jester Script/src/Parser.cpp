@@ -45,11 +45,7 @@ namespace jts
 			{
 				case Spec::HEAD:
 
-					// if list head, mark and assign object a return value
-
 					(*head) = new ObjNode(new Obj{ Type::LIST, Spec::HEAD });
-
-					(*head)->value->ret = new Obj();
 
 					break;
 

@@ -21,7 +21,7 @@ int fac(int num)
 
 int main(char** argc, int** argv)
 {
-	VM* vm = new VM(3);	
+	VM* vm = new VM();	
 
 	env::AddLib(vm, lib::StandardLib);
 	env::AddLib(vm, lib::ArithmeticLib);
