@@ -5,14 +5,18 @@
 
 namespace jts
 {
-	static const char prefixes[] = { '(', ')', '\'', '#', ',' };
+	static const char prefixes[] = { '(', ')', '\'', ';', ',' };
 
-	bool IsPrefix(char value);
+	bool isPrefix(char value);
 
-	void TokenizeFile(VM* vm, str& src);
+	// Takes a string source and tokenizes to VM
+	void TokenizeFile(VM* vm, str src);
+
+	// Converts parameters to a Token and appends to VM
+	void AddToken(VM* vm, str& symbol, size_t line);
+
+	// Matches most recent Token with corresponding object in VM
 	void MatchTokenType(VM* vm);
-
-	str ExtractWord(str src);
 }
 
 #endif

@@ -5,7 +5,8 @@
 
 namespace jts
 {
-	// Generic building block of JTS
+	// Jester Script object
+
 	struct Obj
 	{
 		Type type;
@@ -35,13 +36,14 @@ namespace jts
 			Obj* _quote;			
 		};
 		
-		// Obj func return value
+		// callable return value
 		Obj* ret = nullptr;
 	};
 
 	static Obj* NIL = new Obj { Type::NIL, Spec::SYMBOL };
 
-	// Non-destructive Obj wrapper
+	// Jester Script non-destructive object wrapper
+
 	struct ObjNode
 	{
 		ObjNode() : 

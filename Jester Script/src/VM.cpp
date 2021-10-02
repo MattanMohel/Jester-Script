@@ -82,7 +82,7 @@ namespace jts { namespace env {
 			return nullptr;
 		}
 
-		void BeginREPL(VM* vm)
+		void RunREPL(VM* vm)
 		{
 			str src;
 
@@ -101,39 +101,15 @@ namespace jts { namespace env {
 				vm->stackPtrBeg = vm->stackPtrCur = nullptr;
 				vm->tokenPtrBeg = vm->tokenPtrCur = nullptr;
 
-				// commands
-
-				if (src.substr(0, 2) == "--")
-				{
-					src = src.substr(2);
-					str buffer = ExtractWord(src);
-
-					if (buffer == "quit")
-					{
-						break;
-					}
-					if (buffer == "parse")
-					{
-						src = src.substr(6, src.size() - 7);
-
-						ParseSrc(vm, ReadSrc(vm, src));
-						env::RunVM(vm);
-
-						std::cout << '\n';
-					}
-
-					continue;
-				}
-
 				// Run input
 
 				ParseSrc(vm, src);
 
-				PrintObj(env::RunVM(vm), true);
+				PrintObj(env::Run(vm), true);
 			}
 		}
 
-		Obj* RunVM(VM* vm)
+		Obj* Run(VM* vm)
 		{
 			vm->stackPtrCur = vm->stackPtrBeg;
 

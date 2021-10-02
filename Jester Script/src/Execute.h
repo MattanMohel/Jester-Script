@@ -7,13 +7,24 @@
 
 namespace jts
 {
-	// Evaluates Obj, evaluates if func, returns self otherwise
+	/* 
+		Evaluates an object and returns its evaluated value
+
+		- ObjNode* obj : the object to be evaluated
+		- bool eval : wether or not to evaluate quote values
+	*/
 	Obj* EvalObj(ObjNode* obj, bool eval = false);
 
-	// Executes an Obj func
+	/* 
+		Executes an object with a callable type and returns its executed value
+		
+		- Obj* ret : the return Obj* of the callable object
+		- ObjNode* args : pointer to the first argument of the callable
+		- bool eval : wether or not to evaluate quote values
+	*/
 	Obj* ExecObj(Obj* ret, ObjNode* args, bool eval);
 
-	// Returns Obj as integral value
+	/* Takes an object and returns the value of the object casted into type T */
 	template<typename T>
 	inline T CastObj(Obj* obj)
 	{
@@ -37,7 +48,7 @@ namespace jts
 		}
 	}
 
-	// Returns Type as JTS enum-Type
+	/* Takes type T and returns the corresponding enum Type value */
 	template<typename T>
 	inline Type GetType()
 	{

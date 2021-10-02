@@ -5,8 +5,8 @@
 
 namespace jts
 {
-	// JTS virtual machine
-	// --Stores state of JTS programs
+	// Jester Script virtual machine
+
 	struct VM
 	{
 		ObjNode* stackPtrCur = nullptr;
@@ -22,7 +22,7 @@ namespace jts
 
 	namespace env
 	{
-		// Creates a new key-value symbol and emplaces it to the VM
+		// Takes a key and value, emplaces to Vm as a key-value pair
 		void AddSymbol(VM* vm, str key, Obj* value);
 
 		Obj* AddNative(Obj* (*native)(Obj* ret, ObjNode* args, bool eval));
@@ -43,11 +43,9 @@ namespace jts
 
 		Obj* GetSymbol(VM* vm, str symbol);
 
-		// Enter the JTS Read-Eval-Print-Loop (REPL)
-		void BeginREPL(VM* vm);
+		void RunREPL(VM* vm);
 
-		// Execute the current state of the VM
-		Obj* RunVM(VM* vm);
+		Obj* Run(VM* vm);
 	}
 }
 
