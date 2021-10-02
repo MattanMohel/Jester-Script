@@ -1,46 +1,6 @@
-
-(defm lcomp (for var in list conditional test)
-	
-	(set result nil)
-	
-	(iterate var list
-		(conditional test
-			(append var result)
-			nil))
-	
-	result)
-	
-(defm foreach (var in list action)
-	(set new-list nil)
-	
-	(iterate var list
-		(... action)
-		(append var new-list))
-	
-	new-list)
-	
 (defn fac (n)
-	(if (equal n 1)
+	(if (= n 1)
 		1
 		(* n (fac (- n 1)))))
 		
-(if (= 1 1)
-)
-
-(set min-delta 0.0000001)
-
-(defm lim (expr var coord)
-	(set var (* 1.0 coord))
-	(set y1 expr)
-	(set var (+ min-delta coord))
-	(set y2 expr)
-	
-	(/ (- y2 y1) min-delta))
-	
-(defm infix (args)
-	(set lst nil)
-	(iterate x args
-		(append (quote x) lst))
-		
-	lst)
-	
+(println (fac 3))

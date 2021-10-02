@@ -21,16 +21,14 @@ int fac(int num)
 
 int main(char** argc, int** argv)
 {
-	VM* vm = new VM();	
+	VM* vm = new VM(3);	
 
 	env::AddLib(vm, lib::StandardLib);
 	env::AddLib(vm, lib::ArithmeticLib);
 	env::AddLib(vm, lib::BooleanLib);
 
-	env::AddSymbol(vm, "fact", env::AddBridge(fac));
-
 	ParseSrc(vm, ReadSrc(vm, "scripts/Macro.jts"));
-	env::RunVM(vm);
+	env::Run(vm);
 
-	env::BeginREPL(vm);
+	env::RunREPL(vm);
 }

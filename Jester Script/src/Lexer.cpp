@@ -53,11 +53,7 @@ namespace jts
 			}
 
 			// add new Token if lexer isn't empty
-			if (!lexer.empty())
-			{
-				AddToken(vm, lexer, line);
-				break;
-			}
+			if (!lexer.empty()) AddToken(vm, lexer, line);
 
 			// ch here is either a prefix operators or empty
 			switch (*ch)
@@ -100,7 +96,7 @@ namespace jts
 		vm->tokenPtrCur->next = new Tok();
 		vm->tokenPtrCur = vm->tokenPtrCur->next;
 
-		symbol.clear();
+		symbol = "";
 	}
 
 	void MatchTokenType(VM* vm)

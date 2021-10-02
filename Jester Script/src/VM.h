@@ -2,6 +2,8 @@
 #define VM_H
 
 #include "Types.h"
+#include "Object.h"
+#include "../utils/Pool.h"
 
 namespace jts
 {
@@ -9,6 +11,12 @@ namespace jts
 
 	struct VM
 	{
+		VM() : objectPool(25)
+		{}		
+		
+		VM(size_t poolSize) : objectPool(poolSize)
+		{}
+
 		ObjNode* stackPtrCur = nullptr;
 		ObjNode* stackPtrBeg = nullptr;
 
@@ -18,6 +26,8 @@ namespace jts
 		std::unordered_map<str, Obj*> symbols;
 
 		std::vector<void(*)(VM* vm)> libs;
+
+		Pool<Obj> objectPool;
 	};
 
 	namespace env

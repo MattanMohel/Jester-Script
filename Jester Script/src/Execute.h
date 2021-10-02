@@ -4,6 +4,7 @@
 #define JTS_DEBUG 1
 
 #include "Types.h"
+#include "Object.h"
 
 namespace jts
 {

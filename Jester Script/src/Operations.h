@@ -2,7 +2,6 @@
 #define OPERATIONS_H
 
 #include "Types.h"
-#include "Object.h"
 
 namespace jts
 {

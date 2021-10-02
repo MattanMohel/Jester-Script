@@ -17,15 +17,19 @@ namespace lib
 {
 	inline void ArithmeticLib(VM* vm)
 	{
+		// Mathematical Constants
+
 		env::AddSymbol(vm, "pi", env::AddConst<j_float>(M_PI));
 
-		env::AddSymbol(vm, "epsilon", env::AddConst<j_float>(std::numeric_limits<j_float>::epsilon()));
-
 		env::AddSymbol(vm, "e", env::AddConst<j_float>(M_E));
+
+		env::AddSymbol(vm, "epsilon", env::AddConst<j_float>(std::numeric_limits<j_float>::epsilon()));
 
 		env::AddSymbol(vm, "rad2deg", env::AddConst<j_float>(180.0f/M_PI));
 		
 		env::AddSymbol(vm, "deg2rad", env::AddConst<j_float>(M_PI/180.0f));
+
+		// Arithmetic Binary Operations
 
 		env::AddSymbol(vm, "+", env::AddNative([](Obj* ret, ObjNode* args, bool eval)
 		{
@@ -39,7 +43,6 @@ namespace lib
 
 			return ret;
 		}));
-
 
 		env::AddSymbol(vm, "-", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
@@ -104,8 +107,7 @@ namespace lib
 			}
 
 			return ret;
-		}));		
-				
+		}));					
 		
 		env::AddSymbol(vm, "log", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
@@ -118,14 +120,8 @@ namespace lib
 			}
 
 			return ret;
-		}));			
-		
-		env::AddSymbol(vm, "ln", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
-		{
-			BinaryOp<Binary::SET>(ret, EvalObj(args, eval));
-			return UnaryOp<Unary::LN>(ret);
-		}));		
-		
+		}));
+
 		env::AddSymbol(vm, "+=", env::AddNative([](Obj* ret, ObjNode* args, bool eval)
 		{
 			auto* beg = args;
@@ -191,6 +187,14 @@ namespace lib
 			return beg->value;
 		}));
 
+		// Arithmetic Unary Operations
+		
+		env::AddSymbol(vm, "ln", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			BinaryOp<Binary::SET>(ret, EvalObj(args, eval));
+			return UnaryOp<Unary::LN>(ret);
+		}));		
+		
 		env::AddSymbol(vm, "++", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return UnaryOp<Unary::INCR>(EvalObj(args, eval));
