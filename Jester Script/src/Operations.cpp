@@ -1,7 +1,7 @@
 #include "Operations.h"
 #include "Execute.h"
 #include "Object.h"
-
+#include "VM.h"
 #include <iostream>
 
 // char, int and bool share the same data -> for switch check if its float, otherwise operate on int --> transmutable for char bool & float
@@ -142,7 +142,6 @@ namespace jts
 		{
 			case Type::LIST:
 
-				a->ret = b->ret;
 				a->spec = b->spec;
 				a->_args = b->_args;
 
@@ -181,45 +180,49 @@ namespace jts
 		return a;
 	}
 	
-	template<> Obj* BinaryOp<Binary::QUOTE>(Obj* a, Obj* b)
+	template<> Obj* UnaryOp<Unary::QUOTE>(Obj* a)
 	{
-		ObjNode* cell = nullptr;
-		ObjNode* args = nullptr;
+		//ObjNode* cell = nullptr;
+		//ObjNode* args = nullptr;
 
-		switch (b->spec)
-		{
-			case Spec::HEAD:
+		//Obj* quote = env::glbl_objectPool.acquire();
 
-				args = b->_args;
+		//switch (a->type)
+		//{
+		//	case Type::LIST:
 
-				a->type = Type::LIST;
-				a->spec = Spec::HEAD;
+		//		args = b->_args;
 
-				a->ret = new Obj();
+		//		quote->type = Type::LIST;
 
-				a->_args = new ObjNode(new Obj { Type::QUOTE, Spec::VALUE });
-				a->_args->value->_quote = args->value;
+		//		a->_args = env::glbl_nodePool.acquire(); //new Obj { Type::QUOTE, Spec::VALUE });
+		//		a->_args->value = env::glbl_objectPool.acquire();
+		//		*a->_args->value = Obj { Type::QUOTE, Spec::VALUE };
 
-				cell = a->_args;
+		//		a->_args->value->_quote = args->value;
 
-				while (args->next)
-				{
-					cell->next = new ObjNode(BinaryOp<Binary::QUOTE>(args->next->value->ret, args->next->value));
+		//		cell = a->_args;
 
-					args = args->next;
+		//		while (args->next)
+		//		{
+		//			cell->next = new ObjNode(BinaryOp<Binary::QUOTE>(args->next->value->ret, args->next->value));
 
-					cell = cell->next;
-				}
+		//			args = args->next;
 
-				return a; 
+		//			cell = cell->next;
+		//		}
 
-			default:
+		//		return a; 
 
-				Obj* quote = new Obj { Type::QUOTE, Spec::VALUE };
-				quote->_quote = b;
+		//	default:
 
-				return quote;
-		}
+		//		Obj* quote = new Obj { Type::QUOTE, Spec::VALUE };
+		//		quote->_quote = b;
+
+		//		return quote;
+		//}
+
+		return nullptr;
 	}
 
 	template<> Obj* UnaryOp<Unary::INCR>(Obj* a)

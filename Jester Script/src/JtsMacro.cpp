@@ -2,6 +2,7 @@
 #include "Execute.h"
 #include "Object.h"
 #include "Operations.h"
+#include "VM.h"
 
 namespace jts
 {
@@ -9,29 +10,31 @@ namespace jts
 	{
 		// (defm id (args) code)
 
-		if (params)
-		{
-			auto* paramsIn = args->next;
-			auto* paramBeg = params->value->_args;
+		//if (params)
+		//{
+		//	auto* paramsIn = args->next;
+		//	auto* paramBeg = params->value->_args;
 
-			while (paramBeg)
-			{
-				BinaryOp<Binary::SET>(paramBeg->value, BinaryOp<Binary::QUOTE>(paramsIn->value->ret, paramsIn->value));
+		//	while (paramBeg)
+		//	{
+		//		BinaryOp<Binary::SET>(paramBeg->value, BinaryOp<Binary::QUOTE>(paramsIn->value->ret, paramsIn->value));
 
-				paramBeg = paramBeg->next;
+		//		paramBeg = paramBeg->next;
 
-				paramsIn = paramsIn->next;
-			}
-		}
+		//		paramsIn = paramsIn->next;
+		//	}
+		//}
 
-		auto* block = codeBlock;
+		//auto* block = codeBlock;
 
-		while (block->next)
-		{
-			EvalObj(block, true);
-			block = block->next;
-		}
+		//while (block->next)
+		//{
+		//	EvalObj(block, true);
+		//	block = block->next;
+		//}
 
-		return 	EvalObj(block, true);
+		//return 	EvalObj(block, true);
+
+		return nullptr;
 	}
 }

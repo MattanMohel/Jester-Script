@@ -29,7 +29,7 @@ namespace jts
 
 			case Type::QUOTE:
 
-				if (value->spec == Spec::HEAD) break;
+				if (value->type == Type::LIST) break;
 				
 				for (auto c : value->_quote->symbol)
 				{

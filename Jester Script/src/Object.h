@@ -35,9 +35,6 @@ namespace jts
 			ObjNode* _args;
 			Obj* _quote;			
 		};
-		
-		// callable return value
-		Obj* ret = nullptr;
 	};
 
 	static Obj* NIL = new Obj { Type::NIL, Spec::SYMBOL };
@@ -46,10 +43,8 @@ namespace jts
 
 	struct ObjNode
 	{
-		ObjNode() : 
-			value(new Obj())
-		{}
-		
+		ObjNode() = default;
+
 		ObjNode(Obj* obj) :
 			value(obj)
 		{}

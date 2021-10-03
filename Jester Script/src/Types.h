@@ -54,7 +54,7 @@ namespace jts
 		SYMBOL,
 		VALUE,
 
-		HEAD,
+		BEG,
 		END,
 	};
 

@@ -110,7 +110,7 @@ namespace jts
 
 		else if (value == "(")
 		{
-			vm->tokenPtrCur->spec = Spec::HEAD;
+			vm->tokenPtrCur->spec = Spec::BEG;
 		}		
 		
 		else if (value == ")")

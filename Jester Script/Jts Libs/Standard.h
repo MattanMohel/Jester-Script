@@ -22,7 +22,7 @@ namespace lib
 
 		env::AddSymbol(vm, "quote", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return BinaryOp<Binary::QUOTE>(ret, args->value);
+			return UnaryOp<Unary::QUOTE>(args->value);
 		}));
 
 		env::AddSymbol(vm, "set", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
@@ -88,7 +88,7 @@ namespace lib
 			{
 				head->type = Type::LIST;
 
-				head->_args = new ObjNode(new Obj());
+				head->_args = new ObjNode(env::glbl_objectPool.acquire());
 
 				return BinaryOp<Binary::SET>(head->_args->value, EvalObj(args, eval));
 			}
@@ -100,7 +100,7 @@ namespace lib
 				elem = elem->next;
 			}
 
-			elem->next = new ObjNode(new Obj());
+			elem->next = new ObjNode(env::glbl_objectPool.acquire());
 			
 			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args, eval));
 		}));		

@@ -24,14 +24,9 @@ namespace jts
 
 	namespace env
 	{
-		static Pool<Obj> glbl_objectPool(25, [](Obj* value)
-		{
-			value->type = Type::NIL;
-			value->spec = Spec::NIL;
-			value->_int = 0;
-
-			return value;
-		});
+		static Pool<Obj> glbl_objectPool(100);
+		
+		static Pool<ObjNode> glbl_nodePool(100);
 
 		// Takes a key and value, emplaces to Vm as a key-value pair
 		void AddSymbol(VM* vm, str key, Obj* value);

@@ -16,8 +16,6 @@ namespace jts
 		LOG,
 
 		SET,
-
-		QUOTE,
 	};
 
 	enum class Unary
@@ -34,6 +32,7 @@ namespace jts
 		LN,
 
 		HASH,
+		QUOTE,
 	};
 
 	// Preforms binary Obj operations
@@ -67,8 +66,8 @@ namespace jts
 	template<> Obj* BinaryOp<Binary::POW>(Obj* a, Obj* b);
 	template<> Obj* BinaryOp<Binary::LOG>(Obj* a, Obj* b);
 	template<> Obj* BinaryOp<Binary::SET>(Obj* a, Obj* b);
-	template<> Obj* BinaryOp<Binary::QUOTE>(Obj* a, Obj* b);
 
+	template<> Obj* UnaryOp<Unary::QUOTE>(Obj* a);
 	template<> Obj* UnaryOp<Unary::INCR>(Obj* a);
 	template<> Obj* UnaryOp<Unary::DECR>(Obj* a);
 	template<> Obj* UnaryOp<Unary::SIN>(Obj* a);

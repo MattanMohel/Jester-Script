@@ -46,7 +46,7 @@ namespace jts
 			}
 
 			// If func isn't void, return the func value
-			return SetTo(ret, func(CastObj<Args>(EvalObj(NextArg(args, I)))...));
+			return SetTo(ret, func(CastObj<Args>(EvalObj(NextArg(args, I)))...)); 
 		}
 
 		Fn func;
@@ -59,7 +59,6 @@ namespace jts
 		Obj* AddBridge(Ret(*func)(Args...))
 		{
 			Obj* obj = new Obj { Type::CPP_FN, Spec::SYMBOL };
-			obj->ret = new Obj();
 
 			auto* cppPtr = new CppFn_Impl<Ret, Args...>();
 			cppPtr->func = func;

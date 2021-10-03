@@ -32,6 +32,6 @@ namespace jts
 			block = block->next;
 		}
 
-		return 	EvalObj(block, eval);
-	}	
+		return EvalObj(block, eval);
+	}
 }

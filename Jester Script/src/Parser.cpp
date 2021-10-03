@@ -43,9 +43,9 @@ namespace jts
 		{
  		    switch (it->spec)
 			{
-				case Spec::HEAD:
+				case Spec::BEG:
 
-					(*head) = new ObjNode(new Obj{ Type::LIST, Spec::HEAD });
+					(*head) = new ObjNode(new Obj{ Type::LIST, Spec::VALUE });
 
 					break;
 
@@ -72,7 +72,7 @@ namespace jts
 
 			switch (it->spec)
 			{
-				case Spec::HEAD: // '(' value
+				case Spec::BEG: // '(' value
 					
 					// set next to the list's argument node
 					funcHead.emplace(head);
