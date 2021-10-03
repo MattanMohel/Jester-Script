@@ -6,6 +6,8 @@
 #include "cppFunc.h"
 #include "VM.h"
 
+#include "Log.h"
+
 namespace jts
 {
 	Obj* EvalObj(ObjNode* obj, bool eval)
@@ -16,8 +18,7 @@ namespace jts
 		{
 			case Type::LIST:
 
-				// if object has no arguments, equivalent to "()", return nil
-
+				// if list has no arguments
 				if (!obj->value->_args) return NIL;
 
 				switch (obj->value->_args->value->type)
@@ -27,8 +28,7 @@ namespace jts
 					case Type::JTS_FN:
 					case Type::CPP_FN:
 						
-						// if first argument is a callable, return executed object
-
+						// if first argument is a callable
 						return ExecObj(obj->value->_args, eval);
 
 					case Type::QUOTE:
@@ -43,12 +43,10 @@ namespace jts
 								case Type::JTS_FN:
 								case Type::CPP_FN:
 
-						            // if first argument's quote value is a callable, return executed object
+						            // if first argument's quote value is a callable
 									return ExecObj(obj->value->_args, eval);
 							}
 						}
-
-						// if a quote but not to be eval'd, return quote value
 
 						return obj->value;
 
@@ -64,8 +62,6 @@ namespace jts
 							elem = elem->next;
 						}
 
-						// return the evaluated list
-
 						return obj->value;
 				}
 
@@ -79,12 +75,11 @@ namespace jts
 			default:
 
 				// if not a list, callable or quote, return self
-
 				return obj->value;
 		}
 	}
 
-	Obj* ExecObj(ObjNode* args, bool eval) 
+	Obj* ExecObj(ObjNode* args, bool eval)
 	{
 		/*
 			Execute object by the callable type
@@ -92,27 +87,31 @@ namespace jts
 			The head of the passed arguments MUST be of a callkable type
 		*/
 
-		if (args->value->ret) env::glbl_objectPool.release(args->value->ret);
+		Obj* retVal = nullptr;
 
-		args->value->ret = env::glbl_objectPool.acquire();
+		Obj* ret = env::glbl_objectPool.acquire();
 
 		switch (args->value->type)
 		{
 			case Type::NATIVE:
 
-				return args->value->_native(args->value->ret, args->next, eval);
+				retVal = args->value->_native(ret, args->next, eval);
+				break;
 
 			case Type::JTS_FN:
 
-				return args->value->_jtsFunc->Call(args, eval);
+				retVal = args->value->_jtsFunc->Call(args, eval);
+				break;
 
 			case Type::MACRO:
 
-				return args->value->_jtsMacro->Call(args, eval);
+				retVal = args->value->_jtsMacro->Call(args, eval);
+				break;
 
 			case Type::CPP_FN:
 
-				return args->value->_cppFunc->Call(args->value->ret, args);
+				retVal = args->value->_cppFunc->Call(ret, args);
+				break;
 
 			case Type::QUOTE:
 				
@@ -124,23 +123,28 @@ namespace jts
 					{
 						case Type::NATIVE:
 
-							return args->value->_native(args->value->ret, args->next, eval);
+							retVal = args->value->_native(ret, args->next, eval);
+							break;
 
 						case Type::JTS_FN:
 
-							return args->value->_jtsFunc->Call(args, eval);
+							retVal = args->value->_jtsFunc->Call(args, eval);
+							break;
 
 						case Type::CPP_FN:
 
-							return args->value->_cppFunc->Call(args->value->ret, args);
+							retVal = args->value->_cppFunc->Call(ret, args);
+							break;
 					}
 				}
 
 				break;
 		}
 
-		// return nullptr if not a callable -- would causes crash
+		// return nullptr if not a callable -- inflicts crash
 
-		return nullptr;
+		env::glbl_objectPool.release(ret);
+
+		return retVal;
 	}
 }

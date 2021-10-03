@@ -2,5 +2,11 @@
 	(if (= n 1)
 		1
 		(* n (fac (- n 1)))))
-		
-(println (fac 3))
+
+(defn test (x y)
+	(println (quote x) x)
+	(println (quote y) y)
+
+	(if (= x 0)
+		y
+		(test (- x 1) (+ x y))))

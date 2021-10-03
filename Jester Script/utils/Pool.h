@@ -1,7 +1,7 @@
 #ifndef POOL_H
 #define POOL_H
 
-#define DEBUG_ALLOC 1
+#define DEBUG_ALLOC 0
 
 #include "../src/Types.h"
 #include <iostream>
@@ -25,10 +25,9 @@ struct Node
 template<typename T>
 class Pool
 {
-
-	using ResetFunc = T* (*)(T* value);
-
 public:
+
+	using ResetFunc = T* (*)(T*);
 
 	Pool(size_t size, ResetFunc resetFunc) : m_size(size), m_resetFunc(resetFunc)
 	{
@@ -38,31 +37,30 @@ public:
 		}
 	}
 
-	Pool(ResetFunc resetFunc) : m_resetFunc(resetFunc)
-	{}
-
 	T* acquire()
 	{
 		if (!m_size)
 		{
 
 		#if DEBUG_ALLOC
-			std::cout << "allocating\n"; 
-		#endif
-
+			T* value = new T();
+			std::cout << "allocating " << value << '\n';
+			return value;
+		#else
 			return new T();
+		#endif
 		}
 
 		--m_size;
 
 	#if DEBUG_ALLOC
-		std::cout << "acquiring - have " << m_size << '\n';
+		std::cout << "acquiring " << m_buffer.front() << " - have " << m_size << '\n';
 	#endif 
 
-		T* value = m_resetFunc(m_buffer.front());
+		T* value = m_buffer.front();
 		m_buffer.pop();
 
-		return value;
+		return m_resetFunc(value);
 	}
 
 	void release(T* value)
@@ -70,7 +68,7 @@ public:
 		++m_size; 
 
 	#if DEBUG_ALLOC
-		std::cout << "releasing - have " << m_size << '\n';
+		std::cout << "releasing " << value << " - have " << m_size << '\n';
 	#endif
 
 		m_buffer.push(value);
@@ -80,9 +78,9 @@ private:
 
 	std::queue<T*> m_buffer;
 
-	size_t m_size = 0;
-
 	ResetFunc m_resetFunc;
+
+	size_t m_size = 0;
 };
 
 #endif

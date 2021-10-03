@@ -24,7 +24,7 @@ namespace jts
 
 	namespace env
 	{
-		static Pool<Obj> glbl_objectPool(100, [](Obj* value) -> Obj*
+		static Pool<Obj> glbl_objectPool(25, [](Obj* value)
 		{
 			value->type = Type::NIL;
 			value->spec = Spec::NIL;
