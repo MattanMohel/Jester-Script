@@ -2,14 +2,9 @@
 	(if (= n 1)
 		1
 		(* n (fac (- n 1)))))
-
 		
-
-(reset)
-
-(set x 0)
-
-(loop (< x 1000000) 
-	(++ x))
-	
-(println (elapsed))
+		
+(defn rec (x y)
+	(if (= x 0)
+		y
+		(rec (- x 1) (+ x y))))

@@ -89,7 +89,7 @@ namespace jts
 
 		Obj* retVal = nullptr;
 
-		Obj* ret = env::glbl_objectPool.acquire();
+		Obj* ret = env::glbl_objPool.acquire();
 
 		switch (args->value->type)
 		{
@@ -143,7 +143,7 @@ namespace jts
 
 		// return nullptr if not a callable -- inflicts crash
 
-		env::glbl_objectPool.release(ret);
+		env::glbl_objPool.release(ret);
 
 		return retVal;
 	}

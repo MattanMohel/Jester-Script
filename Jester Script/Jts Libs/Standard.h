@@ -88,7 +88,7 @@ namespace lib
 			{
 				head->type = Type::LIST;
 
-				head->_args = new ObjNode(env::glbl_objectPool.acquire());
+				head->_args = new ObjNode(env::glbl_objPool.acquire());
 
 				return BinaryOp<Binary::SET>(head->_args->value, EvalObj(args, eval));
 			}
@@ -100,7 +100,7 @@ namespace lib
 				elem = elem->next;
 			}
 
-			elem->next = new ObjNode(env::glbl_objectPool.acquire());
+			elem->next = new ObjNode(env::glbl_objPool.acquire());
 			
 			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args, eval));
 		}));		

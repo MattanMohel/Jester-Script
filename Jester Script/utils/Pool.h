@@ -24,6 +24,9 @@ public:
 		}
 	}
 
+	/*
+		Remove and return back-most pool value
+	*/
 	T* acquire()
 	{
 		if (m_buffer.empty())
@@ -37,6 +40,22 @@ public:
 		return value;
 	}
 
+	/*
+		Returns back-most pool value without removal
+	*/
+	T* peek()
+	{
+		if (m_buffer.empty())
+		{
+			return new T();
+		}
+
+		return m_buffer.back();
+	}
+
+	/*
+		Insert value back into pool
+	*/
 	void release(T* value)
 	{
 		if (m_buffer.size() == m_buffer.capacity())
@@ -45,6 +64,11 @@ public:
 		}
 
 		m_buffer.emplace_back(value);
+	}
+
+	size_t size()
+	{
+		return m_buffer.size();
 	}
 
 private:

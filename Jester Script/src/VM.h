@@ -24,9 +24,22 @@ namespace jts
 
 	namespace env
 	{
-		static Pool<Obj> glbl_objectPool(100);
-		
+		static Pool<Obj>      glbl_objPool(100);	
 		static Pool<ObjNode> glbl_nodePool(100);
+		
+		inline ObjNode* AcquireNode()
+		{
+			auto* node = glbl_nodePool.acquire();
+			node->value = glbl_objPool.acquire();
+
+			return node;
+		}
+				
+		inline void ReleaseNode(ObjNode* node)
+		{
+			glbl_nodePool.release(node);
+			glbl_objPool.release(node->value);
+		}
 
 		// Takes a key and value, emplaces to Vm as a key-value pair
 		void AddSymbol(VM* vm, str key, Obj* value);

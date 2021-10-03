@@ -470,7 +470,7 @@ namespace jts
 
 			default: // CHAR, BOOL, INT
 
-				return (j_bool)a->_int;
+				return a->_bool;
 				break;
 		}
 	}
