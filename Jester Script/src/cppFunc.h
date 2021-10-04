@@ -48,7 +48,7 @@ namespace jts
 		{
 			for (Obj*& arg : paramVec)
 			{
-				arg = EvalObj(args->next);
+				arg = EvalObj(args->next->value);
 				args = args->next;
 			}
 

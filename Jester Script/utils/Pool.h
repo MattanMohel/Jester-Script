@@ -16,7 +16,7 @@ public:
 
 	Pool(size_t size)
 	{
-		m_buffer.reserve(size);
+		m_buffer.reserve(size * 2);
 
 		while (m_buffer.size() < size)
 		{
@@ -73,7 +73,7 @@ public:
 			std::cout << "reserving - " << m_buffer.size() * 1.5 << " bits\n";
 		#endif
 
-			m_buffer.reserve(m_buffer.size() * 1.5);
+			m_buffer.reserve(m_buffer.capacity() * 1.5);
 		}
 
 	#if DEBUG_ALLOC

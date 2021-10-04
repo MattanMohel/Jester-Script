@@ -46,7 +46,7 @@ namespace jts
 
 			while (true)
 			{
-				BinaryOp<Binary::SET>(paramCpyPtr->value, EvalObj(args, eval));
+				BinaryOp<Binary::SET>(paramCpyPtr->value, EvalObj(args->value, eval));
 
 				args = args->next;
 
@@ -83,14 +83,14 @@ namespace jts
 
 		while (block->next)
 		{
-			EvalObj(block, eval);
+			EvalObj(block->value, eval);
 			block = block->next;
 		}
 
 		// Evaluate return
 
 		Obj* ret = env::glbl_objPool.peek();
-		BinaryOp<Binary::SET>(ret, EvalObj(block, eval));
+		BinaryOp<Binary::SET>(ret, EvalObj(block->value, eval));
 
 		// Reset parameters
 

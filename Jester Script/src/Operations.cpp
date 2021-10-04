@@ -2,7 +2,6 @@
 #include "Execute.h"
 #include "Object.h"
 #include "VM.h"
-#include <iostream>
 
 // char, int and bool share the same data -> for switch check if its float, otherwise operate on int --> transmutable for char bool & float
 
@@ -136,6 +135,19 @@ namespace jts
 	
 	template<> Obj* BinaryOp<Binary::SET>(Obj* a, Obj* b)
 	{
+		// memory collection -- need reference counting first
+
+		//if (a->type == Type::LIST)
+		//{
+		//	auto* elem = a->_args;
+
+		//	while (elem)
+		//	{
+		//		env::ReleaseNode(elem);
+		//		elem = elem->next;
+		//	}
+		//}
+
 		a->type = b->type;
 
 		switch (b->type)
@@ -182,47 +194,38 @@ namespace jts
 	
 	template<> Obj* UnaryOp<Unary::QUOTE>(Obj* a)
 	{
-		//ObjNode* cell = nullptr;
-		//ObjNode* args = nullptr;
+		Obj* quote = env::glbl_objPool.acquire();
 
-		//Obj* quote = env::glbl_objectPool.acquire();
+		// if quoting non-list item
 
-		//switch (a->type)
-		//{
-		//	case Type::LIST:
+		if (a->type != Type::LIST)
+		{
+			quote->type = Type::QUOTE;
+			quote->_quote = a;
 
-		//		args = b->_args;
+			return quote;
+		}
 
-		//		quote->type = Type::LIST;
+		// else if item is list...
 
-		//		a->_args = env::glbl_nodePool.acquire(); //new Obj { Type::QUOTE, Spec::VALUE });
-		//		a->_args->value = env::glbl_objectPool.acquire();
-		//		*a->_args->value = Obj { Type::QUOTE, Spec::VALUE };
+		quote->type = Type::LIST;
 
-		//		a->_args->value->_quote = args->value;
+		quote->_args = env::AcquireNode();
+		quote->_args->value = UnaryOp<Unary::QUOTE>(a->_args->value);
 
-		//		cell = a->_args;
+		auto* elem = a->_args;
+		auto* cell = quote->_args;
 
-		//		while (args->next)
-		//		{
-		//			cell->next = new ObjNode(BinaryOp<Binary::QUOTE>(args->next->value->ret, args->next->value));
+		while (elem->next)
+		{
+			cell->next = env::AcquireNode();
+			cell->next->value = UnaryOp<Unary::QUOTE>(elem->next->value);
 
-		//			args = args->next;
+			cell = cell->next;
+			elem = elem->next;
+		}
 
-		//			cell = cell->next;
-		//		}
-
-		//		return a; 
-
-		//	default:
-
-		//		Obj* quote = new Obj { Type::QUOTE, Spec::VALUE };
-		//		quote->_quote = b;
-
-		//		return quote;
-		//}
-
-		return nullptr;
+		return quote;
 	}
 
 	template<> Obj* UnaryOp<Unary::INCR>(Obj* a)

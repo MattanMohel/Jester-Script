@@ -18,42 +18,42 @@ namespace lib
 
 		env::AddSymbol(vm, "if", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			if (isTrue(EvalObj(args, eval)))
+			if (isTrue(EvalObj(args->value, eval)))
 			{
-				return EvalObj(args->next, eval);
+				return EvalObj(args->next->value, eval);
 			}
 
-			return EvalObj(args->next->next, eval);
+			return EvalObj(args->next->next->value, eval);
 		}));
 
 		env::AddSymbol(vm, "=", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, isEqual(EvalObj(args, eval), EvalObj(args->next, eval)));
+			return SetTo(ret, isEqual(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
 		}));			
 		
 		env::AddSymbol(vm, ">", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, isGreater(EvalObj(args, eval), EvalObj(args->next, eval)));
+			return SetTo(ret, isGreater(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
 		}));			
 		
 		env::AddSymbol(vm, ">=", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, isGreaterEq(EvalObj(args, eval), EvalObj(args->next, eval)));
+			return SetTo(ret, isGreaterEq(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
 		}));				
 		
 		env::AddSymbol(vm, "<", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, !isGreaterEq(EvalObj(args, eval), EvalObj(args->next, eval)));
+			return SetTo(ret, !isGreaterEq(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
 		}));				
 		
 		env::AddSymbol(vm, "<=", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, !isGreater(EvalObj(args, eval), EvalObj(args->next, eval)));
+			return SetTo(ret, !isGreater(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
 		}));				
 		
 		env::AddSymbol(vm, "not", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, !isTrue(EvalObj(args, eval)));
+			return SetTo(ret, !isTrue(EvalObj(args->value, eval)));
 		}));		
 		
 		env::AddSymbol(vm, "and", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
@@ -62,7 +62,7 @@ namespace lib
 
 			while (args)
 			{
-				state = isTrue(EvalObj(args, eval));
+				state = isTrue(EvalObj(args->value, eval));
 
 				if (!state)
 				{
@@ -81,7 +81,7 @@ namespace lib
 
 			while (args)
 			{
-				state = isTrue(EvalObj(args, eval));
+				state = isTrue(EvalObj(args->value, eval));
 
 				if (state)
 				{

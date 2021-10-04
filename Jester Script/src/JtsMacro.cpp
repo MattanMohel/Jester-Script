@@ -6,35 +6,36 @@
 
 namespace jts
 {
-	Obj* Macro::Call (ObjNode* args, bool eval)
+	Obj* Macro::Call(ObjNode* args, bool eval)
 	{
-		// (defm id (args) code)
+		auto* paramPtr = params->value->_args;
+		args = args->next;
 
-		//if (params)
-		//{
-		//	auto* paramsIn = args->next;
-		//	auto* paramBeg = params->value->_args;
+		if (params)
+		{
+			// assign copy to passed values
 
-		//	while (paramBeg)
-		//	{
-		//		BinaryOp<Binary::SET>(paramBeg->value, BinaryOp<Binary::QUOTE>(paramsIn->value->ret, paramsIn->value));
+			while (args)
+			{
+				paramPtr->value->_quote = args->value;
 
-		//		paramBeg = paramBeg->next;
+				args = args->next;
+				paramPtr = paramPtr->next;
+			}
+		}
 
-		//		paramsIn = paramsIn->next;
-		//	}
-		//}
+		// Execute function body
 
-		//auto* block = codeBlock;
+		auto* block = codeBlock;
 
-		//while (block->next)
-		//{
-		//	EvalObj(block, true);
-		//	block = block->next;
-		//}
+		while (block->next)
+		{
+			EvalObj(block->value, true);
+			block = block->next;
+		}
 
-		//return 	EvalObj(block, true);
+		// Evaluate return
 
-		return nullptr;
+		return EvalObj(block->value, true);
 	}
 }

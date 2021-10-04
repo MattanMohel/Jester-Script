@@ -31,10 +31,12 @@ float elapsed()
 	return timer.elapsed();
 }
 
-int Add(int a, int b)
+int fib(int n)
 {
-	std::cout << a << " " << b << '\n';
-	return a + b;
+	if (n <= 1)
+		return n;
+
+	return fib(n - 1) + fib(n - 2);
 }
 
 int main(char** argc, int** argv)
@@ -47,7 +49,7 @@ int main(char** argc, int** argv)
 
 	env::AddSymbol(vm, "reset", env::AddBridge(reset));
 	env::AddSymbol(vm, "elapsed", env::AddBridge(elapsed));
-	env::AddSymbol(vm, "Add", env::AddBridge(Add));
+	env::AddSymbol(vm, "c-fib", env::AddBridge(fib));
 
 	ParseSrc(vm, ReadSrc(vm, "scripts/Macro.jts"));
 	env::Run(vm);

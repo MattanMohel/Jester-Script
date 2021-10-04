@@ -20,43 +20,48 @@ namespace lib
 	{
 		env::AddSymbol(vm, "nil", env::AddConst(nullptr));
 
+		// (quote target)
 		env::AddSymbol(vm, "quote", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return UnaryOp<Unary::QUOTE>(args->value);
 		}));
 
+		// (set to-set setter)
 		env::AddSymbol(vm, "set", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return BinaryOp<Binary::SET>(EvalObj(args, eval), EvalObj(args->next, eval));
+			return BinaryOp<Binary::SET>(EvalObj(args->value, eval), EvalObj(args->next->value, eval));
 		}));
 		
-		env::AddSymbol(vm, "first", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		// (head list)
+		env::AddSymbol(vm, "head", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto* elem = EvalObj(args, eval)->_args;
+			auto* elem = EvalObj(args->value, eval)->_args;
 
 			if (!elem) return NIL;
 
 			return elem->value;
 		}));			
 		
+		// (rest list)
 		env::AddSymbol(vm, "rest", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto* elem = EvalObj(args, eval)->_args;
+			auto* elem = EvalObj(args->value, eval)->_args;
 
 			if (!elem || !elem->next) return NIL;
 
 			return elem->next->value;
 		}));			
-				
+		
+		// (nth index list)
 		env::AddSymbol(vm, "nth", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* head = EvalObj(args->next, eval);
+			Obj* head = EvalObj(args->next->value, eval);
 
 			if (!head) return NIL;
 
 			auto* elem = head->_args;
 			
-			for (size_t i = 0; i < CastObj<j_int>(EvalObj(args, eval)); ++i)
+			for (size_t i = 0; i < CastObj<j_int>(EvalObj(args->value, eval)); ++i)
 			{
 				elem = elem->next;
 
@@ -66,19 +71,20 @@ namespace lib
 			return elem->value;
 		}));		
 		
+		// (append index list)
 		env::AddSymbol(vm, "append", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			// (append value list)
+			Obj* head = EvalObj(args->next->value, eval);
 
-			Obj* head = EvalObj(args->next, eval);
+			// If object isn't a list, convert it and append value
 
 			if (head->type != Type::LIST)
 			{
 				head->type = Type::LIST;
 
-				head->_args = new ObjNode(env::glbl_objPool.acquire());
+				head->_args = env::AcquireNode();
 
-				return BinaryOp<Binary::SET>(head->_args->value, EvalObj(args, eval));
+				return BinaryOp<Binary::SET>(head->_args->value, EvalObj(args->value, eval));
 			}
 
 			auto* elem = head->_args;
@@ -88,22 +94,21 @@ namespace lib
 				elem = elem->next;
 			}
 
-			elem->next = new ObjNode(env::glbl_objPool.acquire());
+			elem->next = env::AcquireNode();
 			
-			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args, eval));
+			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args->value, eval));
 		}));		
 		
+		// (insert index value list)
 		env::AddSymbol(vm, "insert", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			// (insert index value list)
-
-			Obj* head = EvalObj(args->next->next, eval);
+			Obj* head = EvalObj(args->next->next->value, eval);
 			 
 			if (!head) return NIL;
 
 			auto* elem = head->_args;
 			
-			for (size_t i = 1; i < CastObj<j_int>(EvalObj(args, eval)); ++i)
+			for (size_t i = 1; i < CastObj<j_int>(EvalObj(args->value, eval)); ++i)
 			{
 				elem = elem->next;
 
@@ -111,15 +116,15 @@ namespace lib
 			}
 
 			auto* prev = elem->next;
-			elem->next = new ObjNode(new Obj());
+			elem->next = env::AcquireNode();
 			elem->next->next = prev;
 
-			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args->next, eval));
+			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args->next->value, eval));
 		}));
 
+		// (function id (params) body)
 		env::AddSymbol(vm, "function", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			// (defn id (args) code)
 			Obj* func = args->value;
 
 			func->spec = Spec::SYMBOL;
@@ -132,9 +137,9 @@ namespace lib
 			return func;
 		}));
 
+		// (macro id (params) body)
 		env::AddSymbol(vm, "macro", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			// (defn id (args) code)
 			Obj* func = args->value;
 
 			func->spec = Spec::SYMBOL;
@@ -142,15 +147,24 @@ namespace lib
 
 			func->_jtsMacro = new Macro();
 			func->_jtsMacro->params = args->next;
-
 			func->_jtsMacro->codeBlock = args->next->next;
+
+			// set arguments to type quote
+
+			args = args->next->value->_args;
+
+			while (args)
+			{
+				args->value->type = Type::QUOTE;
+				args = args->next;
+			}
 
 			return func;
 		}));					
 		
 		env::AddSymbol(vm, "eval", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return EvalObj(args, true);
+			return EvalObj(args->value, true);
 		}));		
 					
 		env::AddSymbol(vm, "loop", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
@@ -160,19 +174,19 @@ namespace lib
 			auto* cond = args;
 			auto* block = args->next;
 
-			bool state = isTrue(EvalObj(cond, eval));
+			bool state = isTrue(EvalObj(cond->value, eval));
 
 			while (state)
 			{
 				while (block->next)
 				{
-					EvalObj(block, eval);
+					EvalObj(block->value, eval);
 					block = block->next;
 				}
 
-				state = isTrue(EvalObj(cond, eval));
+				state = isTrue(EvalObj(cond->value, eval));
 
-				Obj* loopRet = EvalObj(block, eval);
+				Obj* loopRet = EvalObj(block->value, eval);
 
 				if (!state) return loopRet;
 
@@ -184,20 +198,20 @@ namespace lib
 		{
 			// (loop value code)
 
-			auto* list = EvalObj(args->next, eval)->_args;
+			auto* list = EvalObj(args->next->value, eval)->_args;
 			auto* block = args->next->next;
 
 			while (list)
 			{
-				BinaryOp<Binary::SET>(EvalObj(args, eval), EvalObj(list, eval));
+				BinaryOp<Binary::SET>(EvalObj(args->value, eval), EvalObj(list->value, eval));
 
 				while (block->next)
 				{
-					EvalObj(block, eval);
+					EvalObj(block->value, eval);
 					block = block->next;
 				}
 
-				Obj* loopRet = EvalObj(block, eval);
+				Obj* loopRet = EvalObj(block->value, eval);
 
 				if (!list->next) return loopRet;
 
@@ -210,63 +224,33 @@ namespace lib
 		{
 			while (args->next)
 			{
-				EvalObj(args, eval);
+				EvalObj(args->value, eval);
 				args = args->next;
 			}
 
-			return EvalObj(args, eval);
+			return EvalObj(args->value, eval);
 		}));		
-		
-		env::AddSymbol(vm, "dictionary", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
-		{
-			// (dictionary (key value) (key value)...)
-
-			ret->type = Type::LIST;
-			ret->_args = new ObjNode(new Obj());
-
-			auto* elem = ret->_args;
-
-			while (args)
-			{
-				elem->value->_args = new ObjNode(new Obj());
-				elem->value->_args->next = new ObjNode(new Obj());
-
-				BinaryOp<Binary::SET>(elem->value->_args->value, args->value->_args->value);
-				BinaryOp<Binary::SET>(elem->value->_args->next->value, args->value->_args->next->value);
-
-				args = args->next;
-				elem = elem->next;
-			}
-
-			return ret;
-		}));		
-		
-		env::AddSymbol(vm, "hash", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
-		{
-			BinaryOp<Binary::SET>(ret, EvalObj(args, eval));
-			return UnaryOp<Unary::HASH>(ret);
-		}));
-
+			
 		env::AddSymbol(vm, "print", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			while (args->next)
 			{
-				PrintObj(EvalObj(args, eval), false);
+				PrintObj(EvalObj(args->value, eval), false);
 				args = args->next;
 			}
 
-			return 	PrintObj(EvalObj(args, eval), false);
+			return 	PrintObj(EvalObj(args->value, eval), false);
 		}));
 
 		env::AddSymbol(vm, "println", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			while (args->next)
 			{
-				PrintObj(EvalObj(args, eval), false);
+				PrintObj(EvalObj(args->value, eval), false);
 				args = args->next;
 			}
 
-			return 	PrintObj(EvalObj(args, eval), true);
+			return 	PrintObj(EvalObj(args->value, eval), true);
 		}));
 	}
 }

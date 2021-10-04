@@ -110,8 +110,8 @@ namespace jts { namespace env {
 
 			PrintObj(env::Run(vm), true);
 
-		#if DEBUG_ALLOC
 			std::cout << "have " << env::glbl_objPool.count() << " objects and " << env::glbl_nodePool.count() << " nodes\n";
+		#if DEBUG_ALLOC
 		#endif
 		}
 	}
@@ -122,11 +122,11 @@ namespace jts { namespace env {
 
 		while (vm->stackPtrCur->next)
 		{
-			EvalObj(vm->stackPtrCur);
+			EvalObj(vm->stackPtrCur->value);
 
 			vm->stackPtrCur = vm->stackPtrCur->next;
 		}
 
-		return EvalObj(vm->stackPtrCur);
+		return EvalObj(vm->stackPtrCur->value);
 	}
 }}

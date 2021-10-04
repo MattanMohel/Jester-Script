@@ -10,18 +10,18 @@
 
 namespace jts
 {
-	Obj* EvalObj(ObjNode* obj, bool eval)
+	Obj* EvalObj(Obj* obj, bool eval)
 	{
 		if (!obj) return NIL;
 
-		switch (obj->value->type)
+		switch (obj->type)
 		{
 			case Type::LIST:
 
 				// if list has no arguments
-				if (!obj->value->_args) return NIL;
+				if (!obj->_args) return NIL;
 
-				switch (obj->value->_args->value->type)
+				switch (obj->_args->value->type)
 				{
 					case Type::MAC_FN:
 					case Type::NAT_FN:
@@ -29,7 +29,7 @@ namespace jts
 					case Type::CPP_FN:
 						
 						// if first argument is a callable
-						return ExecObj(obj->value->_args, eval);
+						return ExecObj(obj->_args, eval);
 
 					case Type::QUOTE:
 
@@ -37,45 +37,45 @@ namespace jts
 
 						if (eval)
 						{
-							switch (obj->value->_args->value->_quote->type)
+							switch (obj->_args->value->_quote->type)
 							{
 								case Type::NAT_FN:
 								case Type::JTS_FN:
 								case Type::CPP_FN:
 
 						            // if first argument's quote value is a callable
-									return ExecObj(obj->value->_args, eval);
+									return ExecObj(obj->_args, eval);
 							}
 						}
 
-						return obj->value;
+						return obj;
 
 					default:
 
 						// iterate over list elements and evaluate if a non-callable list
 
-						auto* elem = obj->value->_args;
+						auto* elem = obj->_args;
 
 						while (elem->next)
 						{
-							elem->value = EvalObj(elem, eval);
+							elem->value = EvalObj(elem->value, eval);
 							elem = elem->next;
 						}
 
-						return obj->value;
+						return obj;
 				}
 
 			case Type::QUOTE:
 
 				// if a quote to be eval'd, return the quote value, otherwise return the quote
 
-				if (eval) return obj->value->_quote;
-				return obj->value;
+				if (eval) return EvalObj(obj->_quote, false);
+				return obj;
 
 			default:
 
 				// if not a list, callable or quote, return self
-				return obj->value;
+				return obj;
 		}
 	}
 
@@ -123,17 +123,22 @@ namespace jts
 					{
 						case Type::NAT_FN:
 
-							retVal = args->value->_native(ret, args->next, eval);
+							retVal = args->value->_quote->_native(ret, args->next, eval);
 							break;
 
 						case Type::JTS_FN:
 
-							retVal = args->value->_jtsFunc->Call(args, eval);
+							retVal = args->value->_quote->_jtsFunc->Call(args, eval);
+							break;				
+						
+						case Type::MAC_FN:
+
+							retVal = args->value->_quote->_jtsMacro->Call(args, eval);
 							break;
 
 						case Type::CPP_FN:
 
-							retVal = args->value->_cppFunc->Call(ret, args);
+							retVal = args->value->_quote->_cppFunc->Call(ret, args);
 							break;
 					}
 				}

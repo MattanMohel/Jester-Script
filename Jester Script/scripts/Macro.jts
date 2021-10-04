@@ -9,9 +9,8 @@
 	(if (<= n 1)
 		n
 		(+ (fib (- n 1)) (fib (- n 2)))))
-		
-(reset)
 
-(fib 30)
-
-(println (elapsed))
+(macro when (cond result)
+	(if cond
+		result
+		nil))
