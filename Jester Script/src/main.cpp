@@ -21,17 +21,21 @@ using namespace jts;
 
 Timer timer;
 
-nullptr_t reset()
+void reset()
 {
 	timer.reset();
-	return nullptr_t();
 }
 
-j_float elapsed()
+float elapsed()
 {
 	return timer.elapsed();
 }
 
+int Add(int a, int b)
+{
+	std::cout << a << " " << b << '\n';
+	return a + b;
+}
 
 int main(char** argc, int** argv)
 {
@@ -43,6 +47,7 @@ int main(char** argc, int** argv)
 
 	env::AddSymbol(vm, "reset", env::AddBridge(reset));
 	env::AddSymbol(vm, "elapsed", env::AddBridge(elapsed));
+	env::AddSymbol(vm, "Add", env::AddBridge(Add));
 
 	ParseSrc(vm, ReadSrc(vm, "scripts/Macro.jts"));
 	env::Run(vm);

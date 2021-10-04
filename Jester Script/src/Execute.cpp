@@ -23,8 +23,8 @@ namespace jts
 
 				switch (obj->value->_args->value->type)
 				{
-					case Type::MACRO:
-					case Type::NATIVE:
+					case Type::MAC_FN:
+					case Type::NAT_FN:
 					case Type::JTS_FN:
 					case Type::CPP_FN:
 						
@@ -39,7 +39,7 @@ namespace jts
 						{
 							switch (obj->value->_args->value->_quote->type)
 							{
-								case Type::NATIVE:
+								case Type::NAT_FN:
 								case Type::JTS_FN:
 								case Type::CPP_FN:
 
@@ -93,7 +93,7 @@ namespace jts
 
 		switch (args->value->type)
 		{
-			case Type::NATIVE:
+			case Type::NAT_FN:
 
 				retVal = args->value->_native(ret, args->next, eval);
 				break;
@@ -103,7 +103,7 @@ namespace jts
 				retVal = args->value->_jtsFunc->Call(args, eval);
 				break;
 
-			case Type::MACRO:
+			case Type::MAC_FN:
 
 				retVal = args->value->_jtsMacro->Call(args, eval);
 				break;
@@ -121,7 +121,7 @@ namespace jts
 				{
 					switch (args->value->_quote->type)
 					{
-						case Type::NATIVE:
+						case Type::NAT_FN:
 
 							retVal = args->value->_native(ret, args->next, eval);
 							break;

@@ -47,19 +47,7 @@ namespace lib
 
 			return elem->next->value;
 		}));			
-		
-		env::AddSymbol(vm, "...", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
-		{
-			auto* head = EvalObj(args, eval);
-			auto* elem = head->_args;
-
-			if (!elem || !elem->next) return NIL;
-
-			head->_args = elem->next;
-
-			return elem->value;
-		}));				
-		
+				
 		env::AddSymbol(vm, "nth", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			Obj* head = EvalObj(args->next, eval);
@@ -129,7 +117,7 @@ namespace lib
 			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args->next, eval));
 		}));
 
-		env::AddSymbol(vm, "defn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "function", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			// (defn id (args) code)
 			Obj* func = args->value;
@@ -144,13 +132,13 @@ namespace lib
 			return func;
 		}));
 
-		env::AddSymbol(vm, "defm", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "macro", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			// (defn id (args) code)
 			Obj* func = args->value;
 
 			func->spec = Spec::SYMBOL;
-			func->type = Type::MACRO;
+			func->type = Type::MAC_FN;
 
 			func->_jtsMacro = new Macro();
 			func->_jtsMacro->params = args->next;

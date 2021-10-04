@@ -24,8 +24,8 @@ namespace jts
 
 	namespace env
 	{
-		static Pool<Obj>      glbl_objPool(100);	
-		static Pool<ObjNode> glbl_nodePool(100);
+		extern Pool<Obj>     glbl_objPool;	
+		extern Pool<ObjNode> glbl_nodePool;
 		
 		inline ObjNode* AcquireNode()
 		{

@@ -5,6 +5,9 @@
 #include "Object.h"
 #include "Execute.h"
 #include "Operations.h"
+#include "Log.h"
+
+#include <vector>
 
 namespace jts
 {
@@ -28,6 +31,13 @@ namespace jts
 		// Func type
 		using Fn = Ret(*)(Args...);
 
+		void Init(Fn func)
+		{
+			this->func = func;
+
+			paramVec.resize(sizeof...(Args), nullptr);
+		}
+
 		Obj* Call(Obj* ret, ObjNode* args) override
 		{
 			return Call_Impl(ret, args, std::make_index_sequence<sizeof...(Args)>());
@@ -36,19 +46,26 @@ namespace jts
 		template<size_t... I>
 		Obj* Call_Impl(Obj* ret, ObjNode* args, std::index_sequence<I...>)
 		{
-			auto* arg = args;
+			for (Obj*& arg : paramVec)
+			{
+				arg = EvalObj(args->next);
+				args = args->next;
+			}
 
 			// If func is void, evaluate and return NIL
 			if constexpr (std::is_void<Ret>::value)
 			{
-				func(CastObj<Args>(EvalObj(NextArg(arg, I)))...);
+				func(CastObj<Args>(paramVec[I])...);
 				return SetTo(ret, nullptr_t());
 			}
-
-			// If func isn't void, return the func value
-			return SetTo(ret, func(CastObj<Args>(EvalObj(NextArg(args, I)))...)); 
+			else
+			{
+				// If func isn't void, return the func value
+				return SetTo(ret, func(CastObj<Args>(paramVec[I])...));
+			}
 		}
 
+		std::vector<Obj*> paramVec;
 		Fn func;
 	};
 
@@ -61,7 +78,7 @@ namespace jts
 			Obj* obj = new Obj { Type::CPP_FN, Spec::SYMBOL };
 
 			auto* cppPtr = new CppFn_Impl<Ret, Args...>();
-			cppPtr->func = func;
+			cppPtr->Init(func);
 
 			obj->_cppFunc = (CppFn*)cppPtr;
 

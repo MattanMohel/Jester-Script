@@ -142,12 +142,11 @@ namespace jts
 		{
 			case Type::LIST:
 
-				a->spec = b->spec;
 				a->_args = b->_args;
 
 				break;
 
-			case Type::NATIVE:
+			case Type::NAT_FN:
 
 				a->_native = b->_native;
 				break;
@@ -158,7 +157,8 @@ namespace jts
 				break;
 
 			case Type::CPP_FN:
-				// assign
+				
+				a->_cppFunc = b->_cppFunc;
 				break;
 
 			case Type::QUOTE:

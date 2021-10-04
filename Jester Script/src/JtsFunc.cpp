@@ -15,11 +15,10 @@ namespace jts
 		if (params)
 		{
 			/*
-				Assign passed parameter values to the parameter-copy
-
-				1) Assigned copy-values are copied to intermediary object 'value'
-				2) copy-values assigned to the preliminary param values
-				3) param values assigned to intermediary object
+				1) Assigns passed parameter values to the parameter-copy
+				2) Assigned copy-values are copied to intermediary object 'value'
+				3) copy-values assigned to the preliminary param values
+				4) param values assigned to intermediary object
 
 				- Copy reverts the parameters to their previous state upon 
 				  termination of function which allows for recursion
@@ -35,9 +34,9 @@ namespace jts
 
 					n's values go from 5 -> 4 -> 3 -> 2 -> 1 -> 0
 					
-					- once end condition is met, the recursive call 'recoils' to return (* 1 1 2 3 4 5)
-					- n has to reset to the previous parameter value so it doesn't return (* 1 1 1 1 1 1)
-					- n recoils back then 1 -> 1 -> 2 -> 3 -> 4 -> 5 -> nil (original parameter state in nil) 
+					once end condition is met, the recursive call 'recoils' to return (* 1 1 2 3 4 5)
+					n has to reset to the previous parameter value so it doesn't return (* 1 1 1 1 1 1)
+					n then 'recoils' back 1 -> 1 -> 2 -> 3 -> 4 -> 5 -> nil (original velue) 
 			*/
 
 			paramCpy = env::AcquireNode();

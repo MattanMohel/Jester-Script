@@ -1,7 +1,7 @@
 #ifndef POOL_H
 #define POOL_H
 
-#define DEBUG_ALLOC 1
+#define DEBUG_ALLOC 0
 
 #include "../src/Types.h"
 #include <iostream>
@@ -31,8 +31,16 @@ public:
 	{
 		if (m_buffer.empty())
 		{
+
+		#if DEBUG_ALLOC
+			std::cout << "allocating\n";
+		#endif
 			return new T();
 		}
+
+	#if DEBUG_ALLOC
+		std::cout << "acquiring - " << m_buffer.size() << " left\n";
+	#endif
 
 		T* value = m_buffer.back();
 		m_buffer.pop_back();
@@ -60,13 +68,22 @@ public:
 	{
 		if (m_buffer.size() == m_buffer.capacity())
 		{
+
+		#if DEBUG_ALLOC
+			std::cout << "reserving - " << m_buffer.size() * 1.5 << " bits\n";
+		#endif
+
 			m_buffer.reserve(m_buffer.size() * 1.5);
 		}
+
+	#if DEBUG_ALLOC
+		std::cout << "releasing - " << m_buffer.size() << " left\n";
+	#endif
 
 		m_buffer.emplace_back(value);
 	}
 
-	size_t size()
+	size_t count()
 	{
 		return m_buffer.size();
 	}

@@ -38,10 +38,10 @@ namespace jts
 		QUOTE,
 		LIST,
 
-		NATIVE,
+		NAT_FN,
 		CPP_FN,
 		JTS_FN,
-		MACRO,
+		MAC_FN,
 
 		STRING,
 	};

@@ -1,10 +1,17 @@
-(defn fac (n)
-	(if (= n 1)
+;examples of recursion
+
+(function fac (n)
+	(if (= n 0)
 		1
 		(* n (fac (- n 1)))))
 		
+(function fib (n)
+	(if (<= n 1)
+		n
+		(+ (fib (- n 1)) (fib (- n 2)))))
 		
-(defn rec (x y)
-	(if (= x 0)
-		y
-		(rec (- x 1) (+ x y))))
+(reset)
+
+(fib 30)
+
+(println (elapsed))

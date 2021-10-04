@@ -14,9 +14,10 @@ namespace jts
 
 		switch (value->type)
 		{
-			case Type::MACRO:
+			case Type::MAC_FN:
 			case Type::JTS_FN:
-			case Type::NATIVE:
+			case Type::NAT_FN:
+			case Type::CPP_FN:
 
 				for (auto c : value->symbol)
 				{
