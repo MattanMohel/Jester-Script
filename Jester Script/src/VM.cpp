@@ -110,8 +110,8 @@ namespace jts { namespace env {
 
 			PrintObj(env::Run(vm), true);
 
-			std::cout << "have " << env::glbl_objPool.count() << " objects and " << env::glbl_nodePool.count() << " nodes\n";
 		#if DEBUG_ALLOC
+			std::cout << "have " << env::glbl_objPool.count() << " objects and " << env::glbl_nodePool.count() << " nodes\n";
 		#endif
 		}
 	}
