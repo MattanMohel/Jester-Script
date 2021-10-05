@@ -9,6 +9,7 @@
 #include "../src/JtsFunc.h"
 #include "../src/Log.h"
 #include "../src/JtsMacro.h"
+#include "../src/StrCon.h"
 
 #include <iostream>
 
@@ -162,15 +163,15 @@ namespace lib
 			return func;
 		}));					
 		
+		// (eval target)
 		env::AddSymbol(vm, "eval", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return EvalObj(args->value, true);
 		}));		
-					
+		
+		// (loop cond body)
 		env::AddSymbol(vm, "loop", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			// (loop cond code)
-
 			auto* cond = args;
 			auto* block = args->next;
 
@@ -194,10 +195,9 @@ namespace lib
 			}
 		}));	
 		
+		// (iterate variable list body)
 		env::AddSymbol(vm, "iterate", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			// (loop value code)
-
 			auto* list = EvalObj(args->next->value, eval)->_args;
 			auto* block = args->next->next;
 
@@ -220,6 +220,7 @@ namespace lib
 			}
 		}));		
 		
+		// (progn body)
 		env::AddSymbol(vm, "progn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			while (args->next)
@@ -230,7 +231,8 @@ namespace lib
 
 			return EvalObj(args->value, eval);
 		}));		
-			
+		
+		// (print args)
 		env::AddSymbol(vm, "print", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			while (args->next)
@@ -242,6 +244,7 @@ namespace lib
 			return 	PrintObj(EvalObj(args->value, eval), false);
 		}));
 
+		// (println args)
 		env::AddSymbol(vm, "println", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			while (args->next)
@@ -251,6 +254,16 @@ namespace lib
 			}
 
 			return 	PrintObj(EvalObj(args->value, eval), true);
+		}));		
+		
+		// (input) --> (set in (input))
+		env::AddSymbol(vm, "input", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			str* input = new str();
+
+			std::getline(std::cin, *input);
+
+			return SetTo(ret, input); 
 		}));
 	}
 }

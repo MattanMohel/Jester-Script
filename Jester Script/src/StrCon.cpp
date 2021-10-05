@@ -1,23 +1,19 @@
 #include "StrCon.h"
 #include "Object.h"
 #include "Token.h"
+#include "VM.h"
 
 namespace jts
 {
     bool TokIsLtrl(Tok* tok)
     {
-        size_t len = tok->value.length();
+        size_t len = tok->symbol.length();
 
-        /* ADD CHARS & BOOLS */
-        if (tok->value[0] == '\'' && tok->value[len - 1] == '\'')
+        if (tok->symbol[0] == '\"' && tok->symbol[len - 1] == '\"')
         {
-            tok->type = Type::CHAR;
-            return true;
-        }
+            if (len > 3) tok->type = Type::STRING;
+            else tok->type = Type::CHAR;
 
-        if (tok->value[0] == '\"' && tok->value[len - 1] == '\"')
-        {
-            tok->type = Type::STRING;
             return true;
         }
 
@@ -27,14 +23,14 @@ namespace jts
 
             for (size_t i = 0; i < len; i++)
             {
-                if (tok->value[i] == '.')
+                if (tok->symbol[i] == '.')
                 {
                     perCount++;
                     continue;
                 }
 
                 /* If not an integer */
-                if (tok->value[i] - '0' < 0 || tok->value[i] - '0' > 9)
+                if (tok->symbol[i] - '0' < 0 || tok->symbol[i] - '0' > 9)
                 {
                     return false;
                 }
@@ -50,68 +46,63 @@ namespace jts
 
     Obj* TokToLtrl(Tok* tok)
     {
-        Obj* obj = new Obj();
+        Obj* obj = new Obj { tok->type, Spec::VALUE };
 
-        if (tok->type == Type::CHAR)
+        switch (tok->type)
         {
-            obj->_char = tok->value.substr(1, 1)[0];
-        }
-        else if (tok->type == Type::BOOL)
-        { 
-            if (tok->value == "true")
-            {
-                obj->_bool = true;
-            }
-            else
-            {
-                obj->_bool = false;
-            }
-        }
-        else // Case INT or FLOAT
-        {
-            bool fPart = false;
-            int iPartLen = tok->value.length() - 1;
+            case Type::CHAR:
 
-            for (size_t i = 0; i < tok->value.length(); ++i)
-            {
-                if (fPart)
-                {
-                    iPartLen--;
-                }
-                if (tok->value[i] == '.')
-                {
-                    fPart = true;
-                    --iPartLen;
-                    continue;
-                }
-            }
+                obj->_char = tok->symbol.substr(1, 1)[0];
+                break;
 
-            if (tok->type == Type::INT)
-            {
-                obj->_int = 0;
+            case Type::STRING:
 
-                for (size_t i = 0; i < tok->value.length(); i++)
-                {
-                    obj->_int += (tok->value[i] - '0') * pow(10, iPartLen--);
-                }
-            }
-            else // case FLOAT
-            {
-                obj->_float = 0.0f;
+                obj->_string = new str(tok->symbol.substr(1, tok->symbol.length() - 2));
+                break;
 
-                for (size_t i = 0; i < tok->value.length(); i++)
+            default: // case FLOAT, INT
+            {
+                bool fPart = false;
+                int iPartLen = tok->symbol.length() - 1;
+
+                for (size_t i = 0; i < tok->symbol.length(); ++i)
                 {
-                    if (tok->value[i] == '.')
+                    if (fPart)
                     {
+                        iPartLen--;
+                    }
+                    if (tok->symbol[i] == '.')
+                    {
+                        fPart = true;
+                        --iPartLen;
                         continue;
                     }
-                    obj->_float += (tok->value[i] - '0') * pow(10.0f, iPartLen--);
+                }
+
+                if (tok->type == Type::INT)
+                {
+                    obj->_int = 0;
+
+                    for (size_t i = 0; i < tok->symbol.length(); i++)
+                    {
+                        obj->_int += (tok->symbol[i] - '0') * pow(10, iPartLen--);
+                    }
+                }
+                else // case FLOAT
+                {
+                    obj->_float = 0.0f;
+
+                    for (size_t i = 0; i < tok->symbol.length(); i++)
+                    {
+                        if (tok->symbol[i] == '.')
+                        {
+                            continue;
+                        }
+                        obj->_float += (tok->symbol[i] - '0') * pow(10.0f, iPartLen--);
+                    }
                 }
             }
         }
-
-        obj->spec = Spec::VALUE;
-        obj->type = tok->type;
 
         return obj;
     }

@@ -83,6 +83,7 @@ namespace jts
 	template<> Obj* SetTo<j_bool>(Obj* a, j_bool value);
 	template<> Obj* SetTo<j_int>(Obj* a, j_int value);
 	template<> Obj* SetTo<j_float>(Obj* a, j_float value);
+	template<> Obj* SetTo<str*>(Obj* a, str* value);
 	template<> Obj* SetTo<nullptr_t>(Obj* a, nullptr_t value);
 
 	// Boolean operations

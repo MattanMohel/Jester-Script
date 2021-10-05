@@ -23,6 +23,8 @@ namespace jts
 			j_int _int;
 			j_float _float;
 
+			str* _string;
+
 			// Callable values
 
 			Obj* (*_native)(Obj*, ObjNode*, bool);

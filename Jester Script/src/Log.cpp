@@ -61,6 +61,16 @@ namespace jts
 
 				break;
 
+			case Type::STRING:
+
+				std::cout << *value->_string;
+				break;
+
+			case Type::FLOAT:
+
+				std::cout << value->_float;
+				break;
+
 			case Type::CHAR:
 
 				std::cout << value->_char;
@@ -74,11 +84,6 @@ namespace jts
 			case Type::INT:
 
 				std::cout << value->_int;
-				break;
-
-			case Type::FLOAT:
-
-				std::cout << value->_float;
 				break;
 
 			default: // case NIL

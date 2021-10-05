@@ -1,5 +1,7 @@
 ;examples of recursion
 
+"hello"
+
 (function fac (n)
 	(if (= n 0)
 		1

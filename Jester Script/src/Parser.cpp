@@ -52,11 +52,11 @@ namespace jts
 				case Spec::SYMBOL:
 
 					// if symbol id doesn't exist, create it
-					if (!env::GetSymbol(vm, it->value)) env::AddSymbol(vm, it->value, new Obj { Type::NIL, Spec::SYMBOL });
+					if (!env::GetSymbol(vm, it->symbol)) env::AddSymbol(vm, it->symbol, new Obj { Type::NIL, Spec::SYMBOL });
 
 					// assign object the value of the corresponding symbol
-					(*head) = new ObjNode(env::GetSymbol(vm, it->value));
-					(*head)->value->symbol = it->value;
+					(*head) = new ObjNode(env::GetSymbol(vm, it->symbol));
+					(*head)->value->symbol = it->symbol;
 
 					break;
 
@@ -64,7 +64,7 @@ namespace jts
 
 					// if literal value, parse the symbol to value and assign to object
 					(*head) = new ObjNode(TokToLtrl(it));
-					(*head)->value->symbol = it->value;
+					(*head)->value->symbol = it->symbol;
 
 					break;
 			}

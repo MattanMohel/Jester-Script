@@ -88,7 +88,7 @@ namespace jts
 
 	void AddToken(VM* vm, str& symbol, size_t line)
 	{
-		vm->tokenPtrCur->value = symbol;
+		vm->tokenPtrCur->symbol = symbol;
 		vm->tokenPtrCur->line = line;
 		MatchTokenType(vm);
 
@@ -101,7 +101,7 @@ namespace jts
 
 	void MatchTokenType(VM* vm)
 	{
-		const str& value = vm->tokenPtrCur->value;
+		const str& value = vm->tokenPtrCur->symbol;
 
 		if (value.empty())
 		{
@@ -119,7 +119,7 @@ namespace jts
 		}
 
 		// if symbol is in the VM
-		else if (env::GetSymbol(vm, vm->tokenPtrCur->value))
+		else if (env::GetSymbol(vm, vm->tokenPtrCur->symbol))
 		{
 			vm->tokenPtrCur->spec = Spec::SYMBOL;
 		}

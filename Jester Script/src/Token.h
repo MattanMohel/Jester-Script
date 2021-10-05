@@ -11,7 +11,7 @@ namespace jts
 	{
 		Tok* next = nullptr;
 
-		str value;
+		str symbol;
 		size_t line;
 
 		Type type;

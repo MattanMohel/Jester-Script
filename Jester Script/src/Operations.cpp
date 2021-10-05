@@ -178,6 +178,11 @@ namespace jts
 				a->_quote = b->_quote;
 				break;
 
+			case Type::STRING:
+
+				a->_string = b->_string;
+				break;
+
 			case Type::FLOAT:
 
 				a->_float = CastObj<j_float>(b);
@@ -450,6 +455,14 @@ namespace jts
 	{
 		a->type = Type::FLOAT;
 		a->_float = value;
+
+		return a;
+	}
+
+	template<> Obj* SetTo<str*>(Obj* a, str* value)
+	{
+		a->type = Type::STRING;
+		a->_string = value;
 
 		return a;
 	}
