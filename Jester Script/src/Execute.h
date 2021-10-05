@@ -24,6 +24,11 @@ namespace jts
 	*/
 	Obj* ExecObj(ObjNode* args, bool eval);
 
+	/*
+		Takes object and returns as string
+	*/
+	str ToString(Obj* obj);
+
 	/* 
 		Takes an object and returns the value of the object casted into type T 
 	*/

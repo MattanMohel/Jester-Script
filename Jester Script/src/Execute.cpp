@@ -152,4 +152,34 @@ namespace jts
 
 		return retVal;
 	}
+
+	str ToString(Obj* obj)
+	{
+		switch (obj->type)
+		{
+			case Type::STRING:
+
+				return *obj->_string;
+
+			case Type::FLOAT:
+
+				return std::to_string(obj->_float);
+
+			case Type::INT:
+
+				return std::to_string(obj->_int);
+
+			case Type::CHAR:
+
+				return str(1, obj->_char);
+
+			case Type::QUOTE:
+
+				return obj->_quote->symbol;
+
+			default:
+
+				return obj->symbol;
+		}
+	}
 }

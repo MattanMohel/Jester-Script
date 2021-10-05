@@ -11,6 +11,13 @@ namespace jts
 	{
 		switch (a->type)
 		{
+			case Type::STRING:
+
+				*a->_string += ToString(b);
+				break;
+
+				break;
+
 			case Type::FLOAT:
 
 				a->_float += CastObj<j_float>(b);
@@ -136,6 +143,8 @@ namespace jts
 	template<> Obj* BinaryOp<Binary::SET>(Obj* a, Obj* b)
 	{
 		// memory collection -- need reference counting first
+
+		// delete -- strings, function pointers, lists in no references
 
 		//if (a->type == Type::LIST)
 		//{
@@ -495,6 +504,10 @@ namespace jts
 	{
 		switch (a->type)
 		{
+			case Type::STRING:
+
+				return *a->_string == *b->_string;
+		
 			case Type::FLOAT:
 
 				return a->_float == b->_float;
