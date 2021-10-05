@@ -1,6 +1,4 @@
-;examples of recursion
-
-"hello"
+;examples of recursion timmerr
 
 (function fac (n)
 	(if (= n 0)
@@ -12,7 +10,11 @@
 		n
 		(+ (fib (- n 1)) (fib (- n 2)))))
 
-(macro when (cond result)
-	(if cond
-		result
-		nil))
+(macro time (action)
+	(reset)
+	
+	(set result action)
+	
+	(set duration (elapsed))
+	
+	(+ "result of action was " result " and took " duration))

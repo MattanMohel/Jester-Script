@@ -1,0 +1,1136 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "C6387",
+          "message": {
+            "text": "'file' could be '0':  this does not adhere to the specification for the function 'fseek'. "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                },
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 3,
+                  "endLine": 16,
+                  "endColumn": 18
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "?ReadSrc@jts@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PAUVM@1@ABV23@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 10,
+                            "startColumn": 7
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 12,
+                            "startColumn": 10
+                          }
+                        },
+                        "message": {
+                          "text": "'file' may be NULL"
+                        }
+                      },
+                      "kinds": [
+                        "declaration"
+                      ],
+                      "importance": "essential"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 16,
+                            "startColumn": 8
+                          }
+                        },
+                        "message": {
+                          "text": "'file' is an Input to 'fseek' (declared at c:\\program files (x86)\\windows kits\\10\\include\\10.0.18362.0\\ucrt\\stdio.h:265)"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 16,
+                            "startColumn": 8
+                          }
+                        },
+                        "message": {
+                          "text": "'file' should not be NULL, because this is not consistent with the SAL annotation on 'fseek'"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "essential"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C6387",
+          "message": {
+            "text": "'file' could be '0':  this does not adhere to the specification for the function 'ftell'. See line 16 for an earlier location where this can occur"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                },
+                "region": {
+                  "startLine": 17,
+                  "startColumn": 8,
+                  "endLine": 17,
+                  "endColumn": 23
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "?ReadSrc@jts@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PAUVM@1@ABV23@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 10,
+                            "startColumn": 7
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 12,
+                            "startColumn": 10
+                          }
+                        },
+                        "message": {
+                          "text": "'file' may be NULL"
+                        }
+                      },
+                      "kinds": [
+                        "declaration"
+                      ],
+                      "importance": "essential"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 16,
+                            "startColumn": 8
+                          }
+                        },
+                        "message": {
+                          "text": "'file' is an Input to 'fseek' (declared at c:\\program files (x86)\\windows kits\\10\\include\\10.0.18362.0\\ucrt\\stdio.h:265)"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 17,
+                            "startColumn": 8
+                          }
+                        },
+                        "message": {
+                          "text": "'file' is an Input to 'ftell' (declared at c:\\program files (x86)\\windows kits\\10\\include\\10.0.18362.0\\ucrt\\stdio.h:281)"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 17,
+                            "startColumn": 8
+                          }
+                        },
+                        "message": {
+                          "text": "'file' should not be NULL, because this is not consistent with the SAL annotation on 'ftell'"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "essential"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C6387",
+          "message": {
+            "text": "'file' could be '0':  this does not adhere to the specification for the function 'fgetc'. See line 16 for an earlier location where this can occur"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                },
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 4,
+                  "endLine": 28,
+                  "endColumn": 15
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "?ReadSrc@jts@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PAUVM@1@ABV23@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 10,
+                            "startColumn": 7
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 12,
+                            "startColumn": 10
+                          }
+                        },
+                        "message": {
+                          "text": "'file' may be NULL"
+                        }
+                      },
+                      "kinds": [
+                        "declaration"
+                      ],
+                      "importance": "essential"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 16,
+                            "startColumn": 8
+                          }
+                        },
+                        "message": {
+                          "text": "'file' is an Input to 'fseek' (declared at c:\\program files (x86)\\windows kits\\10\\include\\10.0.18362.0\\ucrt\\stdio.h:265)"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 17,
+                            "startColumn": 8
+                          }
+                        },
+                        "message": {
+                          "text": "'file' is an Input to 'ftell' (declared at c:\\program files (x86)\\windows kits\\10\\include\\10.0.18362.0\\ucrt\\stdio.h:281)"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 18,
+                            "startColumn": 8
+                          }
+                        },
+                        "message": {
+                          "text": "'file' is an Input to 'fseek' (declared at c:\\program files (x86)\\windows kits\\10\\include\\10.0.18362.0\\ucrt\\stdio.h:265)"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 20,
+                            "startColumn": 7
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 21,
+                            "startColumn": 19
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 23,
+                            "startColumn": 8
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 24,
+                            "startColumn": 17
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 26,
+                            "startColumn": 13
+                          }
+                        },
+                        "message": {
+                          "text": "Enter this loop, (assume 'ch!=((-1))')"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 28,
+                            "startColumn": 7
+                          }
+                        },
+                        "message": {
+                          "text": "'file' is an Input to 'fgetc' (declared at c:\\program files (x86)\\windows kits\\10\\include\\10.0.18362.0\\ucrt\\stdio.h:177)"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+                          },
+                          "region": {
+                            "startLine": 28,
+                            "startColumn": 7
+                          }
+                        },
+                        "message": {
+                          "text": "'file' should not be NULL, because this is not consistent with the SAL annotation on 'fgetc'"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "essential"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::spec' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::spec"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::type' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::type"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_char' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_char"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_bool' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_bool"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_int' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_int"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_float' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_float"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_string' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_string"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_native' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_native"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_cppFunc' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_cppFunc"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_jtsMacro' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_jtsMacro"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_jtsFunc' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_jtsFunc"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_args' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_args"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'jts::Obj::<unnamed-tag>::_quote' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+                },
+                "region": {
+                  "startLine": 40,
+                  "startColumn": 2,
+                  "endLine": 40,
+                  "endColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0Obj@jts@@QAE@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "jts::Obj::<unnamed-tag>::_quote"
+          }
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.28.29914.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "commandLine": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29910\\bin\\HostX86\\x86\\c1xx.dll\" -ACf{1F7B090C-16DB-4822-966A-A93D26ED4681} -ACpmspft140.dll -Alint -D_PREFAST_ -D_AST_FE_ -Analyze -zm0x0056B1C0 -il C:\\Users\\Mattan\\AppData\\Local\\Temp\\_CL_8c1d7668ast -typedil -f src\\File.cpp -Ze -D_MSC_EXTENSIONS -Zp8 -Gs -pc \\:/ -D_MSC_VER=1928 -D_MSC_FULL_VER=192829914 -D_MSC_BUILD=0 -D_WIN32 -D_M_IX86=600 -D_M_IX86_FP=2 -GR -D_CPPRTTI -nologo -W 3 -diagnostics:column -D_GUARDOVERFLOW_CRT_ALLOCATORS=1 -GF -Og -Oi -Ot -Oy -ltcg -DCODE_ANALYSIS -DWIN32 -DNDEBUG -D_CONSOLE -D_UNICODE -DUNICODE -EHs -D_CPPUNWIND -EHc -MD -D_MT -D_DLL -GS -D_M_FP_PRECISE -permissive- -Zc:wchar_t -Zc:forScope -std:c++17 -FoRelease\\File.obj -FdRelease\\vc142.pdb -Gd -analyze:projectdirectory C:\\repo\\Jester Script\\Jester Script -analyze:rulesetdirectory ;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Team Tools\\Static Analysis Tools\\\\Rule Sets; -analyze:ruleset C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Team Tools\\Static Analysis Tools\\Rule Sets\\NativeRecommendedRules.ruleset -analyze:quiet -analyze:plugin C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29910\\bin\\HostX86\\x86\\EspXEngine.dll -FC -errorreport:prompt -I C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29910\\include -I C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29910\\atlmfc\\include -I C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\VS\\include -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\ucrt -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\um -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\shared -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\winrt -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\cppwinrt -I C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\Include\\um",
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/utils/pool.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "md5": "dba5206e585e66c0582145ee5224708a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/utils/pool.h"
+          },
+          "hashes": {
+            "md5": "736cd9fc4914f0fdba33c93d33903304"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/types.h"
+          },
+          "hashes": {
+            "md5": "13ea1a237f717dbfc2a37a0dbb9a217e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/repo/Jester Script/Jester Script/src/StrCon.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "md5": "73944a51eb75b523d59849197966184a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/repo/Jester Script/Jester Script/src/Object.h"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "md5": "2cd17dd2e963c045a9688ab5e5e264f1"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/strcon.h"
+          },
+          "hashes": {
+            "md5": "ab5267b09cf35bcb4d6096c04215f56a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/token.h"
+          },
+          "hashes": {
+            "md5": "b722ad2c08a91e5c6a7aa01569908715"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/vm.h"
+          },
+          "hashes": {
+            "md5": "ac39b28a974b4852dc16a3310306c4cd"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/vm.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "md5": "e59ac2c259b83b1000270758cfa4a543"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/execute.h"
+          },
+          "hashes": {
+            "md5": "ce60b8a78edc8cfe055e49b235ca5ab5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/lexer.h"
+          },
+          "hashes": {
+            "md5": "bda2f3da7a87e0d6d40f32678a35fe34"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/file.h"
+          },
+          "hashes": {
+            "md5": "f69b240cafcf26338b80d59ae7320da5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/log.h"
+          },
+          "hashes": {
+            "md5": "7f63a7899db1c1976358359df8e2e704"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/repo/Jester Script/Jester Script/src/cppFunc.h"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "md5": "70c6c9841933b0b3df386e78b9660a10"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/main.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "md5": "9546cd272c9ee872a09071d25fc47ec6"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/operations.h"
+          },
+          "hashes": {
+            "md5": "0794991a79eaa716bf20370091de7ef3"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/jts libs/standard.h"
+          },
+          "hashes": {
+            "md5": "30f9f024a4e3741b7d423be129c4aa1f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/jtsfunc.h"
+          },
+          "hashes": {
+            "md5": "25efa6cc6a5a9af98e3f3d671c613f3d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/jtsmacro.h"
+          },
+          "hashes": {
+            "md5": "d78441d2d455e1ec949451ade9360b8b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/jts libs/arithmetic.h"
+          },
+          "hashes": {
+            "md5": "c00c937b2da93a155896ba8919ba7632"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/jts libs/boolean.h"
+          },
+          "hashes": {
+            "md5": "47cbabb4bb0b3e3734e6381885bb071b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/utils/timer.h"
+          },
+          "hashes": {
+            "md5": "5816217b47badf7beb01d84d307fc5d9"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/repo/Jester Script/Jester Script/src/File.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "md5": "6920baef2c8e29492e410acec8b957d9"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/repo/jester script/jester script/src/parser.h"
+          },
+          "hashes": {
+            "md5": "62dd82f0c9962bb47a579aab8e42788e"
+          }
+        }
+      ]
+    }
+  ]
+}

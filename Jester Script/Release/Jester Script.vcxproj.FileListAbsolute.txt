@@ -1,0 +1,2 @@
+C:\repo\Jester Script\Release\Jester Script.exe.lastcodeanalysissucceeded
+C:\repo\Jester Script\Jester Script\Release\NativeCodeAnalysis.read.1.tlog
