@@ -24,6 +24,26 @@ namespace lib
 			}
 
 			return EvalObj(args->next->next->value, eval);
+		}));		
+		
+		env::AddSymbol(vm, "when", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			if (isTrue(EvalObj(args->value, eval)))
+			{
+				return EvalObj(args->next->value, eval);
+			}
+
+			return NIL;
+		}));		
+		
+		env::AddSymbol(vm, "unless", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			if (!isTrue(EvalObj(args->value, eval)))
+			{
+				return EvalObj(args->next->value, eval);
+			}
+
+			return NIL;
 		}));
 
 		env::AddSymbol(vm, "=", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*

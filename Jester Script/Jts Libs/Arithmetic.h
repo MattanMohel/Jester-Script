@@ -10,11 +10,22 @@
 
 #include <math.h>
 #include <limits>
+#include <random>
+#include <time.h>
 
 using namespace jts;
 
 namespace lib
 {
+	int Random(int min, int max)
+	{
+		std::random_device dev;
+		std::mt19937 rng(dev());
+		std::uniform_int_distribution<std::mt19937::result_type> dist(min, max);
+
+		return dist(rng);
+	}
+
 	inline void ArithmeticLib(VM* vm)
 	{
 		// Mathematical Constants
@@ -240,6 +251,9 @@ namespace lib
 			BinaryOp<Binary::SET>(ret, EvalObj(args->value, eval));
 			return UnaryOp<Unary::ATAN>(ret);
 		}));
+
+		// (random min max)
+		env::AddSymbol(vm, "random", env::AddBridge(Random));
 	}
 }
 #endif

@@ -233,31 +233,37 @@ namespace lib
 		}));		
 		
 		// (to-int value)
-		env::AddSymbol(vm, "to-int", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "int", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return SetTo(ret, CastObj<j_int>(EvalObj(args->value, eval)));
 		}));			
 		
+		// (to-int value)
+		env::AddSymbol(vm, "string-int", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			return SetTo(ret, std::stoi(*EvalObj(args->value, eval)->_string));
+		}));			
+		
 		// (to-float value)
-		env::AddSymbol(vm, "to-float", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "float", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return SetTo(ret, CastObj<j_float>(EvalObj(args->value, eval)));
 		}));			
 		
 		// (to-char value)
-		env::AddSymbol(vm, "to-char", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "char", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return SetTo(ret, CastObj<j_char>(EvalObj(args->value, eval)));
 		}));			
 		
 		// (to-bool value)
-		env::AddSymbol(vm, "to-bool", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "bool", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return SetTo(ret, CastObj<j_bool>(EvalObj(args->value, eval)));
 		}));			
 		
 		// (to-string value)
-		env::AddSymbol(vm, "to-string", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::AddSymbol(vm, "string", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return SetTo(ret, new str(ToString(EvalObj(args->value, eval))));
 		}));		

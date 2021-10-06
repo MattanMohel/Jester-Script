@@ -1,0 +1,26 @@
+
+; examples of macros
+
+; takes an action and times it
+(macro time (action)
+	(reset)
+	
+	(set result action)
+	
+	(set duration (elapsed))
+	
+	(+ "result of action was " result " and took " duration))
+
+; limit approximation
+(macro lim (eq x point)
+	(set x-delta 0.001)
+	
+	(set x (float point))
+	(set d1 eq)
+	
+	(+= x x-delta)
+	(set d2 eq)
+	
+	(set y-delta (- d2 d1))
+	
+	(/ y-delta x-delta))
