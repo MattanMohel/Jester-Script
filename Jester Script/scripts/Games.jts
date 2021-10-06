@@ -19,3 +19,17 @@
 				(println ": you win!"))
 				
 		(-- turns)))
+		
+(function guess (min max)
+	(println "guess number between " min " and " max)
+	
+	(set num (random min max))
+	
+	(set found-number F)
+	(loop (not found-number)
+		(set in (string-int (input)))
+		
+		(if (= in num)(progn (set found-number T) "correct!")
+			(if (< in num)(println "guess higher!")
+				(println "guess lower!")))))
+		

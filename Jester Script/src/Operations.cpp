@@ -506,6 +506,8 @@ namespace jts
 		{
 			case Type::STRING:
 
+				if (b->type != Type::STRING) return false;
+
 				return *a->_string == *b->_string;
 		
 			case Type::FLOAT:
