@@ -189,7 +189,7 @@ namespace jts
 
 			case Type::STRING:
 
-				a->_string = b->_string;
+				a->_string = new str(*b->_string);
 				break;
 
 			case Type::FLOAT:

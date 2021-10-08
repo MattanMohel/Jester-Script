@@ -11,8 +11,8 @@ namespace jts
 
         if (tok->symbol[0] == '\"' && tok->symbol[len - 1] == '\"')
         {
-            if (len > 3) tok->type = Type::STRING;
-            else tok->type = Type::CHAR;
+            if (len == 3) tok->type = Type::CHAR;
+            else tok->type = Type::STRING;
 
             return true;
         }

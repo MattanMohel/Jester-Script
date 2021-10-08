@@ -66,7 +66,7 @@ namespace jts
 
 			while (paramCpyPtr)
 			{
-				Obj* value = env::glbl_objPool.acquire();
+				Obj* value = env::glbl_objPool.peek();
 
 				BinaryOp<Binary::SET>(value, paramCpyPtr->value);
 				BinaryOp<Binary::SET>(paramCpyPtr->value, paramPtr->value);

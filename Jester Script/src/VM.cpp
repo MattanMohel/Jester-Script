@@ -10,8 +10,20 @@
 
 namespace jts { namespace env {
 
-	extern Pool<Obj>     glbl_objPool(100);
-	extern Pool<ObjNode> glbl_nodePool(100);
+	extern Pool<Obj> glbl_objPool(100, [](Obj* value)
+	{
+		value->type = Type::NIL;
+		value->_int = 0;
+
+		return value;
+	});
+	extern Pool<ObjNode> glbl_nodePool(100, [](ObjNode* value)
+	{
+		value->next = nullptr;
+		value->value = nullptr;
+
+		return value;
+	});
 
 	void AddSymbol(VM* vm, str key, Obj* value)
 	{

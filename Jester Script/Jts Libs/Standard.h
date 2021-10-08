@@ -185,9 +185,9 @@ namespace lib
 					block = block->next;
 				}
 
-				state = isTrue(EvalObj(cond->value, eval));
-
 				Obj* loopRet = EvalObj(block->value, eval);
+
+				state = isTrue(EvalObj(cond->value, eval));
 
 				if (!state) return loopRet;
 

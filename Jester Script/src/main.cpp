@@ -44,6 +44,8 @@ int main(char** argc, int** argv)
 	ParseSrc(vm, ReadSrc(vm, "scripts/Macros.jts"));
 	env::Run(vm);
 	ParseSrc(vm, ReadSrc(vm, "scripts/Games.jts"));
+	env::Run(vm);	
+	ParseSrc(vm, ReadSrc(vm, "scripts/Password.jts"));
 	env::Run(vm);
 
 	env::RunREPL(vm);

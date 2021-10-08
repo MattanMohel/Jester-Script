@@ -27,9 +27,12 @@
 	
 	(set found-number F)
 	(loop (not found-number)
+		(println found-number " input guess: ")
 		(set in (string-int (input)))
 		
 		(if (= in num)(progn (set found-number T) "correct!")
+			; else
 			(if (< in num)(println "guess higher!")
+				; else
 				(println "guess lower!")))))
 		

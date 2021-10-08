@@ -14,7 +14,10 @@ class Pool
 {
 public:
 
-	Pool(size_t size)
+	using InitFunc = T* (*)(T*);
+
+	Pool(size_t size, InitFunc initFunc)
+		: m_initFunc(initFunc)
 	{
 		m_buffer.reserve(size * 2);
 
@@ -45,7 +48,7 @@ public:
 		T* value = m_buffer.back();
 		m_buffer.pop_back();
 
-		return value;
+		return m_initFunc(value);
 	}
 
 	/*
@@ -58,7 +61,7 @@ public:
 			return new T();
 		}
 
-		return m_buffer.back();
+		return m_initFunc(m_buffer.back());
 	}
 
 	/*
@@ -91,6 +94,7 @@ public:
 private:
 
 	std::vector<T*> m_buffer;
+	InitFunc m_initFunc;
 };
 
 #endif

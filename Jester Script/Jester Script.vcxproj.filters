@@ -113,6 +113,9 @@
     <ClInclude Include="utils\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="scripts\Type.jts">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\Testing.jts" />

@@ -167,6 +167,7 @@
     <ClInclude Include="Jts Libs\Arithmetic.h" />
     <ClInclude Include="Jts Libs\Boolean.h" />
     <ClInclude Include="Jts Libs\Standard.h" />
+    <ClInclude Include="scripts\Type.jts" />
     <ClInclude Include="src\cppFunc.h" />
     <ClInclude Include="utils\Pool.h" />
     <ClInclude Include="src\JtsMacro.h" />
