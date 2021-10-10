@@ -12,7 +12,7 @@ namespace jts
 		auto* paramPtr = params->value->_args;
 		args = args->next;
 
-		if (params)
+		if (params->value->_args)
 		{
 			/*
 				1) Assigns passed parameter values to the parameter-copy

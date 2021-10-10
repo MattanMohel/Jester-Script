@@ -11,7 +11,7 @@ namespace jts
 		auto* paramPtr = params->value->_args;
 		args = args->next;
 
-		if (params)
+		if (params->value->_args)
 		{
 			// assign copy to passed values
 

@@ -236,6 +236,18 @@ namespace lib
 		env::AddSymbol(vm, "string-int", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return SetTo(ret, std::stoi(*EvalObj(args->value, eval)->_string));
+		}));			
+		
+		// (string-bool value)
+		env::AddSymbol(vm, "string-bool", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			return SetTo(ret, (bool)std::stoi(*EvalObj(args->value, eval)->_string));
+		}));			
+		
+		// (string-char value)
+		env::AddSymbol(vm, "string-char", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			return SetTo(ret, (*EvalObj(args->value, eval)->_string)[0]);
 		}));		
 		
 		// (string-int value)
