@@ -10,13 +10,19 @@ namespace jts
 	bool isPrefix(char value);
 
 	// Takes a string source and tokenizes to VM
-	void TokenizeFile(VM* vm, str src);
+	void tokenizeFile(VM* vm, str src);
 
 	// Converts parameters to a Token and appends to VM
-	void AddToken(VM* vm, str& symbol, size_t line);
+	void addToken(VM* vm, str& symbol, size_t line);
 
 	// Matches most recent Token with corresponding object in VM
-	void MatchTokenType(VM* vm);
+	void matchTokenType(VM* vm);
+
+	/*
+	* Takes a special opertor and lexically replaces it
+	* in the src to the counterpart function
+	*/ 
+	void addSpecialOp(VM* vm, str& src, str::iterator cur, str op, int depth, int line);
 }
 
 #endif

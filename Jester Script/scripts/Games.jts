@@ -1,38 +1,25 @@
 
-;rock-paper-scissors!
-
-(function rps (turns)
-	(loop (> turns 1)
-		(set options ("rock" "paper" "scissors"))
-
-		(print "enter your pick: [(1) rock (2) paper (3) scissors] : ")	
-		
-		(set in (- (string-int (input)) 1))	
-		(set op (random 0 2))
-		
-		(print "you picked " (nth in options) " and AI picked " (nth op options))
-		
-		; if inputs are equal, its a draw
-		(when (= in op) (println ": draw!"))
-		; if op == in + 1, loose, otherwise win
-		(if (= op (mod (+ in 1) 3)) (println ": you loose!")
-				(println ": you win!"))
-				
-		(-- turns)))
-		
-(function guess (min max)
-	(println "guess number between " min " and " max)
+(fn guesser (min max)
 	
-	(set num (random min max))
+	(print "guess number between " min " and " max)
 	
-	(set found-number F)
-	(loop (not found-number)
-		(println found-number " input guess: ")
-		(set in (string-int (input)))
-		
-		(if (= in num)(progn (set found-number T) "correct!")
-			; else
-			(if (< in num)(println "guess higher!")
-				; else
-				(println "guess lower!")))))
-		
+	(set user-in (string-int (input)))
+	(set rand-in (random min max))
+	
+	(if (= user-in rand-in) nil
+		(if (< user-in rand-in) (println "guess lower")
+			(println "guess higher")))
+	
+)
+
+(fn test()
+	local x 
+	local y ; local variables
+)
+
+; TODO
+
+; make ' same as (quote)
+; make macros subtitute their bodies as progns to code rather than functions
+; make scoped variables possible
+; make class types

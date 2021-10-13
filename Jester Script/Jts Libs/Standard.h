@@ -123,8 +123,8 @@ namespace lib
 			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args->next->value, eval));
 		}));
 
-		// (function id (params) body)
-		env::AddSymbol(vm, "function", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		// (fn id (params) body)
+		env::AddSymbol(vm, "fn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			Obj* func = args->value;
 
@@ -220,8 +220,8 @@ namespace lib
 			}
 		}));		
 		
-		// (progn body)
-		env::AddSymbol(vm, "progn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		// (list body...)
+		env::AddSymbol(vm, "list", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			while (args->next)
 			{

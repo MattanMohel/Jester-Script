@@ -36,7 +36,7 @@ namespace jts
 
 	void ParseSrc(VM* vm, str src)
 	{
-		TokenizeFile(vm, src);
+		tokenizeFile(vm, src);
 
 		ParseTokens(vm);
 	}

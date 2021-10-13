@@ -16,7 +16,7 @@ namespace jts
 	}
 
 
-	void TokenizeFile(VM* vm, str src)
+	void tokenizeFile(VM* vm, str src)
 	{
 		str::iterator ch = src.begin();
 
@@ -24,6 +24,7 @@ namespace jts
 		bool inLtrl = false;
 
 		size_t line = 1;
+		size_t depth = 0;
 
 		/*
 			User defined symbols may begin, end with, or contain 
@@ -32,7 +33,7 @@ namespace jts
 
 			EX: 
 
-			(++x) ;won't work with nos space --> (++ x) ;works
+			(++x) ;won't work with no space --> (++ x) ;works
 		*/
 
 		// initialize Token linked-list head
@@ -53,7 +54,7 @@ namespace jts
 			}
 
 			// add new Token if lexer isn't empty
-			if (!lexer.empty()) AddToken(vm, lexer, line);
+			if (!lexer.empty()) addToken(vm, lexer, line);
 
 			// ch here is either a prefix operators or empty
 			switch (*ch)
@@ -72,8 +73,15 @@ namespace jts
 				case '(':
 				case ')':
 
+					depth += (*ch == '(') - (*ch == ')');
+
 					lexer += *ch;
-					AddToken(vm, lexer, line);
+					addToken(vm, lexer, line);
+					break;
+
+				case '\'':
+
+					addSpecialOp(vm, src, ch, "quote", depth, line);
 					break;
 			}
 
@@ -86,11 +94,11 @@ namespace jts
 		vm->tokenPtrCur = vm->tokenPtrBeg;
 	}
 
-	void AddToken(VM* vm, str& symbol, size_t line)
+	void addToken(VM* vm, str& symbol, size_t line)
 	{
 		vm->tokenPtrCur->symbol = symbol;
 		vm->tokenPtrCur->line = line;
-		MatchTokenType(vm);
+		matchTokenType(vm);
 
 		// create and set the tokenPtr to the next item
 		vm->tokenPtrCur->next = new Tok();
@@ -99,7 +107,7 @@ namespace jts
 		symbol = "";
 	}
 
-	void MatchTokenType(VM* vm)
+	void matchTokenType(VM* vm)
 	{
 		const str& value = vm->tokenPtrCur->symbol;
 
@@ -135,5 +143,31 @@ namespace jts
 		{
 			vm->tokenPtrCur->spec = Spec::SYMBOL;
 		}
+	}
+
+	void addSpecialOp(VM* vm, str& src, str::iterator cur, str op, int depth, int line)
+	{
+		str symbol = '(' + op + ' ';
+
+		src.replace(cur - src.begin(), cur - src.begin() + 1, symbol);
+		cur += symbol.length() - 1; // index iterator
+
+		int targetDepth = depth;
+
+		while (true)
+		{
+			++cur;
+			depth += (*cur == '(') - (*cur == ')');
+
+			if ((*cur == ' ' || *cur == EOF) && depth == targetDepth) break;
+		}
+
+		src.insert(cur, ')');
+
+		vm->tokenPtrCur->symbol = '(';
+		vm->tokenPtrCur->spec = Spec::BEG;
+
+		vm->tokenPtrCur->next = new Tok();
+		vm->tokenPtrCur = vm->tokenPtrCur->next;
 	}
 }
