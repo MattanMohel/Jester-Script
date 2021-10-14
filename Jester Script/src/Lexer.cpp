@@ -81,7 +81,12 @@ namespace jts
 
 				case '\'':
 
-					addSpecialOp(vm, src, ch, "quote", depth, line);
+					ch = addSpecialOp(vm, "quote", src, depth, line, ch);
+					break;		
+				
+				case '~':
+
+					ch = addSpecialOp(vm, "eval", src, depth, line, ch);
 					break;
 			}
 
@@ -127,13 +132,13 @@ namespace jts
 		}
 
 		// if symbol is in the VM
-		else if (env::GetSymbol(vm, vm->tokenPtrCur->symbol))
+		else if (env::getSymbol(vm, vm->tokenPtrCur->symbol))
 		{
 			vm->tokenPtrCur->spec = Spec::SYMBOL;
 		}
 
 		// if symbol is a literal value (5.0, 10, etc...)
-		else if (TokIsLtrl(vm->tokenPtrCur))
+		else if (tokIsLtrl(vm->tokenPtrCur))
 		{
 			vm->tokenPtrCur->spec = Spec::VALUE;
 		}
@@ -145,29 +150,38 @@ namespace jts
 		}
 	}
 
-	void addSpecialOp(VM* vm, str& src, str::iterator cur, str op, int depth, int line)
+	str::iterator addSpecialOp(VM* vm, str op, str& src, size_t& depth, int line, str::iterator cur)
 	{
 		str symbol = '(' + op + ' ';
 
-		src.replace(cur - src.begin(), cur - src.begin() + 1, symbol);
-		cur += symbol.length() - 1; // index iterator
+		size_t totalOffset = cur - src.begin();
+		src.replace(src.begin() + totalOffset, src.begin() + totalOffset + 1, symbol);
+		cur = src.begin() + totalOffset;
+
+		cur += symbol.length() - 1;
 
 		int targetDepth = depth;
 
 		while (true)
 		{
 			++cur;
-			depth += (*cur == '(') - (*cur == ')');
 
-			if ((*cur == ' ' || *cur == EOF) && depth == targetDepth) break;
+			targetDepth += (*cur == '(') - (*cur == ')');
+
+			if ((*cur == ' ' || *cur == ')' || *cur == EOF) && (targetDepth == depth || targetDepth == 0)) break;
 		}
 
 		src.insert(cur, ')');
+		++depth;
+
+		// initialize new node 
 
 		vm->tokenPtrCur->symbol = '(';
 		vm->tokenPtrCur->spec = Spec::BEG;
 
 		vm->tokenPtrCur->next = new Tok();
 		vm->tokenPtrCur = vm->tokenPtrCur->next;
+
+		return src.begin() + totalOffset;
 	}
 }

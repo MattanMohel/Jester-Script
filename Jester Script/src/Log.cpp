@@ -7,84 +7,89 @@
 
 namespace jts 
 {
-	Obj* PrintObj(Obj* value, bool newLine)
+	str symbolOf(Obj* obj, bool quote)
 	{
-		str upperStr = "";
-		ObjNode* elem = nullptr;
+		str symbol = "";
 
+		if (obj->spec == Spec::SYMBOL)
+		{
+			if (!quote) return toString(obj);
+			
+			for (auto c : obj->symbol)
+			{
+				symbol += toupper(c);
+			}
+		}
+		else
+		{
+			symbol = toString(obj);
+		}
+
+		return symbol;
+	}
+
+	Obj* printObj(Obj* value, bool newLine)
+	{
 		switch (value->type)
 		{
+			case Type::CHAR:
+			case Type::BOOL:
+			case Type::INT:
+			case Type::FLOAT:
+			case Type::STRING:
 			case Type::MAC_FN:
 			case Type::JTS_FN:
 			case Type::NAT_FN:
 			case Type::CPP_FN:
-
-				for (auto c : value->symbol)
-				{
-					upperStr += toupper(c);
-				}
-
-				std::cout << upperStr;
+			{
+				std::cout << symbolOf(value);
 
 				break;
+			}
 
 			case Type::QUOTE:
-
+			{
 				if (value->type == Type::LIST) break;
-				
-				for (auto c : value->_quote->symbol)
+
+				int quoteDepth = 0;
+				Obj* quote = value->_quote;
+
+				while (quote)
 				{
-					upperStr += toupper(c);
+					++quoteDepth;
+
+					if (quote->type != Type::QUOTE)
+					{
+						std::cout << symbolOf(quote, quoteDepth > 0);
+						break;
+					}
+
+					quote = quote->_quote;
 				}
 
-				std::cout << upperStr;
-
 				break;
+			}
 
 			case Type::LIST:
-
+			{
 				std::cout << "(";
 
-				elem = value->_args;
+				auto* elem = value->_args;
 
 				while (elem->next)
 				{
-					PrintObj(elem->value);
+					printObj(elem->value);
 					std::cout << " ";
 
 					elem = elem->next;
 				}
 
-				PrintObj(elem->value);
+				printObj(elem->value);
 
 				std::cout << ")";
 
 				break;
-
-			case Type::STRING:
-
-				std::cout << *value->_string;
-				break;
-
-			case Type::FLOAT:
-
-				std::cout << value->_float;
-				break;
-
-			case Type::CHAR:
-
-				std::cout << value->_char;
-				break;
-
-			case Type::BOOL:
-
-				std::cout << (value->_bool ? "true" : "false");
-				break;
-
-			case Type::INT:
-
-				std::cout << value->_int;
-				break;
+			}
 
 			default: // case NIL
 

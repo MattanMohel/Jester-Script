@@ -6,7 +6,7 @@
 
 namespace jts
 {
-	Obj* Func::Call (ObjNode* args, bool eval)
+	Obj* Func::call (ObjNode* args, bool eval)
 	{
 		ObjNode* paramCpy = nullptr; 
 		auto* paramPtr = params->value->_args;
@@ -39,20 +39,20 @@ namespace jts
 					n then 'recoils' back 1 -> 1 -> 2 -> 3 -> 4 -> 5 -> nil (original velue) 
 			*/
 
-			paramCpy = env::AcquireNode();
+			paramCpy = env::acquireNode();
 			auto* paramCpyPtr = paramCpy;
 
 			// assign copy to passed values
 
 			while (true)
 			{
-				BinaryOp<Binary::SET>(paramCpyPtr->value, EvalObj(args->value, eval));
+				binaryOp<Binary::SET>(paramCpyPtr->value, evalObj(args->value, eval));
 
 				args = args->next;
 
 				if (args)
 				{
-					paramCpyPtr->next = env::AcquireNode();
+					paramCpyPtr->next = env::acquireNode();
 					paramCpyPtr = paramCpyPtr->next;
 					continue;
 				}
@@ -68,9 +68,9 @@ namespace jts
 			{
 				Obj* value = env::glbl_objPool.peek();
 
-				BinaryOp<Binary::SET>(value, paramCpyPtr->value);
-				BinaryOp<Binary::SET>(paramCpyPtr->value, paramPtr->value);
-				BinaryOp<Binary::SET>(paramPtr->value, value);
+				binaryOp<Binary::SET>(value, paramCpyPtr->value);
+				binaryOp<Binary::SET>(paramCpyPtr->value, paramPtr->value);
+				binaryOp<Binary::SET>(paramPtr->value, value);
 
 				paramCpyPtr = paramCpyPtr->next;
 				paramPtr = paramPtr->next;
@@ -83,14 +83,14 @@ namespace jts
 
 		while (block->next)
 		{
-			EvalObj(block->value, eval);
+			evalObj(block->value, eval);
 			block = block->next;
 		}
 
 		// Evaluate return
 
 		Obj* ret = env::glbl_objPool.peek();
-		BinaryOp<Binary::SET>(ret, EvalObj(block->value, eval));
+		binaryOp<Binary::SET>(ret, evalObj(block->value, eval));
 
 		// Reset parameters
 
@@ -99,9 +99,9 @@ namespace jts
 
 		while (paramCpy)
 		{
-			BinaryOp<Binary::SET>(paramPtr->value, paramCpy->value);
+			binaryOp<Binary::SET>(paramPtr->value, paramCpy->value);
 			
-			env::ReleaseNode(paramCpy);
+			env::releaseNode(paramCpy);
 			paramCpy = paramCpy->next;
 
 			paramPtr = paramPtr->next;

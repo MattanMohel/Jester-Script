@@ -5,7 +5,7 @@
 
 namespace jts
 {
-	str ReadSrc(VM* vm, const str& path)
+	str readSrc(VM* vm, const str& path)
 	{
 		FILE* file = nullptr;
 
@@ -34,10 +34,10 @@ namespace jts
 		return srcBuffer;
 	}
 
-	void ParseSrc(VM* vm, str src)
+	void parseSrc(VM* vm, str src)
 	{
 		tokenizeFile(vm, src);
 
-		ParseTokens(vm);
+		parseTokens(vm);
 	}
 }

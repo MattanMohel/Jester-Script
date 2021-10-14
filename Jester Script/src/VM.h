@@ -27,7 +27,7 @@ namespace jts
 		extern Pool<Obj>     glbl_objPool;	
 		extern Pool<ObjNode> glbl_nodePool;
 		
-		inline ObjNode* AcquireNode()
+		inline ObjNode* acquireNode()
 		{
 			auto* node = glbl_nodePool.acquire();
 			node->value = glbl_objPool.acquire();
@@ -35,36 +35,36 @@ namespace jts
 			return node;
 		}
 				
-		inline void ReleaseNode(ObjNode* node)
+		inline void releaseNode(ObjNode* node)
 		{
 			glbl_nodePool.release(node);
 			glbl_objPool.release(node->value);
 		}
 
 		// Takes a key and value, emplaces to Vm as a key-value pair
-		void AddSymbol(VM* vm, str key, Obj* value);
+		void addSymbol(VM* vm, str key, Obj* value);
 
-		Obj* AddNative(Obj* (*native)(Obj*, ObjNode*, bool));
+		Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool));
 
 		template<typename T>
-		inline Obj* AddConst(T value)
+		inline Obj* addConst(T value)
 		{
 			static_assert(false, "type unsupported");
 		}
 
-		template<> Obj* AddConst(j_char  value);
-		template<> Obj* AddConst(j_bool  value);
-		template<> Obj* AddConst(j_int   value);
-		template<> Obj* AddConst(j_float value);
-		template<> Obj* AddConst(std::nullptr_t value);
+		template<> Obj* addConst(j_char  value);
+		template<> Obj* addConst(j_bool  value);
+		template<> Obj* addConst(j_int   value);
+		template<> Obj* addConst(j_float value);
+		template<> Obj* addConst(std::nullptr_t value);
 
-		void AddLib(VM* vm, void(*lib)(VM* vm));
+		void addLib(VM* vm, void(*lib)(VM* vm));
 
-		Obj* GetSymbol(VM* vm, str symbol);
+		Obj* getSymbol(VM* vm, str symbol);
 
-		void RunREPL(VM* vm);
+		void runREPL(VM* vm);
 
-		Obj* Run(VM* vm);
+		Obj* run(VM* vm);
 	}
 }
 

@@ -14,7 +14,7 @@ namespace jts
 		@param obj  : the object to be evaluated
 		@param eval : whether or not to evaluate quote values
 	*/
-	Obj* EvalObj(Obj* obj, bool eval = false);
+	Obj* evalObj(Obj* obj, bool eval = false);
 
 	/* 
 		Executes an object with a callable type and returns its executed value
@@ -22,18 +22,18 @@ namespace jts
 		@param args - pointer to the first argument of the callable
 		@param eval - wether or not to evaluate quote values
 	*/
-	Obj* ExecObj(ObjNode* args, bool eval);
+	Obj* execObj(ObjNode* args, bool eval);
 
 	/*
 		Takes object and returns as string
 	*/
-	str ToString(Obj* obj);
+	str toString(Obj* obj);
 
 	/* 
 		Takes an object and returns the value of the object casted into type T 
 	*/
 	template<typename T>
-	inline T CastObj(Obj* obj)
+	inline T castObj(Obj* obj)
 	{
 		switch (obj->type)
 		{
@@ -59,7 +59,7 @@ namespace jts
 		Takes type T and returns the corresponding enum Type value 
 	*/
 	template<typename T>
-	inline Type GetType()
+	inline Type getType()
 	{
 		if (std::is_same<T, j_char>::value)
 		{

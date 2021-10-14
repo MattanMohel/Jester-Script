@@ -12,33 +12,33 @@ namespace lib
 {
 	inline void BooleanLib(VM* vm)
 	{
-		env::AddSymbol(vm, "T", env::AddConst<bool>(true));
+		env::addSymbol(vm, "T", env::addConst<bool>(true));
 
-		env::AddSymbol(vm, "F", env::AddConst<bool>(false));
+		env::addSymbol(vm, "F", env::addConst<bool>(false));
 
 		// (if cond if-true else)
-		env::AddSymbol(vm, "if", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "if", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			if (isTrue(EvalObj(args->value, eval)))
+			if (isTrue(evalObj(args->value, eval)))
 			{
-				return EvalObj(args->next->value, eval);
+				return evalObj(args->next->value, eval);
 			}
 
-			return EvalObj(args->next->next->value, eval);
+			return evalObj(args->next->next->value, eval);
 		}));			
 		
 		// (match value case 1 if-true... case n if-true)
-		env::AddSymbol(vm, "match", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "match", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* val = EvalObj(args->value, eval);
+			Obj* val = evalObj(args->value, eval);
 
 			auto* curCase = args->next;
 
 			while (true)
 			{
-				if (isEqual(val, EvalObj(curCase->value, eval)))
+				if (isEqual(val, evalObj(curCase->value, eval)))
 				{
-					return EvalObj(curCase->next->value, eval);
+					return evalObj(curCase->next->value, eval);
 				}
 
 				if (!curCase->next) return NIL;
@@ -47,63 +47,63 @@ namespace lib
 			}
 		}));		
 		
-		env::AddSymbol(vm, "when", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "when", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			if (isTrue(EvalObj(args->value, eval)))
+			if (isTrue(evalObj(args->value, eval)))
 			{
-				return EvalObj(args->next->value, eval);
+				return evalObj(args->next->value, eval);
 			}
 
 			return NIL;
 		}));		
 		
-		env::AddSymbol(vm, "unless", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "unless", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			if (!isTrue(EvalObj(args->value, eval)))
+			if (!isTrue(evalObj(args->value, eval)))
 			{
-				return EvalObj(args->next->value, eval);
+				return evalObj(args->next->value, eval);
 			}
 
 			return NIL;
 		}));
 
-		env::AddSymbol(vm, "=", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "=", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, isEqual(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
+			return setTo(ret, isEqual(evalObj(args->value, eval), evalObj(args->next->value, eval)));
 		}));			
 		
-		env::AddSymbol(vm, ">", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, ">", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, isGreater(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
+			return setTo(ret, isGreater(evalObj(args->value, eval), evalObj(args->next->value, eval)));
 		}));			
 		
-		env::AddSymbol(vm, ">=", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, ">=", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, isGreaterEq(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
+			return setTo(ret, isGreaterEq(evalObj(args->value, eval), evalObj(args->next->value, eval)));
 		}));				
 		
-		env::AddSymbol(vm, "<", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "<", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, !isGreaterEq(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
+			return setTo(ret, !isGreaterEq(evalObj(args->value, eval), evalObj(args->next->value, eval)));
 		}));				
 		
-		env::AddSymbol(vm, "<=", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "<=", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, !isGreater(EvalObj(args->value, eval), EvalObj(args->next->value, eval)));
+			return setTo(ret, !isGreater(evalObj(args->value, eval), evalObj(args->next->value, eval)));
 		}));				
 		
-		env::AddSymbol(vm, "not", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "not", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, !isTrue(EvalObj(args->value, eval)));
+			return setTo(ret, !isTrue(evalObj(args->value, eval)));
 		}));		
 		
-		env::AddSymbol(vm, "and", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "and", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			bool state = false;
 
 			while (args)
 			{
-				state = isTrue(EvalObj(args->value, eval));
+				state = isTrue(evalObj(args->value, eval));
 
 				if (!state)
 				{
@@ -113,16 +113,16 @@ namespace lib
 				args = args->next;
 			}
 
-			return SetTo(ret, state);
+			return setTo(ret, state);
 		}));		
 		
-		env::AddSymbol(vm, "or", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "or", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			bool state = false;
 
 			while (args)
 			{
-				state = isTrue(EvalObj(args->value, eval));
+				state = isTrue(evalObj(args->value, eval));
 
 				if (state)
 				{
@@ -132,7 +132,7 @@ namespace lib
 				args = args->next;
 			}
 
-			return SetTo(ret, state);
+			return setTo(ret, state);
 		}));
 	}
 }

@@ -19,24 +19,24 @@ namespace lib
 {
 	inline void StandardLib(VM* vm)
 	{
-		env::AddSymbol(vm, "nil", env::AddConst(nullptr));
+		env::addSymbol(vm, "nil", env::addConst(nullptr));
 
 		// (quote target)
-		env::AddSymbol(vm, "quote", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "quote", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return UnaryOp<Unary::QUOTE>(args->value);
+			return quoteObj(args, eval);
 		}));
 
 		// (set to-set setter)
-		env::AddSymbol(vm, "set", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "set", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return BinaryOp<Binary::SET>(EvalObj(args->value, eval), EvalObj(args->next->value, eval));
+			return binaryOp<Binary::SET>(evalObj(args->value, eval), evalObj(args->next->value, eval));
 		}));
 		
 		// (head list)
-		env::AddSymbol(vm, "head", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "head", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto* elem = EvalObj(args->value, eval)->_args;
+			auto* elem = evalObj(args->value, eval)->_args;
 
 			if (!elem) return NIL;
 
@@ -44,9 +44,9 @@ namespace lib
 		}));			
 		
 		// (rest list)
-		env::AddSymbol(vm, "rest", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "rest", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto* elem = EvalObj(args->value, eval)->_args;
+			auto* elem = evalObj(args->value, eval)->_args;
 
 			if (!elem || !elem->next) return NIL;
 
@@ -54,15 +54,15 @@ namespace lib
 		}));			
 		
 		// (nth index list)
-		env::AddSymbol(vm, "nth", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "nth", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* head = EvalObj(args->next->value, eval);
+			Obj* head = evalObj(args->next->value, eval);
 
 			if (!head) return NIL;
 
 			auto* elem = head->_args;
 			
-			for (size_t i = 0; i < CastObj<j_int>(EvalObj(args->value, eval)); ++i)
+			for (size_t i = 0; i < castObj<j_int>(evalObj(args->value, eval)); ++i)
 			{
 				elem = elem->next;
 
@@ -73,9 +73,9 @@ namespace lib
 		}));		
 		
 		// (append index list)
-		env::AddSymbol(vm, "append", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "append", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* head = EvalObj(args->next->value, eval);
+			Obj* head = evalObj(args->next->value, eval);
 
 			// If object isn't a list, convert it and append value
 
@@ -83,9 +83,9 @@ namespace lib
 			{
 				head->type = Type::LIST;
 
-				head->_args = env::AcquireNode();
+				head->_args = env::acquireNode();
 
-				return BinaryOp<Binary::SET>(head->_args->value, EvalObj(args->value, eval));
+				return binaryOp<Binary::SET>(head->_args->value, evalObj(args->value, eval));
 			}
 
 			auto* elem = head->_args;
@@ -95,21 +95,21 @@ namespace lib
 				elem = elem->next;
 			}
 
-			elem->next = env::AcquireNode();
+			elem->next = env::acquireNode();
 			
-			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args->value, eval));
+			return binaryOp<Binary::SET>(elem->next->value, evalObj(args->value, eval));
 		}));		
 		
 		// (insert index value list)
-		env::AddSymbol(vm, "insert", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "insert", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* head = EvalObj(args->next->next->value, eval);
+			Obj* head = evalObj(args->next->next->value, eval);
 			 
 			if (!head) return NIL;
 
 			auto* elem = head->_args;
 			
-			for (size_t i = 1; i < CastObj<j_int>(EvalObj(args->value, eval)); ++i)
+			for (size_t i = 1; i < castObj<j_int>(evalObj(args->value, eval)); ++i)
 			{
 				elem = elem->next;
 
@@ -117,14 +117,14 @@ namespace lib
 			}
 
 			auto* prev = elem->next;
-			elem->next = env::AcquireNode();
+			elem->next = env::acquireNode();
 			elem->next->next = prev;
 
-			return BinaryOp<Binary::SET>(elem->next->value, EvalObj(args->next->value, eval));
+			return binaryOp<Binary::SET>(elem->next->value, evalObj(args->next->value, eval));
 		}));
 
 		// (fn id (params) body)
-		env::AddSymbol(vm, "fn", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "fn", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			Obj* func = args->value;
 
@@ -139,7 +139,7 @@ namespace lib
 		}));
 
 		// (macro id (params) body)
-		env::AddSymbol(vm, "macro", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "macro", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			Obj* func = args->value;
 
@@ -164,30 +164,30 @@ namespace lib
 		}));					
 		
 		// (eval target)
-		env::AddSymbol(vm, "eval", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "eval", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return EvalObj(args->value, true);
+			return evalObj(evalObj(args->value, false), true);
 		}));		
 		
 		// (loop cond body)
-		env::AddSymbol(vm, "loop", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "loop", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			auto* cond = args;
 			auto* block = args->next;
 
-			bool state = isTrue(EvalObj(cond->value, eval));
+			bool state = isTrue(evalObj(cond->value, eval));
 
 			while (state)
 			{
 				while (block->next)
 				{
-					EvalObj(block->value, eval);
+					evalObj(block->value, eval);
 					block = block->next;
 				}
 
-				Obj* loopRet = EvalObj(block->value, eval);
+				Obj* loopRet = evalObj(block->value, eval);
 
-				state = isTrue(EvalObj(cond->value, eval));
+				state = isTrue(evalObj(cond->value, eval));
 
 				if (!state) return loopRet;
 
@@ -196,22 +196,22 @@ namespace lib
 		}));	
 		
 		// (iterate variable list body)
-		env::AddSymbol(vm, "iterate", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "iterate", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto* list = EvalObj(args->next->value, eval)->_args;
+			auto* list = evalObj(args->next->value, eval)->_args;
 			auto* block = args->next->next;
 
 			while (list)
 			{
-				BinaryOp<Binary::SET>(EvalObj(args->value, eval), EvalObj(list->value, eval));
+				binaryOp<Binary::SET>(evalObj(args->value, eval), evalObj(list->value, eval));
 
 				while (block->next)
 				{
-					EvalObj(block->value, eval);
+					evalObj(block->value, eval);
 					block = block->next;
 				}
 
-				Obj* loopRet = EvalObj(block->value, eval);
+				Obj* loopRet = evalObj(block->value, eval);
 
 				if (!list->next) return loopRet;
 
@@ -221,79 +221,79 @@ namespace lib
 		}));		
 		
 		// (list body...)
-		env::AddSymbol(vm, "list", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "list", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			while (args->next)
 			{
-				EvalObj(args->value, eval);
+				evalObj(args->value, eval);
 				args = args->next;
 			}
 
-			return EvalObj(args->value, eval);
+			return evalObj(args->value, eval);
 		}));		
 		
 		// (string-int value)
-		env::AddSymbol(vm, "string-int", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "string-int", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, std::stoi(*EvalObj(args->value, eval)->_string));
+			return setTo(ret, std::stoi(*evalObj(args->value, eval)->_string));
 		}));			
 		
 		// (string-bool value)
-		env::AddSymbol(vm, "string-bool", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "string-bool", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, (bool)std::stoi(*EvalObj(args->value, eval)->_string));
+			return setTo(ret, (bool)std::stoi(*evalObj(args->value, eval)->_string));
 		}));			
 		
 		// (string-char value)
-		env::AddSymbol(vm, "string-char", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "string-char", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, (*EvalObj(args->value, eval)->_string)[0]);
+			return setTo(ret, (*evalObj(args->value, eval)->_string)[0]);
 		}));		
 		
 		// (string-int value)
-		env::AddSymbol(vm, "string-float", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "string-float", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, std::stof(*EvalObj(args->value, eval)->_string));
+			return setTo(ret, std::stof(*evalObj(args->value, eval)->_string));
 		}));			
 
 		// (int value)
-		env::AddSymbol(vm, "int", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "int", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, CastObj<j_int>(EvalObj(args->value, eval)));
+			return setTo(ret, castObj<j_int>(evalObj(args->value, eval)));
 		}));			
 		
 		// (float value)
-		env::AddSymbol(vm, "float", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "float", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, CastObj<j_float>(EvalObj(args->value, eval)));
+			return setTo(ret, castObj<j_float>(evalObj(args->value, eval)));
 		}));			
 		
 		// (char value)
-		env::AddSymbol(vm, "char", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "char", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, CastObj<j_char>(EvalObj(args->value, eval)));
+			return setTo(ret, castObj<j_char>(evalObj(args->value, eval)));
 		}));			
 		
 		// (bool value)
-		env::AddSymbol(vm, "bool", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "bool", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, CastObj<j_bool>(EvalObj(args->value, eval)));
+			return setTo(ret, castObj<j_bool>(evalObj(args->value, eval)));
 		}));			
 		
 		// (string value)
-		env::AddSymbol(vm, "string", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "string", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			return SetTo(ret, new str(ToString(EvalObj(args->value, eval))));
+			return setTo(ret, new str(toString(evalObj(args->value, eval))));
 		}));			
 		
 		// (find key dict)
-		env::AddSymbol(vm, "key", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "key", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			auto* elem = args->next->value->_args;
 
 			while (elem)
 			{
-				if (isEqual(EvalObj(args->value, eval), elem->value->_args->value))
+				if (isEqual(evalObj(args->value, eval), elem->value->_args->value))
 				{
 					return elem->value->_args->next->value;
 				}
@@ -305,37 +305,37 @@ namespace lib
 		}));		
 		
 		// (print args)
-		env::AddSymbol(vm, "print", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "print", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			while (args->next)
 			{
-				PrintObj(EvalObj(args->value, eval), false);
+				printObj(evalObj(args->value, eval), false);
 				args = args->next;
 			}
 
-			return 	PrintObj(EvalObj(args->value, eval), false);
+			return 	printObj(evalObj(args->value, eval), false);
 		}));
 
 		// (println args)
-		env::AddSymbol(vm, "println", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "println", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			while (args->next)
 			{
-				PrintObj(EvalObj(args->value, eval), false);
+				printObj(evalObj(args->value, eval), false);
 				args = args->next;
 			}
 
-			return 	PrintObj(EvalObj(args->value, eval), true);
+			return 	printObj(evalObj(args->value, eval), true);
 		}));		
 		
 		// (input) --> (set in (input))
-		env::AddSymbol(vm, "input", env::AddNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "input", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			str* input = new str();
 
 			std::getline(std::cin, *input);
 
-			return SetTo(ret, input); 
+			return setTo(ret, input); 
 		}));
 	}
 }

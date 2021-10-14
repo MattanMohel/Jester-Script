@@ -17,6 +17,7 @@ namespace jts { namespace env {
 
 		return value;
 	});
+
 	extern Pool<ObjNode> glbl_nodePool(100, [](ObjNode* value)
 	{
 		value->next = nullptr;
@@ -25,12 +26,12 @@ namespace jts { namespace env {
 		return value;
 	});
 
-	void AddSymbol(VM* vm, str key, Obj* value)
+	void addSymbol(VM* vm, str key, Obj* value)
 	{
 		vm->symbols.emplace(key, value);
 	}
 
-	Obj* AddNative(Obj* (*native)(Obj*, ObjNode*, bool))
+	Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool))
 	{
 		Obj* obj = new Obj();
 		
@@ -41,7 +42,7 @@ namespace jts { namespace env {
 		return obj;
 	}
 
-	template<> Obj* AddConst(j_char value)
+	template<> Obj* addConst(j_char value)
 	{
 		Obj* obj = new Obj { Type::CHAR, Spec::SYMBOL };
 		obj->_char = value;
@@ -49,7 +50,7 @@ namespace jts { namespace env {
 		return obj;
 	}
 
-	template<> Obj* AddConst(j_bool value)
+	template<> Obj* addConst(j_bool value)
 	{
 		Obj* obj = new Obj { Type::BOOL, Spec::SYMBOL };
 		obj->_bool = value;
@@ -57,7 +58,7 @@ namespace jts { namespace env {
 		return obj;
 	}
 
-	template<> Obj* AddConst(j_int  value)
+	template<> Obj* addConst(j_int  value)
 	{
 		Obj* obj = new Obj { Type::INT, Spec::SYMBOL };
 		obj->_int = value;
@@ -65,7 +66,7 @@ namespace jts { namespace env {
 		return obj;
 	}
 
-	template<> Obj* AddConst(j_float value)
+	template<> Obj* addConst(j_float value)
 	{
 		Obj* obj = new Obj { Type::FLOAT, Spec::SYMBOL };
 		obj->_float = value;
@@ -73,21 +74,21 @@ namespace jts { namespace env {
 		return obj;
 	}
 
-	template<> Obj* AddConst(std::nullptr_t value)
+	template<> Obj* addConst(std::nullptr_t value)
 	{
 		Obj* obj = new Obj { Type::NIL, Spec::SYMBOL };
 
 		return obj;
 	}
 
-	void AddLib(VM* vm, void(*lib)(VM* vm))
+	void addLib(VM* vm, void(*lib)(VM* vm))
 	{
 		vm->libs.emplace_back(lib);
 
 		lib(vm);
 	}
 
-	Obj* GetSymbol(VM* vm, str symbol)
+	Obj* getSymbol(VM* vm, str symbol)
 	{
 		if (vm->symbols.find(symbol) != vm->symbols.end()) 
 		{
@@ -97,7 +98,7 @@ namespace jts { namespace env {
 		return nullptr;
 	}
 
-	void RunREPL(VM* vm)
+	void runREPL(VM* vm)
 	{
 		str src;
 
@@ -118,9 +119,9 @@ namespace jts { namespace env {
 
 			// Run input
 
-			ParseSrc(vm, src);
+			parseSrc(vm, src);
 
-			PrintObj(env::Run(vm), true);
+			printObj(env::run(vm), true);
 
 		#if DEBUG_ALLOC
 			std::cout << "have " << env::glbl_objPool.count() << " objects and " << env::glbl_nodePool.count() << " nodes\n";
@@ -128,17 +129,17 @@ namespace jts { namespace env {
 		}
 	}
 
-	Obj* Run(VM* vm)
+	Obj* run(VM* vm)
 	{
 		vm->stackPtrCur = vm->stackPtrBeg;
 
 		while (vm->stackPtrCur->next)
 		{
-			EvalObj(vm->stackPtrCur->value);
+			evalObj(vm->stackPtrCur->value);
 
 			vm->stackPtrCur = vm->stackPtrCur->next;
 		}
 
-		return EvalObj(vm->stackPtrCur->value);
+		return evalObj(vm->stackPtrCur->value);
 	}
 }}

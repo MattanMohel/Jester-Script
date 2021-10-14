@@ -11,7 +11,7 @@ namespace jts
 
 		ObjNode* params = nullptr;
 
-		Obj* Call (ObjNode* args, bool eval);
+		Obj* call (ObjNode* args, bool eval);
 	};
 }
 

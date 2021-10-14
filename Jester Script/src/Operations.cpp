@@ -7,140 +7,140 @@
 
 namespace jts
 {
-	template<> Obj* BinaryOp<Binary::ADD>(Obj* a, Obj* b)
+	template<> Obj* binaryOp<Binary::ADD>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
 			case Type::STRING:
 
-				*a->_string += ToString(b);
+				*a->_string += toString(b);
 				break;
 
 				break;
 
 			case Type::FLOAT:
 
-				a->_float += CastObj<j_float>(b);
+				a->_float += castObj<j_float>(b);
 				break;
 			
 			default: // CHAR, BOOL, INT
 				
-				a->_int += CastObj<j_int>(b);
+				a->_int += castObj<j_int>(b);
 				break;
 		}
 
 		return a;
 	}
 
-	template<> Obj* BinaryOp<Binary::SUB>(Obj* a, Obj* b)
+	template<> Obj* binaryOp<Binary::SUB>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->_float -= CastObj<j_float>(b);
+				a->_float -= castObj<j_float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->_int -= CastObj<j_int>(b);
+				a->_int -= castObj<j_int>(b);
 				break;
 		}
 
 		return a;
 	}		
 	
-	template<> Obj* BinaryOp<Binary::MUL>(Obj* a, Obj* b)
+	template<> Obj* binaryOp<Binary::MUL>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->_float *= CastObj<j_float>(b);
+				a->_float *= castObj<j_float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->_int *= CastObj<j_int>(b);
+				a->_int *= castObj<j_int>(b);
 				break;
 		}
 
 		return a;
 	}		
 	
-	template<> Obj* BinaryOp<Binary::DIV>(Obj* a, Obj* b)
+	template<> Obj* binaryOp<Binary::DIV>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->_float /= CastObj<j_float>(b);
+				a->_float /= castObj<j_float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->_int /= CastObj<j_int>(b);
+				a->_int /= castObj<j_int>(b);
 				break;
 		}
 
 		return a;
 	}	
 
-	template<> Obj* BinaryOp<Binary::MOD>(Obj* a, Obj* b)
+	template<> Obj* binaryOp<Binary::MOD>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->_float = (j_int)a->_float % CastObj<j_int>(b);
+				a->_float = (j_int)a->_float % castObj<j_int>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 				
-				a->_int %= CastObj<j_int>(b);
+				a->_int %= castObj<j_int>(b);
 				break;
 		}
 
 		return a;
 	}
 
-	template<> Obj* BinaryOp<Binary::POW>(Obj* a, Obj* b)
+	template<> Obj* binaryOp<Binary::POW>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->_float = pow(a->_float, CastObj<j_float>(b));
+				a->_float = pow(a->_float, castObj<j_float>(b));
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->_int = pow(a->_int, CastObj<j_int>(b));
+				a->_int = pow(a->_int, castObj<j_int>(b));
 				break;
 		}
 
 		return a;
 	}	
 	
-	template<> Obj* BinaryOp<Binary::LOG>(Obj* a, Obj* b)
+	template<> Obj* binaryOp<Binary::LOG>(Obj* a, Obj* b)
 	{
 		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->_float = (j_float)(log(CastObj<j_float>(b)) / log(CastObj<j_float>(a)));
+				a->_float = (j_float)(log(castObj<j_float>(b)) / log(castObj<j_float>(a)));
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->_int = (j_int)(log(CastObj<j_float>(b)) / log(CastObj<j_float>(a)));
+				a->_int = (j_int)(log(castObj<j_float>(b)) / log(castObj<j_float>(a)));
 				break;
 		}
 
 		return a;
 	}
 	
-	template<> Obj* BinaryOp<Binary::SET>(Obj* a, Obj* b)
+	template<> Obj* binaryOp<Binary::SET>(Obj* a, Obj* b)
 	{
 		// memory collection -- need reference counting first
 
@@ -194,28 +194,28 @@ namespace jts
 
 			case Type::FLOAT:
 
-				a->_float = CastObj<j_float>(b);
+				a->_float = castObj<j_float>(b);
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->_int = CastObj<j_int>(b);
+				a->_int = castObj<j_int>(b);
 				break;
 		}
 
 		return a;
 	}
 	
-	template<> Obj* UnaryOp<Unary::QUOTE>(Obj* a)
+	Obj* quoteObj(ObjNode* a, bool eval)
 	{
 		Obj* quote = env::glbl_objPool.acquire();
 
 		// if quoting non-list item
 
-		if (a->type != Type::LIST)
+		if (a->value->type != Type::LIST)
 		{
 			quote->type = Type::QUOTE;
-			quote->_quote = a;
+			quote->_quote = evalObj(a->value, eval);
 
 			return quote;
 		}
@@ -224,16 +224,16 @@ namespace jts
 
 		quote->type = Type::LIST;
 
-		quote->_args = env::AcquireNode();
-		quote->_args->value = UnaryOp<Unary::QUOTE>(a->_args->value);
+		quote->_args = env::acquireNode();
+		quote->_args->value = quoteObj(a->value->_args, eval);
 
-		auto* elem = a->_args;
+		auto* elem = a->value->_args;
 		auto* cell = quote->_args;
 
 		while (elem->next)
 		{
-			cell->next = env::AcquireNode();
-			cell->next->value = UnaryOp<Unary::QUOTE>(elem->next->value);
+			cell->next = env::acquireNode();
+			cell->next->value = quoteObj(elem->next, eval);
 
 			cell = cell->next;
 			elem = elem->next;
@@ -242,7 +242,7 @@ namespace jts
 		return quote;
 	}
 
-	template<> Obj* UnaryOp<Unary::INCR>(Obj* a)
+	template<> Obj* unaryOp<Unary::INCR>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -259,7 +259,7 @@ namespace jts
 		return a;
 	}	
 	
-	template<> Obj* UnaryOp<Unary::DECR>(Obj* a)
+	template<> Obj* unaryOp<Unary::DECR>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -276,7 +276,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOp<Unary::SIN>(Obj* a)
+	template<> Obj* unaryOp<Unary::SIN>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -294,7 +294,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOp<Unary::ASIN>(Obj* a)
+	template<> Obj* unaryOp<Unary::ASIN>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -312,7 +312,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOp<Unary::COS>(Obj* a)
+	template<> Obj* unaryOp<Unary::COS>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -330,7 +330,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOp<Unary::ACOS>(Obj* a)
+	template<> Obj* unaryOp<Unary::ACOS>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -348,7 +348,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOp<Unary::TAN>(Obj* a)
+	template<> Obj* unaryOp<Unary::TAN>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -366,7 +366,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOp<Unary::ATAN>(Obj* a)
+	template<> Obj* unaryOp<Unary::ATAN>(Obj* a)
 	{
 		switch (a->type)
 		{
@@ -384,25 +384,25 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* UnaryOp<Unary::LN>(Obj* a)
+	template<> Obj* unaryOp<Unary::LN>(Obj* a)
 	{
 		switch (a->type)
 		{
 			case Type::FLOAT:
 
-				a->_float = (j_float)log(CastObj<j_float>(a));
+				a->_float = (j_float)log(castObj<j_float>(a));
 				break;
 
 			default: // CHAR, BOOL, INT
 
-				a->_int = (j_int)log(CastObj<j_float>(a));
+				a->_int = (j_int)log(castObj<j_float>(a));
 				break;
 		}
 
 		return a;
 	}
 
-	template<> Obj* UnaryOp<Unary::HASH>(Obj* a)
+	template<> Obj* unaryOp<Unary::HASH>(Obj* a)
 	{
 		switch (a->type) 
 		{
@@ -436,7 +436,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* SetTo<j_char>(Obj* a, j_char value)
+	template<> Obj* setTo<j_char>(Obj* a, j_char value)
 	{
 		a->type = Type::CHAR;
 		a->_char = value;
@@ -444,7 +444,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* SetTo<j_bool>(Obj* a, j_bool value)
+	template<> Obj* setTo<j_bool>(Obj* a, j_bool value)
 	{
 		a->type = Type::BOOL;
 		a->_bool = value;
@@ -452,7 +452,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* SetTo<j_int>(Obj* a, j_int value)
+	template<> Obj* setTo<j_int>(Obj* a, j_int value)
 	{
 		a->type = Type::INT;
 		a->_int = value;
@@ -460,7 +460,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* SetTo<j_float>(Obj* a, j_float value)
+	template<> Obj* setTo<j_float>(Obj* a, j_float value)
 	{
 		a->type = Type::FLOAT;
 		a->_float = value;
@@ -468,7 +468,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* SetTo<str*>(Obj* a, str* value)
+	template<> Obj* setTo<str*>(Obj* a, str* value)
 	{
 		a->type = Type::STRING;
 		a->_string = value;
@@ -476,7 +476,7 @@ namespace jts
 		return a;
 	}
 
-	template<> Obj* SetTo<nullptr_t>(Obj* a, nullptr_t value)
+	template<> Obj* setTo<nullptr_t>(Obj* a, nullptr_t value)
 	{
 		a->type = Type::NIL;
 		a->_int = 0;
@@ -526,11 +526,11 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				return a->_float > CastObj<j_float>(b);
+				return a->_float > castObj<j_float>(b);
 
 			default: // CHAR, BOOL, INT
 
-				return a->_int > CastObj<j_int>(b);
+				return a->_int > castObj<j_int>(b);
 		}
 
 		return false;
@@ -542,11 +542,11 @@ namespace jts
 		{
 			case Type::FLOAT:
 
-				return a->_float >= CastObj<j_float>(b);
+				return a->_float >= castObj<j_float>(b);
 
 			default: // CHAR, BOOL, INT
 
-				return a->_int >= CastObj<j_int>(b);
+				return a->_int >= castObj<j_int>(b);
 		}
 
 		return false;

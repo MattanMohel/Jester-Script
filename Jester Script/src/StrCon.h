@@ -5,8 +5,8 @@
 
 namespace jts
 {
-	bool TokIsLtrl(Tok* tok);
-	Obj* TokToLtrl(Tok* tok); 
+	bool tokIsLtrl(Tok* tok);
+	Obj* tokToLtrl(Tok* tok); 
 }
 
 #endif

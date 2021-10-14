@@ -5,7 +5,7 @@
 
 namespace jts
 {
-    bool TokIsLtrl(Tok* tok)
+    bool tokIsLtrl(Tok* tok)
     {
         size_t len = tok->symbol.length();
 
@@ -44,7 +44,7 @@ namespace jts
         return true;
     }
 
-    Obj* TokToLtrl(Tok* tok)
+    Obj* tokToLtrl(Tok* tok)
     {
         Obj* obj = new Obj { tok->type, Spec::VALUE };
 

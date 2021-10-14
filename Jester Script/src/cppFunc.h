@@ -11,18 +11,9 @@
 
 namespace jts
 {
-	// Iterates bridge arguments
-	// --size_t I keeps track of variadic expansion
-	inline ObjNode* NextArg(ObjNode*& arg, size_t I)
-	{
-		arg = arg->next;
-
-		return arg;
-	}
-
 	struct CppFn
 	{
-		virtual Obj* Call(Obj* ret, ObjNode* args) = 0;
+		virtual Obj* call(Obj* ret, ObjNode* args) = 0;
 	};
 
 	template<typename Ret, typename... Args>
@@ -31,37 +22,37 @@ namespace jts
 		// Func type
 		using Fn = Ret(*)(Args...);
 
-		void Init(Fn func)
+		void init(Fn func)
 		{
 			this->func = func;
 
 			paramVec.resize(sizeof...(Args), nullptr);
 		}
 
-		Obj* Call(Obj* ret, ObjNode* args) override
+		Obj* call(Obj* ret, ObjNode* args) override
 		{
-			return Call_Impl(ret, args, std::make_index_sequence<sizeof...(Args)>());
+			return call_Impl(ret, args, std::make_index_sequence<sizeof...(Args)>());
 		}
 
 		template<size_t... I>
-		Obj* Call_Impl(Obj* ret, ObjNode* args, std::index_sequence<I...>)
+		Obj* call_Impl(Obj* ret, ObjNode* args, std::index_sequence<I...>)
 		{
 			for (Obj*& arg : paramVec)
 			{
-				arg = EvalObj(args->next->value);
+				arg = evalObj(args->next->value);
 				args = args->next;
 			}
 
 			// If func is void, evaluate and return NIL
 			if constexpr (std::is_void<Ret>::value)
 			{
-				func(CastObj<Args>(paramVec[I])...);
-				return SetTo(ret, nullptr_t());
+				func(castObj<Args>(paramVec[I])...);
+				return setTo(ret, nullptr_t());
 			}
 			else
 			{
 				// If func isn't void, return the func value
-				return SetTo(ret, func(CastObj<Args>(paramVec[I])...));
+				return setTo(ret, func(castObj<Args>(paramVec[I])...));
 			}
 		}
 
@@ -73,12 +64,12 @@ namespace jts
 	{
 		// Add a bridge symbol
 		template<typename Ret, typename... Args>
-		Obj* AddBridge(Ret(*func)(Args...))
+		Obj* addBridge(Ret(*func)(Args...))
 		{
 			Obj* obj = new Obj { Type::CPP_FN, Spec::SYMBOL };
 
 			auto* cppPtr = new CppFn_Impl<Ret, Args...>();
-			cppPtr->Init(func);
+			cppPtr->init(func);
 
 			obj->_cppFunc = (CppFn*)cppPtr;
 

@@ -8,7 +8,7 @@
 
 namespace jts
 {
-	void ParseTokens(VM* vm)
+	void parseTokens(VM* vm)
 	{
 		/*
 			Parses a tokenized source file into a linked-list tree of objects
@@ -52,10 +52,10 @@ namespace jts
 				case Spec::SYMBOL:
 
 					// if symbol id doesn't exist, create it
-					if (!env::GetSymbol(vm, it->symbol)) env::AddSymbol(vm, it->symbol, new Obj { Type::NIL, Spec::SYMBOL });
+					if (!env::getSymbol(vm, it->symbol)) env::addSymbol(vm, it->symbol, new Obj { Type::NIL, Spec::SYMBOL });
 
 					// assign object the value of the corresponding symbol
-					(*head) = new ObjNode(env::GetSymbol(vm, it->symbol));
+					(*head) = new ObjNode(env::getSymbol(vm, it->symbol));
 					(*head)->value->symbol = it->symbol;
 
 					break;
@@ -63,7 +63,7 @@ namespace jts
 				case Spec::VALUE:
 
 					// if literal value, parse the symbol to value and assign to object
-					(*head) = new ObjNode(TokToLtrl(it));
+					(*head) = new ObjNode(tokToLtrl(it));
 					(*head)->value->symbol = it->symbol;
 
 					break;

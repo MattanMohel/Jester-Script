@@ -5,7 +5,8 @@
 
 namespace jts
 {
-	Obj* PrintObj(Obj* value, bool newLine = false);
+	str symbolOf(Obj* obj, bool quote = false);
+	Obj* printObj(Obj* value, bool newLine = false);
 }
 
 #endif

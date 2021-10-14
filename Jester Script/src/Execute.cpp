@@ -10,7 +10,7 @@
 
 namespace jts
 {
-	Obj* EvalObj(Obj* obj, bool eval)
+	Obj* evalObj(Obj* obj, bool eval)
 	{
 		if (!obj) return NIL;
 
@@ -29,7 +29,7 @@ namespace jts
 					case Type::CPP_FN:
 						
 						// if first argument is a callable
-						return ExecObj(obj->_args, eval);
+						return execObj(obj->_args, eval);
 
 					case Type::QUOTE:
 
@@ -44,7 +44,7 @@ namespace jts
 								case Type::CPP_FN:
 
 						            // if first argument's quote value is a callable
-									return ExecObj(obj->_args, eval);
+									return execObj(obj->_args, eval);
 							}
 						}
 
@@ -52,13 +52,13 @@ namespace jts
 
 					default:
 
-						// iterate over list elements and evaluate if a non-callable list
+						// iterate over list and evaluate elements
 
 						auto* elem = obj->_args;
 
-						while (elem->next)
+						while (elem)
 						{
-							elem->value = EvalObj(elem->value, eval);
+							elem->value = evalObj(elem->value, eval);
 							elem = elem->next;
 						}
 
@@ -69,7 +69,7 @@ namespace jts
 
 				// if a quote to be eval'd, return the quote value, otherwise return the quote
 
-				if (eval) return EvalObj(obj->_quote, false);
+				if (eval) return evalObj(obj->_quote, false);
 				return obj;
 
 			default:
@@ -79,7 +79,7 @@ namespace jts
 		}
 	}
 
-	Obj* ExecObj(ObjNode* args, bool eval)
+	Obj* execObj(ObjNode* args, bool eval)
 	{
 		/*
 			Execute object by the callable type
@@ -100,17 +100,17 @@ namespace jts
 
 			case Type::JTS_FN:
 
-				retVal = args->value->_jtsFunc->Call(args, eval);
+				retVal = args->value->_jtsFunc->call(args, eval);
 				break;
 
 			case Type::MAC_FN:
 
-				retVal = args->value->_jtsMacro->Call(args, eval);
+				retVal = args->value->_jtsMacro->call(args, eval);
 				break;
 
 			case Type::CPP_FN:
 
-				retVal = args->value->_cppFunc->Call(ret, args);
+				retVal = args->value->_cppFunc->call(ret, args);
 				break;
 
 			case Type::QUOTE:
@@ -128,17 +128,17 @@ namespace jts
 
 						case Type::JTS_FN:
 
-							retVal = args->value->_quote->_jtsFunc->Call(args, eval);
+							retVal = args->value->_quote->_jtsFunc->call(args, eval);
 							break;				
 						
 						case Type::MAC_FN:
 
-							retVal = args->value->_quote->_jtsMacro->Call(args, eval);
+							retVal = args->value->_quote->_jtsMacro->call(args, eval);
 							break;
 
 						case Type::CPP_FN:
 
-							retVal = args->value->_quote->_cppFunc->Call(ret, args);
+							retVal = args->value->_quote->_cppFunc->call(ret, args);
 							break;
 					}
 				}
@@ -153,7 +153,7 @@ namespace jts
 		return retVal;
 	}
 
-	str ToString(Obj* obj)
+	str toString(Obj* obj)
 	{
 		switch (obj->type)
 		{

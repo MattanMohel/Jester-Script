@@ -6,7 +6,7 @@
 
 namespace jts
 {
-	Obj* Macro::Call(ObjNode* args, bool eval)
+	Obj* Macro::call(ObjNode* args, bool eval)
 	{
 		auto* paramPtr = params->value->_args;
 		args = args->next;
@@ -30,12 +30,12 @@ namespace jts
 
 		while (block->next)
 		{
-			EvalObj(block->value, true);
+			evalObj(block->value, true);
 			block = block->next;
 		}
 
 		// Evaluate return
 
-		return EvalObj(block->value, true);
+		return evalObj(block->value, true);
 	}
 }
