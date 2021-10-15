@@ -11,15 +11,3 @@
 			(println "guess higher")))
 	
 )
-
-(fn test()
-	local x 
-	local y ; local variables
-)
-
-; TODO
-
-; make ' same as (quote)
-; make macros subtitute their bodies as progns to code rather than functions
-; make scoped variables possible
-; make class types

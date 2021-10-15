@@ -1,26 +1,20 @@
 
-; examples of macros
-
-; takes an action and times it
-(macro time (action)
-	(reset)
+(macro intg (fun var lower upper delta)
+	(set area 0.0)
+	(set var (float lower))
 	
-	(set result action)
+	(loop (< var upper)
+		(+= area (* delta fun))
+		(+= var delta))
 	
-	(set duration (elapsed))
+	area)
 	
-	(+ "result of action was " result " and took " duration))
-
-; limit approximation
-(macro lim (eq x point)
-	(set x-delta 0.001)
+(macro lim (fun var point delta)
+	(set var (float point))
+	(set y1 fun)
 	
-	(set x (float point))
-	(set d1 eq)
+	(+= var delta)
+	(set y2 fun)
 	
-	(+= x x-delta)
-	(set d2 eq)
+	(/ (- y2 y1) delta))
 	
-	(set y-delta (- d2 d1))
-	
-	(/ y-delta x-delta))
