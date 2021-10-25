@@ -5,7 +5,7 @@
 
 namespace jts
 {
-	struct Func
+	struct JtsFn
 	{
 		ObjNode* codeBlock = nullptr;
 		

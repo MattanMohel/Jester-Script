@@ -5,7 +5,7 @@
 
 namespace jts
 {
-	struct Macro
+	struct MacFn
 	{
 		ObjNode* codeBlock = nullptr;
 

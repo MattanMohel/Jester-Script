@@ -1,0 +1,6 @@
+
+(fn add [a b] ; --> (a b) but creates a new scope
+	(+ a b))
+	
+(print (add 1 2))
+(print "a = " a " b = " b)

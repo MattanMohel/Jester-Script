@@ -26,8 +26,48 @@ namespace jts { namespace env {
 		return value;
 	});
 
+	ObjNode* acquireNode()
+	{
+		auto* node = glbl_nodePool.acquire();
+		node->value = glbl_objPool.acquire();
+
+		return node;
+	}
+
+	void releaseNode(ObjNode* node)
+	{
+		glbl_nodePool.release(node);
+		glbl_objPool.release(node->value);
+	}
+
+	void assert(VM* vm, bool cond, str mes, State warnType)
+	{
+		if (!cond) return;
+
+		switch (warnType)
+		{
+			case State::MES:
+
+				std::cout << "MESSAGE: " << mes;
+				break;
+
+			case State::WRN:
+
+				std::cout << "WARING: " << mes;
+				break;
+
+			case State::ERR:
+
+				std::cout << "ERROR: " << mes;
+				break;
+		}
+	}
+
 	void addSymbol(VM* vm, str key, Obj* value)
 	{
+		bool hasKey = vm->symbols.find(key) != vm->symbols.end();
+		assert(vm, hasKey, "creating duplicate symbol " + key);
+
 		vm->symbols.emplace(key, value);
 	}
 

@@ -19,7 +19,7 @@ namespace jts
 			case Type::LIST:
 
 				// if list has no arguments
-				if (!obj->_args) return NIL;
+				if (!obj->_args) return obj;
 
 				switch (obj->_args->value->type)
 				{
@@ -100,17 +100,17 @@ namespace jts
 
 			case Type::JTS_FN:
 
-				retVal = args->value->_jtsFunc->call(args, eval);
+				retVal = args->value->_jtsFn->call(args, eval);
 				break;
 
 			case Type::MAC_FN:
 
-				retVal = args->value->_jtsMacro->call(args, eval);
+				retVal = args->value->_macFn->call(args, eval);
 				break;
 
 			case Type::CPP_FN:
 
-				retVal = args->value->_cppFunc->call(ret, args);
+				retVal = args->value->_cppFn->call(ret, args);
 				break;
 
 			case Type::QUOTE:
@@ -128,17 +128,17 @@ namespace jts
 
 						case Type::JTS_FN:
 
-							retVal = args->value->_quote->_jtsFunc->call(args, eval);
+							retVal = args->value->_quote->_jtsFn->call(args, eval);
 							break;				
 						
 						case Type::MAC_FN:
 
-							retVal = args->value->_quote->_jtsMacro->call(args, eval);
+							retVal = args->value->_quote->_macFn->call(args, eval);
 							break;
 
 						case Type::CPP_FN:
 
-							retVal = args->value->_quote->_cppFunc->call(ret, args);
+							retVal = args->value->_quote->_cppFn->call(ret, args);
 							break;
 					}
 				}
@@ -172,6 +172,10 @@ namespace jts
 			case Type::CHAR:
 
 				return str(1, obj->_char);
+
+			case Type::BOOL:
+
+				return obj->_bool? "true" : "false";
 
 			case Type::QUOTE:
 

@@ -12,9 +12,9 @@ using namespace jts;
 template<typename T>
 class Pool
 {
-public:
-
 	using InitFunc = T* (*)(T*);
+
+public:
 
 	Pool(size_t size, InitFunc initFunc)
 		: m_initFunc(initFunc)

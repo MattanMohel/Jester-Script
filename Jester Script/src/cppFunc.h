@@ -71,7 +71,7 @@ namespace jts
 			auto* cppPtr = new CppFn_Impl<Ret, Args...>();
 			cppPtr->init(func);
 
-			obj->_cppFunc = (CppFn*)cppPtr;
+			obj->_cppFn = (CppFn*)cppPtr;
 
 			return obj;
 		}

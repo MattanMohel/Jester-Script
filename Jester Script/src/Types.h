@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <bitset>
 
+#include "../utils/IterableStack.h"
+
 #define ENUM_SIZE(e) (size_t)e::END
 
 namespace jts
@@ -21,8 +23,8 @@ namespace jts
 	struct VM;
 	struct Tok;
 	struct Obj;
-	struct Func;
-	struct Macro;
+	struct JtsFn;
+	struct MacFn;
 	struct CppFn;
 	struct ObjNode;
 
@@ -51,11 +53,14 @@ namespace jts
 	{
 		NIL = 0,
 
-		SYMBOL,
-		VALUE,
+		SYMBOL, // variable
+		VALUE,  // literal value
 
-		BEG,
-		END,
+		LST_BEG, // '('
+		LST_END, // ')'
+
+		SCP_BEG, // '['
+		SCP_END, // ']'
 	};
 
 	// Symbol flags
@@ -63,11 +68,20 @@ namespace jts
 	{
 		NIL = 0,
 
+		STAT,
 		CONST,
-		STATIC,
-		REF, 
+		MUT,
 
 		END,
+	};
+
+	enum class State
+	{
+		NIL = 0,
+
+		MES, // message
+		WRN, // warning
+		ERR, // error
 	};
 }
 

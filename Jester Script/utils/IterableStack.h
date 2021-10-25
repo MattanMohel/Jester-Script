@@ -4,7 +4,7 @@
 #include <vector>
 
 template<typename T>
-class ItStack
+class stack_itr
 {
 	public:
 		T& emplace(T&& value)

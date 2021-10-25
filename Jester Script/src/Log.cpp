@@ -76,15 +76,19 @@ namespace jts
 
 				auto* elem = value->_args;
 
-				while (elem->next)
+				if (elem)
 				{
-					printObj(elem->value);
-					std::cout << " ";
+					while (elem->next)
+					{
+						printObj(elem->value);
+						std::cout << " ";
 
-					elem = elem->next;
+						elem = elem->next;
+					}
+					
+					printObj(elem->value);
 				}
 
-				printObj(elem->value);
 
 				std::cout << ")";
 

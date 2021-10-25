@@ -6,7 +6,7 @@
 
 namespace jts
 {
-	Obj* Macro::call(ObjNode* args, bool eval)
+	Obj* MacFn::call(ObjNode* args, bool eval)
 	{
 		auto* paramPtr = params->value->_args;
 		args = args->next;

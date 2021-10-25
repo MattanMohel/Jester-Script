@@ -174,12 +174,12 @@ namespace jts
 
 			case Type::JTS_FN:
 
-				a->_jtsFunc = b->_jtsFunc;
+				a->_jtsFn = b->_jtsFn;
 				break;
 
 			case Type::CPP_FN:
 				
-				a->_cppFunc = b->_cppFunc;
+				a->_cppFn = b->_cppFn;
 				break;
 
 			case Type::QUOTE:
@@ -216,6 +216,7 @@ namespace jts
 		{
 			quote->type = Type::QUOTE;
 			quote->_quote = evalObj(a->value, eval);
+			++a->value->refCount;
 
 			return quote;
 		}

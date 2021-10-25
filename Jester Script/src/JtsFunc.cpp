@@ -6,7 +6,7 @@
 
 namespace jts
 {
-	Obj* Func::call (ObjNode* args, bool eval)
+	Obj* JtsFn::call (ObjNode* args, bool eval)
 	{
 		ObjNode* paramCpy = nullptr; 
 		auto* paramPtr = params->value->_args;

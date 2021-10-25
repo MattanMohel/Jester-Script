@@ -72,6 +72,8 @@ namespace jts
 
 				case '(':
 				case ')':
+				case '[':
+				case ']':
 
 					depth += (*ch == '(') - (*ch == ')');
 
@@ -123,14 +125,25 @@ namespace jts
 
 		else if (value == "(")
 		{
-			vm->tokenPtrCur->spec = Spec::BEG;
+			vm->tokenPtrCur->spec = Spec::LST_BEG;
 		}		
 		
 		else if (value == ")")
 		{
-			vm->tokenPtrCur->spec = Spec::END;
-		}
-
+			vm->tokenPtrCur->spec = Spec::LST_END;
+		}		
+				
+		
+		else if (value == "[")
+		{
+			vm->tokenPtrCur->spec = Spec::SCP_BEG;
+		}		
+		
+		else if (value == "]")
+		{
+			vm->tokenPtrCur->spec = Spec::SCP_END;
+		}		
+		
 		// if symbol is in the VM
 		else if (env::getSymbol(vm, vm->tokenPtrCur->symbol))
 		{
@@ -177,7 +190,7 @@ namespace jts
 		// initialize new node 
 
 		vm->tokenPtrCur->symbol = '(';
-		vm->tokenPtrCur->spec = Spec::BEG;
+		vm->tokenPtrCur->spec = Spec::LST_BEG;
 
 		vm->tokenPtrCur->next = new Tok();
 		vm->tokenPtrCur = vm->tokenPtrCur->next;

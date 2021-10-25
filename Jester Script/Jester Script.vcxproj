@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -161,7 +161,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\VM.cpp" />
     <ClCompile Include="src\StrCon.cpp" />
-    <ClCompile Include="utils\Pool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Jts Libs\Arithmetic.h" />
@@ -172,7 +171,7 @@
     <ClInclude Include="utils\Pool.h" />
     <ClInclude Include="src\JtsMacro.h" />
     <ClInclude Include="src\Log.h" />
-    <ClInclude Include="src\IterableStack.h" />
+    <ClInclude Include="utils\IterableStack.h" />
     <ClInclude Include="src\JtsFunc.h" />
     <ClInclude Include="src\Execute.h" />
     <ClInclude Include="src\Operations.h" />
@@ -184,6 +183,7 @@
     <ClInclude Include="src\VM.h" />
     <ClInclude Include="src\Token.h" />
     <ClInclude Include="src\StrCon.h" />
+    <ClInclude Include="utils\Scopes.h" />
     <ClInclude Include="utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>

@@ -22,27 +22,25 @@ namespace jts
 		std::vector<void(*)(VM* vm)> libs;
 	};
 
+	struct SymbolMap
+	{
+		std::unordered_map<str, Obj*> symbols;
+	};
+
 	namespace env
 	{
 		extern Pool<Obj>     glbl_objPool;	
 		extern Pool<ObjNode> glbl_nodePool;
 		
-		inline ObjNode* acquireNode()
-		{
-			auto* node = glbl_nodePool.acquire();
-			node->value = glbl_objPool.acquire();
-
-			return node;
-		}
+		ObjNode* acquireNode();
 				
-		inline void releaseNode(ObjNode* node)
-		{
-			glbl_nodePool.release(node);
-			glbl_objPool.release(node->value);
-		}
+		void releaseNode(ObjNode* node);
+
+		void assert(VM* vm, bool cond, str mes, State warnType = State::ERR);
 
 		// Takes a key and value, emplaces to Vm as a key-value pair
 		void addSymbol(VM* vm, str key, Obj* value);
+		void addSymbol(VM* vm, std::unordered_map<str, Obj*>* map, str key, Obj* value);
 
 		Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool));
 
@@ -56,7 +54,7 @@ namespace jts
 		template<> Obj* addConst(j_bool  value);
 		template<> Obj* addConst(j_int   value);
 		template<> Obj* addConst(j_float value);
-		template<> Obj* addConst(std::nullptr_t value);
+		template<> Obj* addConst(std::nullptr_t value); 
 
 		void addLib(VM* vm, void(*lib)(VM* vm));
 

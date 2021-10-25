@@ -1,10 +1,9 @@
 #include "Parser.h"
+#include "Types.h"
 #include "Token.h"
 #include "Object.h"
 #include "StrCon.h"
 #include "VM.h"
-
-#include "IterableStack.h"
 
 namespace jts
 {
@@ -17,12 +16,12 @@ namespace jts
 
 			EX:
 
-			  ---------------------
-			|| 1: (set x (+ 5 5))  ||
-			|| 2: (println x)      ||
-			|| 3:                  ||
-			|| 4: x                ||
-			  ---------------------
+			---------------------
+			1: (set x (+ 5 5)) 
+			2: (println x)     
+			3:                 
+			4: x               
+			---------------------
 
 			translates to:
 
@@ -34,7 +33,7 @@ namespace jts
 		*/
 
 		ObjNode** head = &vm->stackPtrBeg;
-		ItStack<ObjNode**> funcHead;
+		stack_itr<ObjNode**> funcHead;
 
 		Tok* it = vm->tokenPtrBeg;
 
@@ -43,7 +42,7 @@ namespace jts
 		{
  		    switch (it->spec)
 			{
-				case Spec::BEG:
+				case Spec::LST_BEG:
 
 					(*head) = new ObjNode(new Obj{ Type::LIST, Spec::VALUE });
 
@@ -52,9 +51,12 @@ namespace jts
 				case Spec::SYMBOL:
 
 					// if symbol id doesn't exist, create it
-					if (!env::getSymbol(vm, it->symbol)) env::addSymbol(vm, it->symbol, new Obj { Type::NIL, Spec::SYMBOL });
 
-					// assign object the value of the corresponding symbol
+					if (!env::getSymbol(vm, it->symbol))
+					{
+						env::addSymbol(vm, it->symbol, new Obj { Type::NIL, Spec::SYMBOL });
+					}
+
 					(*head) = new ObjNode(env::getSymbol(vm, it->symbol));
 					(*head)->value->symbol = it->symbol;
 
@@ -62,7 +64,6 @@ namespace jts
 
 				case Spec::VALUE:
 
-					// if literal value, parse the symbol to value and assign to object
 					(*head) = new ObjNode(tokToLtrl(it));
 					(*head)->value->symbol = it->symbol;
 
@@ -72,14 +73,14 @@ namespace jts
 
 			switch (it->spec)
 			{
-				case Spec::BEG: // '(' value
+				case Spec::LST_BEG:
 					
 					// set next to the list's argument node
 					funcHead.emplace(head);
 					head = &(*head)->value->_args;
 					break;
 
-				case Spec::END: // ')' value
+				case Spec::LST_END:
 					
 					// set next to the last pushed list head's next node
 					head = &(*funcHead.pop())->next;

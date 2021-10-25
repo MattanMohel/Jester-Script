@@ -18,25 +18,26 @@ namespace jts
 		{
 			// Integral values
 
-			char _char;
-			bool _bool;
-			j_int _int;
+			j_char _char;
+			j_bool _bool;
+			j_int   _int;
 			j_float _float;
-
 			str* _string;
 
 			// Callable values
 
 			Obj* (*_native)(Obj*, ObjNode*, bool);
-			CppFn* _cppFunc;
-			Macro* _jtsMacro;
-			Func* _jtsFunc;
+			CppFn* _cppFn;
+			MacFn* _macFn;
+			JtsFn* _jtsFn;
 
 			// List values
 
 			ObjNode* _args;
-			Obj* _quote;			
+			Obj* _quote;
 		};
+
+		size_t refCount = 0;
 	};
 
 	static Obj* NIL = new Obj { Type::NIL, Spec::SYMBOL };
