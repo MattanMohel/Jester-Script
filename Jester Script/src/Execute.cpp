@@ -3,6 +3,7 @@
 #include "JtsMacro.h"
 #include "Object.h"
 #include "Operations.h"
+#include "JtsType.h"
 #include "cppFunc.h"
 #include "VM.h"
 
@@ -157,9 +158,13 @@ namespace jts
 	{
 		switch (obj->type)
 		{
+			case Type::NIL:
+
+				return "nil";
+
 			case Type::STRING:
 
-				return *obj->_string;
+				return '"' + *obj->_string + '"';
 
 			case Type::FLOAT:
 
@@ -180,6 +185,18 @@ namespace jts
 			case Type::QUOTE:
 
 				return obj->_quote->symbol;
+
+			case Type::JTS_TYPE:
+			{
+				str ret = "";
+
+				for (auto& member : obj->_jtsType->members)
+				{
+					ret += member.first + ": " + toString(member.second) + " ";
+				}
+
+				return ret;
+			}
 
 			default:
 

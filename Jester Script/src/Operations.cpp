@@ -11,6 +11,7 @@ namespace jts
 	{
 		switch (a->type)
 		{
+			// later move to a method ".concat"
 			case Type::STRING:
 
 				*a->_string += toString(b);
@@ -180,6 +181,11 @@ namespace jts
 			case Type::CPP_FN:
 				
 				a->_cppFn = b->_cppFn;
+				break;
+
+			case Type::JTS_TYPE:
+
+				a->_jtsType = b->_jtsType;
 				break;
 
 			case Type::QUOTE:

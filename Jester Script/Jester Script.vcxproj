@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\JtsType.cpp" />
     <ClCompile Include="src\JtsMacro.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\JtsFunc.cpp" />
@@ -165,7 +166,9 @@
   <ItemGroup>
     <ClInclude Include="Jts Libs\Arithmetic.h" />
     <ClInclude Include="Jts Libs\Boolean.h" />
+    <ClInclude Include="Jts Libs\Lists.h" />
     <ClInclude Include="Jts Libs\Standard.h" />
+    <ClInclude Include="src\JtsType.h" />
     <ClInclude Include="scripts\Type.jts" />
     <ClInclude Include="src\cppFunc.h" />
     <ClInclude Include="utils\Pool.h" />

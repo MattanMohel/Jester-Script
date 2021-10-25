@@ -1,11 +1,11 @@
 
 (macro intg (fun var lower upper delta)
 	(set area 0.0)
-	(set ~var (float ~lower))
+	(set var (float lower))
 	
-	(loop (< ~var ~upper)
-		(+= area (* ~delta ~fun))
-		(+= ~var ~delta))
+	(loop (< var upper)
+		(+= area (* delta fun))
+		(+= var delta))
 	
 	area)
 	
@@ -18,19 +18,7 @@
 	
 	(/ (- y2 y1) delta))
 	
-(macro transform (operand lst)	
-	(set lst-size (- (size lst) 1))
-	(set n 0)
-	
-	(set trans ( ))
-
-	(loop (< n lst-size)
-		(append (operand (nth n lst) (nth (+ n 1) lst)) trans)
-		(++ n))
-	
-	trans)
-	
-(macro reverse (lst)
+(fn reverse (lst)
 	(set lst-size (size lst))
 	(set revrs ( ))
 	
@@ -40,14 +28,9 @@
 	
 	revrs)
 
-(macro make-table (fun x lower upper delta)
-	(set table ( ))
-		
-	(set var (float lower))
-		
-	(loop (< var upper)
-		(append fun table)
-		(+= var delta))
-	
-	table)
+(type vec2
+	(set x 0) 
+	(set y 0))
+
+
 	

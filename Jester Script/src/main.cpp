@@ -7,12 +7,9 @@
 #include "../Jts Libs/Standard.h"
 #include "../Jts Libs/Arithmetic.h"
 #include "../Jts Libs/Boolean.h"
+#include "../Jts Libs/Lists.h"
 
 #include "../utils/Timer.h"
-
-//ISSUES
-//1) cppBrdige assigns parameters in backwards order
-//2) in jtsFunc in recursive calls if you modify parameter twice modification carries through (see "test" in Macro.jts
 
 using namespace jts;
 
@@ -35,6 +32,7 @@ int main(char** argc, int** argv)
 	env::addLib(vm, lib::StandardLib);
 	env::addLib(vm, lib::ArithmeticLib);
 	env::addLib(vm, lib::BooleanLib);
+	env::addLib(vm, lib::ListsLib);
 
 	env::addSymbol(vm, "reset", env::addBridge(reset));
 	env::addSymbol(vm, "elapsed", env::addBridge(elapsed));

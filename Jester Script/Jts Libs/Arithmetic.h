@@ -1,6 +1,7 @@
 #ifndef ARITHMETIC_H
 #define ARITHMETIC_H
 
+#include "../src/Types.h"
 #include "../src/Object.h"
 #include "../src/Operations.h"
 #include "../src/Execute.h"

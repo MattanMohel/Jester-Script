@@ -25,6 +25,7 @@ namespace jts
 	struct Obj;
 	struct JtsFn;
 	struct MacFn;
+	struct JtsType;
 	struct CppFn;
 	struct ObjNode;
 
@@ -44,6 +45,8 @@ namespace jts
 		CPP_FN,
 		JTS_FN,
 		MAC_FN,
+
+		JTS_TYPE,
 
 		STRING,
 	};

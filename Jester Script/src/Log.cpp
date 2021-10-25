@@ -32,6 +32,7 @@ namespace jts
 	{
 		switch (value->type)
 		{
+			case Type::NIL:
 			case Type::CHAR:
 			case Type::BOOL:
 			case Type::INT:
@@ -41,6 +42,7 @@ namespace jts
 			case Type::JTS_FN:
 			case Type::NAT_FN:
 			case Type::CPP_FN:
+			case Type::JTS_TYPE:
 			{
 				std::cout << symbolOf(value);
 
@@ -94,11 +96,6 @@ namespace jts
 
 				break;
 			}
-
-			default: // case NIL
-
-				std::cout << "nil";
-				break;
 		}
 
 		if (newLine) std::cout << '\n';

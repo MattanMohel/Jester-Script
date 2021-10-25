@@ -1,6 +1,7 @@
 #ifndef BOOLEAN_H
 #define BOOLEAN_H
 
+#include "../src/Types.h"
 #include "../src/Object.h"
 #include "../src/Operations.h"
 #include "../src/Execute.h"
