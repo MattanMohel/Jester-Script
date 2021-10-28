@@ -34,15 +34,15 @@ int main(char** argc, int** argv)
 	env::addLib(vm, lib::BooleanLib);
 	env::addLib(vm, lib::ListsLib);
 
-	env::addSymbol(vm, "reset", env::addBridge(reset));
-	env::addSymbol(vm, "elapsed", env::addBridge(elapsed));
+	//env::addSymbol(vm, "reset", env::addBridge(reset));
+	//env::addSymbol(vm, "elapsed", env::addBridge(elapsed));
 
-	parseSrc(vm, readSrc(vm, "scripts/Recursion.jts"));
-	env::run(vm);
-	parseSrc(vm, readSrc(vm, "scripts/Macros.jts"));
-	env::run(vm);
-	parseSrc(vm, readSrc(vm, "scripts/Games.jts"));
-	env::run(vm);	
+	//parseSrc(vm, readSrc(vm, "scripts/Recursion.jts"));
+	//env::run(vm);
+	//parseSrc(vm, readSrc(vm, "scripts/Macros.jts"));
+	//env::run(vm);
+	//parseSrc(vm, readSrc(vm, "scripts/Games.jts"));
+	//env::run(vm);	
 	parseSrc(vm, readSrc(vm, "scripts/Type.jts"));
 	env::run(vm);	
 

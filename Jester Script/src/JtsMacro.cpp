@@ -9,7 +9,6 @@ namespace jts
 	Obj* MacFn::call(ObjNode* args, bool eval)
 	{
 		auto* paramPtr = params->value->_args;
-		args = args->next;
 
 		if (params->value->_args)
 		{

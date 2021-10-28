@@ -83,17 +83,16 @@ namespace lib
 		// (type id members)
 		env::addSymbol(vm, "type", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* type = args->value;
+			auto type = args->value;
 			type->_jtsType = new JtsType();
-
 			type->type = Type::JTS_TYPE;
 
-			auto* member = args->next;
+			auto member = args->next;
 
 			while (member)
 			{
-				Obj* memberVal = evalObj(member->value, eval);
-				Obj* memberCpy = env::glbl_objPool.acquire();
+				auto memberVal = evalObj(member->value, eval);
+				auto memberCpy = env::glbl_objPool.acquire();
 
 				binaryOp<Binary::SET>(memberCpy, memberVal);
 
@@ -109,7 +108,7 @@ namespace lib
 		// (new value)
 		env::addSymbol(vm, "new", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* value = evalObj(args->value, eval);
+			auto value = evalObj(args->value, eval);
 			ret->type = value->type;
 
 			switch (value->type)
@@ -118,8 +117,8 @@ namespace lib
 				{
 					ret->_args = env::acquireNode();
 
-					auto* elem = value->_args;
-					auto* list = ret->_args;
+					auto elem = value->_args;
+					auto list = ret->_args;
 
 					binaryOp<Binary::SET>(list->value, elem->value);
 
@@ -149,32 +148,61 @@ namespace lib
 
 					break;
 				}
+
+				default:
+
+					binaryOp<Binary::SET>(ret, value);
 			}
 
 			return ret;
 		}));		
 		
-		// (. type member)
+		// (. type member) or (. type method args...)
 		env::addSymbol(vm, ".", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* value = evalObj(args->value, eval);
+			auto value = evalObj(args->value, eval);
 
-			// check if method or member
+			auto member = value->_jtsType->members[args->next->value->symbol];
 
-			return value->_jtsType->members[args->next->value->symbol];
+			switch (member->type)
+			{
+				case Type::JTS_FN:
+				{
+					auto funcNode = args->next;
+					args->next = args->next->next;
+					ret = member->_jtsFn->call(args, eval);
+
+					args->next = funcNode;
+
+					return ret;
+				}
+
+				default:
+
+					return member;
+			}
 		}));
 
 		// (fn id (params) body)
 		env::addSymbol(vm, "fn", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* func = args->value;
+			auto func = args->value;
 
 			func->spec = Spec::SYMBOL;
 			func->type = Type::JTS_FN;
 
 			func->_jtsFn = new JtsFn();
-			func->_jtsFn->params = args->next;
 			func->_jtsFn->codeBlock = args->next->next;
+
+			auto param = args->next->value->_args;
+
+			while (param)
+			{
+				param->value = evalObj(param->value);
+				param = param->next;
+			}
+
+			func->_jtsFn->params = args->next;
 
 			return func;
 		}));
@@ -182,24 +210,23 @@ namespace lib
 		// (macro id (params) body)
 		env::addSymbol(vm, "macro", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			Obj* func = args->value;
+			auto func = args->value;
 
 			func->spec = Spec::SYMBOL;
-			func->type = Type::MAC_FN;
+			func->type = Type::JTS_FN;
 
 			func->_macFn = new MacFn();
-			func->_macFn->params = args->next;
 			func->_macFn->codeBlock = args->next->next;
 
-			// set arguments to type quote
+			auto param = args->next->value->_args;
 
-			args = args->next->value->_args;
-
-			while (args)
+			while (param)
 			{
-				args->value->type = Type::QUOTE;
-				args = args->next;
+				param->value = evalObj(param->value);
+				param = param->next;
 			}
+
+			func->_macFn->params = args->next;
 
 			return func;
 		}));					
@@ -213,8 +240,8 @@ namespace lib
 		// (loop cond body)
 		env::addSymbol(vm, "loop", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto* cond = args;
-			auto* block = args->next;
+			auto cond = args;
+			auto block = args->next;
 
 			bool state = isTrue(evalObj(cond->value, eval));
 
@@ -226,7 +253,7 @@ namespace lib
 					block = block->next;
 				}
 
-				Obj* loopRet = evalObj(block->value, eval);
+				auto loopRet = evalObj(block->value, eval);
 
 				state = isTrue(evalObj(cond->value, eval));
 

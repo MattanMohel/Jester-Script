@@ -76,6 +76,7 @@ namespace jts
 			default:
 
 				// if not a list, callable or quote, return self
+
 				return obj;
 		}
 	}
@@ -101,12 +102,12 @@ namespace jts
 
 			case Type::JTS_FN:
 
-				retVal = args->value->_jtsFn->call(args, eval);
+				retVal = args->value->_jtsFn->call(args->next, eval);
 				break;
 
 			case Type::MAC_FN:
 
-				retVal = args->value->_macFn->call(args, eval);
+				retVal = args->value->_macFn->call(args->next, eval);
 				break;
 
 			case Type::CPP_FN:
@@ -164,7 +165,7 @@ namespace jts
 
 			case Type::STRING:
 
-				return '"' + *obj->_string + '"';
+				return *obj->_string;
 
 			case Type::FLOAT:
 

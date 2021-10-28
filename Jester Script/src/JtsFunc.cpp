@@ -10,9 +10,8 @@ namespace jts
 	{
 		ObjNode* paramCpy = nullptr; 
 		auto* paramPtr = params->value->_args;
-		args = args->next;
 
-		if (params->value->_args)
+		if (params->value->_args && args)
 		{
 			/*
 				1) Assigns passed parameter values to the parameter-copy

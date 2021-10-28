@@ -1,11 +1,11 @@
 
-(type Vec2 
-	x 
-	y
+(type vec2
+	(set x 0.0) 
+	(set y 0.0)
 	
-	(fn mag (vec2)
-		(sqrt (+ (pow (.vec2 x) 2) (pow (.vec2 y) 2))))
+	(fn mag (self)
+		(pow (+ (pow (. self x) 2) (pow (. self y) 2)) .5))
 )
+		
 
-; essentially a scoped namespace
-; mag, x and y are all instance variables--> mag gets set to the function on init
+
