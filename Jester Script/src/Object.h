@@ -26,6 +26,7 @@ namespace jts
 			// Structures
 
 			str* _string;
+			ObjNode* _iterator;
 			JtsType* _jtsType;
 
 			// Callables

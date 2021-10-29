@@ -11,7 +11,7 @@
 
 namespace jts
 {
-	Obj* evalObj(Obj* obj, bool eval)
+	Obj* evalObj(Obj* obj, bool eval, bool top)
 	{
 		if (!obj) return NIL;
 
@@ -81,7 +81,7 @@ namespace jts
 		}
 	}
 
-	Obj* execObj(ObjNode* args, bool eval)
+	Obj* execObj(ObjNode* args, bool eval, bool top)
 	{
 		/*
 			Execute object by the callable type
@@ -91,13 +91,22 @@ namespace jts
 
 		Obj* retVal = nullptr;
 
-		Obj* ret = env::glbl_objPool.acquire();
+		Obj* ret = nullptr;
 
 		switch (args->value->type)
 		{
 			case Type::NAT_FN:
 
+				ret = env::glbl_objPool.acquire();
+
 				retVal = args->value->_native(ret, args->next, eval);
+				break;
+
+			case Type::CPP_FN:
+
+				ret = env::glbl_objPool.acquire();
+
+				retVal = args->value->_cppFn->call(ret, args);
 				break;
 
 			case Type::JTS_FN:
@@ -110,10 +119,6 @@ namespace jts
 				retVal = args->value->_macFn->call(args->next, eval);
 				break;
 
-			case Type::CPP_FN:
-
-				retVal = args->value->_cppFn->call(ret, args);
-				break;
 
 			case Type::QUOTE:
 				
@@ -125,7 +130,16 @@ namespace jts
 					{
 						case Type::NAT_FN:
 
+							ret = env::glbl_objPool.acquire();
+
 							retVal = args->value->_quote->_native(ret, args->next, eval);
+							break;
+
+						case Type::CPP_FN:
+
+							ret = env::glbl_objPool.acquire();
+
+							retVal = args->value->_quote->_cppFn->call(ret, args);
 							break;
 
 						case Type::JTS_FN:
@@ -137,11 +151,6 @@ namespace jts
 
 							retVal = args->value->_quote->_macFn->call(args, eval);
 							break;
-
-						case Type::CPP_FN:
-
-							retVal = args->value->_quote->_cppFn->call(ret, args);
-							break;
 					}
 				}
 
@@ -150,7 +159,7 @@ namespace jts
 
 		// return nullptr if not a callable -- inflicts crash
 
-		env::glbl_objPool.release(ret);
+		if (top) env::glbl_objPool.release_all();
 
 		return retVal;
 	}
@@ -168,8 +177,12 @@ namespace jts
 				return *obj->_string;
 
 			case Type::FLOAT:
+			{
+				str flt = std::to_string(obj->_float);
+				flt.erase(flt.find_last_not_of('0') + 1, str::npos);
 
-				return std::to_string(obj->_float);
+				return flt;
+			}
 
 			case Type::INT:
 

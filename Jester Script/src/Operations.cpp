@@ -196,8 +196,8 @@ namespace jts
 			case Type::STRING:
 
 				a->_string = new str(*b->_string);
-				break;
-
+				break;			
+			
 			case Type::FLOAT:
 
 				a->_float = castObj<j_float>(b);

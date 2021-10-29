@@ -13,6 +13,8 @@ namespace lib
 {
 	inline void BooleanLib(VM* vm)
 	{
+		env::addSrc(vm, "(fn add (a b) (+ a b))");
+
 		env::addSymbol(vm, "T", env::addConst<bool>(true));
 
 		env::addSymbol(vm, "F", env::addConst<bool>(false));

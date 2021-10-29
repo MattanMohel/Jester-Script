@@ -20,6 +20,7 @@ public:
 		: m_initFunc(initFunc)
 	{
 		m_buffer.reserve(size * 2);
+		m_usedBuffer.reserve(size * 2);
 
 		while (m_buffer.size() < size)
 		{
@@ -46,6 +47,8 @@ public:
 	#endif
 
 		T* value = m_buffer.back();
+
+		m_usedBuffer.emplace_back(value);
 		m_buffer.pop_back();
 
 		return m_initFunc(value);
@@ -77,6 +80,7 @@ public:
 		#endif
 
 			m_buffer.reserve(m_buffer.capacity() * 1.5);
+			m_usedBuffer.reserve(m_buffer.capacity() * 1.5);
 		}
 
 	#if DEBUG_ALLOC
@@ -86,6 +90,28 @@ public:
 		m_buffer.emplace_back(value);
 	}
 
+	void release_all()
+	{
+		size_t size = m_usedBuffer.size();
+
+	#if DEBUG_ALLOC
+		std::cout << "releasing all (" << size << ") - " << m_buffer.size() << " left\n";
+	#endif
+
+		if (size > m_buffer.capacity())
+		{
+			m_buffer.reserve(size * 1.5);
+		}
+
+		while (size)
+		{
+			m_buffer.emplace_back(m_usedBuffer[size - 1]);
+			m_usedBuffer.pop_back();
+
+			--size;
+		}
+	}
+
 	size_t count()
 	{
 		return m_buffer.size();
@@ -93,7 +119,7 @@ public:
 
 private:
 
-	std::vector<T*> m_buffer;
+	std::vector<T*> m_buffer, m_usedBuffer;
 	InitFunc m_initFunc;
 };
 

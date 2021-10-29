@@ -13,12 +13,11 @@ namespace lib
 {
 	inline void ListsLib(VM* vm)
 	{
-
 		// (iterate variable list body)
 		env::addSymbol(vm, "iterate", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto* list = evalObj(args->next->value, eval)->_args;
-			auto* block = args->next->next;
+			auto list = evalObj(args->next->value, eval)->_args;
+			auto block = args->next->next;
 
 			while (list)
 			{
@@ -30,7 +29,7 @@ namespace lib
 					block = block->next;
 				}
 
-				Obj* loopRet = evalObj(block->value, eval);
+				auto loopRet = evalObj(block->value, eval);
 
 				if (!list->next) return loopRet;
 

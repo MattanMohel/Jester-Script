@@ -14,7 +14,7 @@ namespace jts
 		@param obj  : the object to be evaluated
 		@param eval : whether or not to evaluate quote values
 	*/
-	Obj* evalObj(Obj* obj, bool eval = false);
+	Obj* evalObj(Obj* obj, bool eval = false, bool top = false);
 
 	/* 
 		Executes an object with a callable type and returns its executed value
@@ -22,7 +22,7 @@ namespace jts
 		@param args - pointer to the first argument of the callable
 		@param eval - wether or not to evaluate quote values
 	*/
-	Obj* execObj(ObjNode* args, bool eval);
+	Obj* execObj(ObjNode* args, bool eval, bool top = false);
 
 	/*
 		Takes object and returns as string

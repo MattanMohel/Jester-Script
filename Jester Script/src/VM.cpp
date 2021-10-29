@@ -71,6 +71,14 @@ namespace jts { namespace env {
 		vm->symbols.emplace(key, value);
 	}
 
+	void addSrc(VM* vm, str src)
+	{
+		src += EOF;
+		parseSrc(vm, src);
+
+		env::run(vm);
+	}
+
 	Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool))
 	{
 		Obj* obj = new Obj();
@@ -175,11 +183,11 @@ namespace jts { namespace env {
 
 		while (vm->stackPtrCur->next)
 		{
-			evalObj(vm->stackPtrCur->value);
+			evalObj(vm->stackPtrCur->value, false, true);
 
 			vm->stackPtrCur = vm->stackPtrCur->next;
 		}
 
-		return evalObj(vm->stackPtrCur->value);
+		return evalObj(vm->stackPtrCur->value, false, true);
 	}
 }}
