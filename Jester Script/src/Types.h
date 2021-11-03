@@ -36,23 +36,23 @@ namespace jts
 	{
 		NIL = 0,
 
-		CHAR,
-		BOOL,
-		INT,
-		FLOAT,
-		QUOTE,
-		LIST,
+		CHAR,      // 1
+		BOOL,      // 2
+		INT,       // 3
+		FLOAT,     // 4
 
+		QUOTE,     // 5
+		LIST,      // 6
 
-		NAT_FN,
-		CPP_FN,
-		JTS_FN,
-		MAC_FN,
+		NAT_FN,    // 7
+		CPP_FN,    // 8
+		JTS_FN,    // 9
+		MAC_FN,    // 10
 
-		JTS_TYPE,
-		CPP_TYPE,
+		JTS_TYPE,  // 11
+		CPP_TYPE,  // 12
 
-		STRING,
+		STRING,    // 13
 	};
 
 	// Symbol specialization
@@ -90,6 +90,26 @@ namespace jts
 		WRN, // warning
 		ERR, // error
 	};
+
+	inline bool isType(Type type)
+	{
+		return (size_t)type > 10 && (size_t)type < 13;
+	}
+
+	inline bool isIntegral(Type type)
+	{
+		return (size_t)type > 0 && (size_t)type < 5;
+	}		
+	
+	inline bool isValue(Type type)
+	{
+		return ((size_t)type > 0 && (size_t)type < 5) || ((size_t)type > 10 && (size_t)type < 13);
+	}	
+	
+	inline bool isCallable(Type type)
+	{
+		return (size_t)type > 6 && (size_t)type < 11;
+	}
 }
 
 #endif

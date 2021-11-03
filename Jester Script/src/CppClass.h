@@ -85,8 +85,8 @@ namespace jts
 
 	struct CppClass
 	{
-		virtual Obj* callMethod(str& id, Obj* ret, ObjNode* args) = 0;
-		virtual void createNew(CppClass*& cppClass) = 0;
+		virtual Obj* call(str& id, Obj* ret, ObjNode* args) = 0;
+		virtual void instance(CppClass*& cppClass) = 0;
 
 		bool hasMember(str& symbol)
 		{
@@ -111,7 +111,7 @@ namespace jts
 	template<typename Cls>
 	struct CppClass_Impl : public CppClass
 	{
-		Obj* callMethod(str& id, Obj* ret, ObjNode* args)
+		Obj* call(str& id, Obj* ret, ObjNode* args)
 		{
 			for (auto bridge : classTemplate->members)
 			{
@@ -121,7 +121,7 @@ namespace jts
 			return classTemplate->methods[id]->call(&inst, ret, args);
 		}
 
-		void createNew(CppClass*& cppClass) override
+		void instance(CppClass*& cppClass) override
 		{
 			CppClass_Impl<Cls>* newClass = new CppClass_Impl<Cls>(); 
 			newClass->classTemplate = classTemplate;

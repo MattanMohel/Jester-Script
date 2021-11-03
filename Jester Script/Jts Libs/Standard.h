@@ -152,7 +152,7 @@ namespace lib
 
 				case Type::CPP_TYPE:
 				{
-					args->value->_cppType->createNew(ret->_cppType);
+					args->value->_cppType->instance(ret->_cppType);
 
 					break;
 				}
@@ -168,46 +168,57 @@ namespace lib
 		// (. type member) or (. type method args...)
 		env::addSymbol(vm, ".", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto value = evalObj(args->value, eval);
-			auto memberSymbolNode = args->next;
-			str& memberSymbol = args->next->value->symbol;
+			auto node = args;
 
-			switch (value->type)
+			while (true)
 			{
-				case Type::JTS_TYPE:
+				switch (node->value->type)
 				{
-					auto member = value->_jtsType->members[memberSymbol];
-					 
-					if (member->type != Type::JTS_FN) return evalObj(member, eval);
+					case Type::JTS_TYPE:
+					{
+						auto member = node->value->_jtsType->members[node->next->value->symbol];
 
-					// method case
+						if (!isCallable(member->type))
+						{
+							if (!node->next->next)
+								return member;
 
-					args->next = args->next->next;
+							node = node->next;
+							break;
+						}
 
-					ret = member->_jtsFn->call(args, eval);
+						auto prevNode = node->next;
 
+						node->next = node->next->next;
+						ret = member->_jtsFn->call(node, eval);
 
-					break;
+						node->next = prevNode;
+
+						return ret;
+					}
+
+					case Type::CPP_TYPE:
+					{
+						if (node->value->_cppType->hasMember(node->next->value->symbol))
+						{
+							if (!node->next->next)
+								return node->value->_cppType->getMember(node->next->value->symbol);
+
+							node = node->next;
+							break;
+						}
+
+						auto prevNode = node->next;
+
+						node->next = node->next->next;
+						ret = node->value->_cppType->call(node->next->value->symbol, ret, args);
+
+						node->next = prevNode;
+
+						return ret;
+					}
 				}
-
-				case Type::CPP_TYPE:
-				{
-					if (value->_cppType->hasMember(memberSymbol)) return evalObj(value->_cppType->getMember(memberSymbol), eval);
-
-					// method case
-
-					args->next = args->next->next;
-
-					ret = value->_cppType->callMethod(memberSymbol, ret, args);
-
-					break;
-				}
-
 			}
-
-			args->next = memberSymbolNode;
-
-			return ret;
 		}));
 
 		// (fn id (params) body)

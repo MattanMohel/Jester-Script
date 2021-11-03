@@ -14,7 +14,7 @@
 
 using namespace jts;
 
-struct Vec3
+struct vec3
 {
 	float x = 1.0, y = 2.0, z = 3.0;
 
@@ -33,18 +33,20 @@ int main(char** argc, int** argv)
 	env::addLib(vm, lib::BooleanLib);
 	env::addLib(vm, lib::ListsLib);
 
-	env::addSymbol(vm, "Vec3", env::addClass<Vec3>());
-	env::addMember<Vec3>(vm, "Vec3", "x", &Vec3::x);
-	env::addMember<Vec3>(vm, "Vec3", "y", &Vec3::y);
-	env::addMember<Vec3>(vm, "Vec3", "z", &Vec3::z); 
-	env::addMethod<Vec3>(vm, "Vec3", "mag", &Vec3::mag);
-
-	env::addSymbol(vm, "Timer", env::addClass<Timer>());
+	env::addSymbol(vm, "Vec3", env::addClass<vec3>());
+	env::addMember<vec3>(vm, "Vec3", "x", &vec3::x);
+	env::addMember<vec3>(vm, "Vec3", "y", &vec3::y);
+	env::addMember<vec3>(vm, "Vec3", "z", &vec3::z);
+	env::addMethod<vec3>(vm, "Vec3", "mag", &vec3::mag);
+	
+	env_ADD_CLASS(vm, Timer);
 	env_ADD_METHOD(vm, Timer, elapsed);
 	env_ADD_METHOD(vm, Timer, reset);
 
 	parseSrc(vm, readSrc(vm, "scripts/Type.jts"));
-	env::run(vm);
+	env::run(vm);	
+	parseSrc(vm, readSrc(vm, "scripts/Macros.jts"));
+	env::run(vm);	
 
 	env::runREPL(vm);
 }

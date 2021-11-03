@@ -1,6 +1,7 @@
-
-[fn add (a b)
-	(+ a b)]
-
-(println (add 1 2))
-(println "a = " a " b = " b)
+(fn calc-pi (num)
+	(set sum 0.0)
+	(loop (> num 0)
+		(+= sum (/ 1 (* num num)))
+		(-- num))
+	
+	(pow (* sum 6) .5))
