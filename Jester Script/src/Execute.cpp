@@ -194,26 +194,39 @@ namespace jts
 
 			case Type::JTS_TYPE:
 			{
-				str ret = "";
+				str ret = "(";
+
+				bool first = true;
 
 				for (auto& member : obj->_jtsType->members)
 				{
-					ret += member.first + ": " + toString(member.second) + " ";
+					if (member.second->type == Type::JTS_FN) continue;
+					if (!first) ret += " ";
+
+					ret += member.first + ": " + toString(member.second);
+
+					first = false;
 				}
 
-				return ret;
+				return ret + ")";
 			}			
 			
 			case Type::CPP_TYPE:
 			{
-				str ret = "";
+				str ret = "(";
+
+				bool first = true;
 
 				for (auto& member : obj->_cppType->classTemplate->members)
 				{
-					ret += member.first + ": " + toString(obj->_cppType->getMember_NonRef(member.first)) + " ";
+					if (!first) ret += " ";
+
+					ret += member.first + ": " + toString(obj->_cppType->getMember_NonRef(member.first));
+
+					first = false;
 				}
 
-				return ret;
+				return ret + ")";
 			}
 
 			default:

@@ -1,7 +1,12 @@
 
+(type Yo
+	z)
+
 (type vec2
 	(set x 1.0) 
 	(set y 1.0)
+	
+	(set mem (new Yo))
 	
 	(fn mag (self)
 		(pow (+ (pow (. self x) 2) (pow (. self y) 2)) .5))	

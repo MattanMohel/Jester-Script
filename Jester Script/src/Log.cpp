@@ -11,10 +11,8 @@ namespace jts
 	{
 		str symbol = "";
 
-		if (obj->spec == Spec::SYMBOL)
-		{
-			if (!quote) return toString(obj);
-			
+		if (quote && obj->spec == Spec::SYMBOL)
+		{			
 			for (auto c : obj->symbol)
 			{
 				symbol += toupper(c);
@@ -32,24 +30,6 @@ namespace jts
 	{
 		switch (value->type)
 		{
-			case Type::NIL:
-			case Type::CHAR:
-			case Type::BOOL:
-			case Type::INT:
-			case Type::FLOAT:
-			case Type::STRING:
-			case Type::MAC_FN:
-			case Type::JTS_FN:
-			case Type::NAT_FN:
-			case Type::CPP_FN:
-			case Type::JTS_TYPE:
-			case Type::CPP_TYPE:
-			{
-				std::cout << symbolOf(value);
-
-				break;
-			}
-
 			case Type::QUOTE:
 			{
 				if (value->type == Type::LIST) break;
@@ -94,6 +74,13 @@ namespace jts
 
 
 				std::cout << ")";
+
+				break;
+			}
+
+			default:
+			{
+				std::cout << symbolOf(value);
 
 				break;
 			}

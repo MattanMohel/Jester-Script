@@ -177,8 +177,8 @@ namespace lib
 				case Type::JTS_TYPE:
 				{
 					auto member = value->_jtsType->members[memberSymbol];
-
-					if (member->type != Type::JTS_FN) return member;
+					 
+					if (member->type != Type::JTS_FN) return evalObj(member, eval);
 
 					// method case
 
@@ -192,7 +192,7 @@ namespace lib
 
 				case Type::CPP_TYPE:
 				{
-					if (value->_cppType->hasMember(memberSymbol)) return value->_cppType->getMember(memberSymbol);
+					if (value->_cppType->hasMember(memberSymbol)) return evalObj(value->_cppType->getMember(memberSymbol), eval);
 
 					// method case
 
