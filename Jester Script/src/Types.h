@@ -29,6 +29,8 @@ namespace jts
 	struct CppFn;
 	struct ObjNode;
 
+	struct CppClass;
+
 	// Symbol type
 	enum class Type
 	{
@@ -48,6 +50,7 @@ namespace jts
 		MAC_FN,
 
 		JTS_TYPE,
+		CPP_TYPE,
 
 		STRING,
 	};

@@ -22,13 +22,6 @@ namespace jts
 		// Func type
 		using Fn = Ret(*)(Args...);
 
-		void init(Fn func)
-		{
-			this->func = func;
-
-			paramVec.resize(sizeof...(Args), nullptr);
-		}
-
 		Obj* call(Obj* ret, ObjNode* args) override
 		{
 			return call_Impl(ret, args, std::make_index_sequence<sizeof...(Args)>());
@@ -37,9 +30,11 @@ namespace jts
 		template<size_t... I>
 		Obj* call_Impl(Obj* ret, ObjNode* args, std::index_sequence<I...>)
 		{
-			for (Obj*& arg : paramVec)
+			std::vector<Obj*> paramVec;
+
+			while (args->next)
 			{
-				arg = evalObj(args->next->value);
+				paramVec.emplace_back(evalObj(args->next->value));
 				args = args->next;
 			}
 
@@ -56,7 +51,6 @@ namespace jts
 			}
 		}
 
-		std::vector<Obj*> paramVec;
 		Fn func;
 	};
 
@@ -64,12 +58,12 @@ namespace jts
 	{
 		// Add a bridge symbol
 		template<typename Ret, typename... Args>
-		Obj* addBridge(Ret(*func)(Args...))
+		Obj* addFunction(Ret(*func)(Args...))
 		{
 			Obj* obj = new Obj { Type::CPP_FN, Spec::SYMBOL };
 
 			auto* cppPtr = new CppFn_Impl<Ret, Args...>();
-			cppPtr->init(func);
+			cppPtr->func = func;
 
 			obj->_cppFn = (CppFn*)cppPtr;
 

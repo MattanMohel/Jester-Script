@@ -28,6 +28,7 @@ namespace jts
 			str* _string;
 			ObjNode* _iterator;
 			JtsType* _jtsType;
+			CppClass* _cppType;
 
 			// Callables
 

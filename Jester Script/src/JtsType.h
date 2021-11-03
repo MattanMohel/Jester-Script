@@ -9,7 +9,7 @@ namespace jts
 	{
 		std::unordered_map<str, Obj*> members;
 
-		str typeName = "";
+		str typeName;
 	};
 }
 

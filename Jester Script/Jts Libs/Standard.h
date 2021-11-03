@@ -9,6 +9,7 @@
 #include "../src/JtsFunc.h"
 #include "../src/JtsMacro.h"
 #include "../src/JtsType.h"
+#include "../src/CppClass.h"
 #include "../src/Log.h"
 
 #include <iostream>
@@ -149,6 +150,13 @@ namespace lib
 					break;
 				}
 
+				case Type::CPP_TYPE:
+				{
+					args->value->_cppType->createNew(ret->_cppType);
+
+					break;
+				}
+
 				default:
 
 					binaryOp<Binary::SET>(ret, value);
@@ -161,26 +169,45 @@ namespace lib
 		env::addSymbol(vm, ".", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			auto value = evalObj(args->value, eval);
+			auto memberSymbolNode = args->next;
+			str& memberSymbol = args->next->value->symbol;
 
-			auto member = value->_jtsType->members[args->next->value->symbol];
-
-			switch (member->type)
+			switch (value->type)
 			{
-				case Type::JTS_FN:
+				case Type::JTS_TYPE:
 				{
-					auto funcNode = args->next;
+					auto member = value->_jtsType->members[memberSymbol];
+
+					if (member->type != Type::JTS_FN) return member;
+
+					// method case
+
 					args->next = args->next->next;
+
 					ret = member->_jtsFn->call(args, eval);
 
-					args->next = funcNode;
 
-					return ret;
+					break;
 				}
 
-				default:
+				case Type::CPP_TYPE:
+				{
+					if (value->_cppType->hasMember(memberSymbol)) return value->_cppType->getMember(memberSymbol);
 
-					return member;
+					// method case
+
+					args->next = args->next->next;
+
+					ret = value->_cppType->callMethod(memberSymbol, ret, args);
+
+					break;
+				}
+
 			}
+
+			args->next = memberSymbolNode;
+
+			return ret;
 		}));
 
 		// (fn id (params) body)

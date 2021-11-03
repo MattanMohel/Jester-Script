@@ -5,6 +5,7 @@
 #include "Operations.h"
 #include "JtsType.h"
 #include "cppFunc.h"
+#include "CppClass.h"
 #include "VM.h"
 
 #include "Log.h"
@@ -19,7 +20,6 @@ namespace jts
 		{
 			case Type::LIST:
 
-				// if list has no arguments
 				if (!obj->_args) return obj;
 
 				switch (obj->_args->value->type)
@@ -91,22 +91,18 @@ namespace jts
 
 		Obj* retVal = nullptr;
 
-		Obj* ret = nullptr;
-
 		switch (args->value->type)
 		{
 			case Type::NAT_FN:
 
-				ret = env::glbl_objPool.acquire();
-
-				retVal = args->value->_native(ret, args->next, eval);
+				retVal = args->value->_native(env::glbl_objPool.acquire(), 
+											  args->next, eval);
 				break;
 
 			case Type::CPP_FN:
 
-				ret = env::glbl_objPool.acquire();
-
-				retVal = args->value->_cppFn->call(ret, args);
+				retVal = args->value->_cppFn->call(env::glbl_objPool.acquire(), 
+												   args);
 				break;
 
 			case Type::JTS_FN:
@@ -130,16 +126,14 @@ namespace jts
 					{
 						case Type::NAT_FN:
 
-							ret = env::glbl_objPool.acquire();
-
-							retVal = args->value->_quote->_native(ret, args->next, eval);
+							retVal = args->value->_quote->_native(env::glbl_objPool.acquire(), 
+																  args->next, eval);
 							break;
 
 						case Type::CPP_FN:
 
-							ret = env::glbl_objPool.acquire();
-
-							retVal = args->value->_quote->_cppFn->call(ret, args);
+							retVal = args->value->_quote->_cppFn->call(env::glbl_objPool.acquire(), 
+																	   args);
 							break;
 
 						case Type::JTS_FN:
@@ -156,8 +150,6 @@ namespace jts
 
 				break;
 		}
-
-		// return nullptr if not a callable -- inflicts crash
 
 		if (top) env::glbl_objPool.release_all();
 
@@ -207,6 +199,18 @@ namespace jts
 				for (auto& member : obj->_jtsType->members)
 				{
 					ret += member.first + ": " + toString(member.second) + " ";
+				}
+
+				return ret;
+			}			
+			
+			case Type::CPP_TYPE:
+			{
+				str ret = "";
+
+				for (auto& member : obj->_cppType->classTemplate->members)
+				{
+					ret += member.first + ": " + toString(obj->_cppType->getMember_NonRef(member.first)) + " ";
 				}
 
 				return ret;

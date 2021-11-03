@@ -186,6 +186,11 @@ namespace jts
 			case Type::JTS_TYPE:
 
 				a->_jtsType = b->_jtsType;
+				break;			
+			
+			case Type::CPP_TYPE:
+
+				a->_cppType = b->_cppType;
 				break;
 
 			case Type::QUOTE:

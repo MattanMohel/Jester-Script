@@ -254,7 +254,7 @@ namespace lib
 		}));
 
 		// (random min max)
-		env::addSymbol(vm, "random", env::addBridge(Random));
+		env::addSymbol(vm, "random", env::addFunction(Random));
 	}
 }
 #endif

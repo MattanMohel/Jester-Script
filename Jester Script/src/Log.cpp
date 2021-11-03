@@ -43,6 +43,7 @@ namespace jts
 			case Type::NAT_FN:
 			case Type::CPP_FN:
 			case Type::JTS_TYPE:
+			case Type::CPP_TYPE:
 			{
 				std::cout << symbolOf(value);
 

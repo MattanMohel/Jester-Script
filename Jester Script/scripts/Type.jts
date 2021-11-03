@@ -4,17 +4,5 @@
 	(set y 1.0)
 	
 	(fn mag (self)
-		(pow (+ (pow (. self x) 2) (pow (. self y) 2)) .5))
-		
-	(fn norm (self)
-		
-		(set vec-mag (. self mag))
-		(set vec (new vec2))
-		
-		
-		(set (. vec y) (/ (. vec y) vec-mag))
-		
-		(set (. vec x) (/ (. vec x) vec-mag)) 
-		
-		vec)
+		(pow (+ (pow (. self x) 2) (pow (. self y) 2)) .5))	
 )
