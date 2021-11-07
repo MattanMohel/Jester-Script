@@ -81,14 +81,13 @@ namespace lib
 			}
 		}));		
 		
-		// (type id members)
+		// (type members)
 		env::addSymbol(vm, "type", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto type = args->value;
-			type->_jtsType = new JtsType();
-			type->type = Type::JTS_TYPE;
+			ret->_jtsType = new JtsType();
+			ret->type = Type::JTS_TYPE;
 
-			auto member = args->next;
+			auto member = args;
 
 			while (member)
 			{
@@ -97,13 +96,11 @@ namespace lib
 
 				binaryOp<Binary::SET>(memberCpy, memberVal);
 
-				type->_jtsType->members.emplace(memberVal->symbol, memberCpy);
+				ret->_jtsType->members.emplace(memberVal->symbol, memberCpy);
 				member = member->next;
 			}
 
-			type->_jtsType->typeName = args->value->symbol;
-
-			return type;
+			return ret;
 		}));		
 		
 		// (new value)
@@ -165,8 +162,8 @@ namespace lib
 			return ret;
 		}));		
 		
-		// (. type member) or (. type method args...)
-		env::addSymbol(vm, ".", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		// (: type member) or (: type method args...)
+		env::addSymbol(vm, ":", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			auto node = args;
 
@@ -221,18 +218,16 @@ namespace lib
 			}
 		}));
 
-		// (fn id (params) body)
+		// (fn (params) body)
 		env::addSymbol(vm, "fn", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto func = args->value;
+			ret->spec = Spec::SYMBOL;
+			ret->type = Type::JTS_FN;
 
-			func->spec = Spec::SYMBOL;
-			func->type = Type::JTS_FN;
+			ret->_jtsFn = new JtsFn();
+			ret->_jtsFn->codeBlock = args->next;
 
-			func->_jtsFn = new JtsFn();
-			func->_jtsFn->codeBlock = args->next->next;
-
-			auto param = args->next->value->_args;
+			auto param = args->value->_args;
 
 			while (param)
 			{
@@ -240,23 +235,21 @@ namespace lib
 				param = param->next;
 			}
 
-			func->_jtsFn->params = args->next;
+			ret->_jtsFn->params = args;
 
-			return func;
+			return ret;
 		}));
 
-		// (macro id (params) body)
+		// (macro (params) body)
 		env::addSymbol(vm, "macro", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
-			auto func = args->value;
+			ret->spec = Spec::SYMBOL;
+			ret->type = Type::JTS_FN;
 
-			func->spec = Spec::SYMBOL;
-			func->type = Type::JTS_FN;
+			ret->_macFn = new MacFn();
+			ret->_macFn->codeBlock = args->next;
 
-			func->_macFn = new MacFn();
-			func->_macFn->codeBlock = args->next->next;
-
-			auto param = args->next->value->_args;
+			auto param = args->value->_args;
 
 			while (param)
 			{
@@ -264,9 +257,9 @@ namespace lib
 				param = param->next;
 			}
 
-			func->_macFn->params = args->next;
+			ret->_macFn->params = args;
 
-			return func;
+			return ret;
 		}));					
 		
 		// (eval target)

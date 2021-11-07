@@ -41,7 +41,7 @@ namespace jts
 		// Takes a key and value, emplaces to Vm as a key-value pair
 		void addSymbol(VM* vm, str key, Obj* value);
 
-		void addSrc(VM* vm, str src);
+		Obj* addSrc(VM* vm, str src);
 
 		Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool));
 

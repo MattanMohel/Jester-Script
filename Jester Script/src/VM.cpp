@@ -71,12 +71,12 @@ namespace jts { namespace env {
 		vm->symbols.emplace(key, value);
 	}
 
-	void addSrc(VM* vm, str src)
+	Obj* addSrc(VM* vm, str src)
 	{
 		src += EOF;
 		parseSrc(vm, src);
 
-		env::run(vm);
+		return env::run(vm);
 	}
 
 	Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool))

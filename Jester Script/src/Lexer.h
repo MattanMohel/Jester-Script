@@ -5,7 +5,7 @@
 
 namespace jts
 {
-	static const char prefixes[] = { '(', ')', '\'', ';', ',', '~', ':', '[', ']' };
+	static const char prefixes[] = { '(', ')', '\'', ';', ',', '~', ':', '[', ']', /*splicing characters*/ ' ', '\n', '\t', EOF};
 
 	bool isPrefix(char value);
 
@@ -22,7 +22,7 @@ namespace jts
 	* Takes a special opertor and lexically replaces it
 	* in the src to the counterpart function
 	*/ 
-	str::iterator addSpecialOp(VM* vm, str op, str& src, size_t& depth, int line, str::iterator cur);
+	str::iterator addOperator(VM* vm, str op, str& src, size_t& depth, int line, str::iterator cur);
 }
 
 #endif

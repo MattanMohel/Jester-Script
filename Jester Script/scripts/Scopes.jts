@@ -1,7 +1,14 @@
-(fn calc-pi (num)
-	(set sum 0.0)
-	(loop (> num 0)
-		(+= sum (/ 1 (* num num)))
-		(-- num))
-	
-	(pow (* sum 6) .5))
+(set add 
+	(fn (a b)
+		(+ a b)))
+		
+; a and b can be accessed outside of 'add'
+
+(set add
+	[fn (c d)
+		(+ c d)])
+		
+; c and d may not be accessed outside of 'add'
+		
+(set vec3 (type x y z))
+(set vec3 [type x y z]) ; same difference

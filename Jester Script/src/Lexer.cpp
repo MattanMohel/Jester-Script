@@ -43,7 +43,7 @@ namespace jts
 		while (true)
 		{
 			// extract a single token
-			while (inLtrl || (!isPrefix(*ch) && *ch != ' ' && *ch != '\t' && *ch != '\n' && *ch != EOF))
+			while (inLtrl || !isPrefix(*ch))
 			{
 				// if '\"', parse as string until next '\"'
 				if (*ch == '\"') inLtrl = !inLtrl;
@@ -83,13 +83,13 @@ namespace jts
 
 				case '\'':
 
-					ch = addSpecialOp(vm, "quote", src, depth, line, ch);
+					ch = addOperator(vm, "quote", src, depth, line, ch);
 					break;		
 				
 				case '~':
 
-					ch = addSpecialOp(vm, "eval", src, depth, line, ch);
-					break;
+					ch = addOperator(vm, "eval", src, depth, line, ch);
+					break;						
 			}
 
 			// break if reached end of file
@@ -163,7 +163,7 @@ namespace jts
 		}
 	}
 
-	str::iterator addSpecialOp(VM* vm, str op, str& src, size_t& depth, int line, str::iterator cur)
+	str::iterator addOperator(VM* vm, str op, str& src, size_t& startDepth, int line, str::iterator cur)
 	{
 		str symbol = '(' + op + ' ';
 
@@ -173,7 +173,7 @@ namespace jts
 
 		cur += symbol.length() - 1;
 
-		int targetDepth = depth;
+		int targetDepth = startDepth;
 
 		while (true)
 		{
@@ -181,11 +181,11 @@ namespace jts
 
 			targetDepth += (*cur == '(') - (*cur == ')');
 
-			if ((*cur == ' ' || *cur == ')' || *cur == EOF) && (targetDepth == depth || targetDepth == 0)) break;
+			if ((*cur == ' ' || *cur == ')' || *cur == EOF) && (targetDepth == startDepth || targetDepth == 0)) break;
 		}
 
 		src.insert(cur, ')');
-		++depth;
+		++startDepth;
 
 		// initialize new node 
 

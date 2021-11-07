@@ -119,7 +119,9 @@ namespace lib
 			}
 
 			return ret;
-		}));					
+		}));
+
+		env::addSymbol(vm, "sqrt", env::addSrc(vm, "(fn (n) (pow (float n) 0.5))"));
 		
 		env::addSymbol(vm, "log", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{

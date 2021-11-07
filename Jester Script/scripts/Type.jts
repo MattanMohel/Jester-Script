@@ -1,15 +1,11 @@
 
-(type vec2
-	(set x 1.0) 
-	(set y 1.0)
-		
-	(fn mag (self)
-		(pow (+ (pow (. self x) 2) (pow (. self y) 2)) .5))
-		
-	(fn normalize (self)
-		
-		(set self-mag (. self mag))
-		
-		(/= (. self x) self-mag)
-		(/= (. self y) self-mag))
-)
+(set vec2 (type
+	(set x 0.0)
+	(set y 0.0)
+	
+	(set mag (fn (self)
+		(sqrt (+ (pow (:self x) 2) (pow (:self y) 2)))))
+))
+
+
+
