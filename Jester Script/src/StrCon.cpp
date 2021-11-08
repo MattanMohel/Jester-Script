@@ -29,7 +29,7 @@ namespace jts
                     continue;
                 }
 
-                /* If not an integer */
+                // if not an integer
                 if (tok->symbol[i] - '0' < 0 || tok->symbol[i] - '0' > 9)
                 {
                     return false;

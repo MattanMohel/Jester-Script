@@ -83,12 +83,6 @@ namespace jts
 
 	Obj* execObj(ObjNode* args, bool eval, bool top)
 	{
-		/*
-			Execute object by the callable type
-
-			The head of the passed arguments MUST be of a callkable type
-		*/
-
 		Obj* retVal = nullptr;
 
 		switch (args->value->type)

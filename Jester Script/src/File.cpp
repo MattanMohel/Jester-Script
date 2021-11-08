@@ -34,10 +34,12 @@ namespace jts
 		return srcBuffer;
 	}
 
-	void parseSrc(VM* vm, str src)
+	void parseSrc(VM* vm, str src, bool run)
 	{
 		tokenizeFile(vm, src);
 
 		parseTokens(vm);
+
+		if (run) env::run(vm);
 	}
 }

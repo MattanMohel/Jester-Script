@@ -5,8 +5,8 @@
 
 namespace jts
 {
-	// Used for lexical analysis
-	// --Precursor to Obj in parsing hierarchy
+	// Jester Script Token struct
+
 	struct Tok
 	{
 		Tok* next = nullptr;

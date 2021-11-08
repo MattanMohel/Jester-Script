@@ -18,7 +18,7 @@ using namespace jts;
 
 namespace lib
 {
-	int Random(int min, int max)
+	int random(int min, int max)
 	{
 		std::random_device dev;
 		std::mt19937 rng(dev());
@@ -256,7 +256,7 @@ namespace lib
 		}));
 
 		// (random min max)
-		env::addSymbol(vm, "random", env::addFunction(Random));
+		env::addSymbol(vm, "random", env::addFunction(random));
 	}
 }
 #endif

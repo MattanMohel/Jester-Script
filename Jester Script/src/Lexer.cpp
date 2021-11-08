@@ -28,12 +28,12 @@ namespace jts
 
 		/*
 			User defined symbols may begin, end with, or contain 
-			any ASCII symbol except '(' or ')' or ';', therefore all symbols must be
-			separated by a space
+			any ASCII symbol except for chars included in the 'prefixes' array (see LEXER.H), 
+			all other symbols must be separated by a space
 
 			EX: 
 
-			(++x) ;won't work with no space --> (++ x) ;works
+			(++x) won't work with no space --> (++ x) works
 		*/
 
 		// initialize Token linked-list head
@@ -122,12 +122,10 @@ namespace jts
 		{
 			return;
 		}
-
 		else if (value == "(" || value == "[")
 		{
 			vm->tokenPtrCur->spec = Spec::LST_BEG;
-		}		
-		
+		}				
 		else if (value == ")" || value == "]")
 		{
 			vm->tokenPtrCur->spec = Spec::LST_END;
@@ -144,10 +142,8 @@ namespace jts
 		{
 			vm->tokenPtrCur->spec = Spec::VALUE;
 		}
-
-		// if the symbol is not identified, mark as declared symbol
-		else 
-		{
+		else // a new symbol
+		{ 
 			vm->tokenPtrCur->spec = Spec::SYMBOL;
 		}
 	}
@@ -155,6 +151,8 @@ namespace jts
 	str::iterator addOperator(VM* vm, str op, str& src, size_t& startDepth, int line, str::iterator cur)
 	{
 		str symbol = '(' + op + ' ';
+
+		// calculate offset to current iterator and set to a new iterator
 
 		size_t totalOffset = cur - src.begin();
 		src.replace(src.begin() + totalOffset, src.begin() + totalOffset + 1, symbol);
@@ -168,9 +166,10 @@ namespace jts
 		{
 			++cur;
 
-			targetDepth += (*cur == '(') - (*cur == ')');
+			targetDepth += (*cur == '(' || *cur == '[') - (*cur == ')' || *cur == ']');
 
-			if ((*cur == ' ' || *cur == ')' || *cur == EOF) && (targetDepth == startDepth || targetDepth == 0)) break;
+			if ((*cur == ' ' || *cur == ')' || *cur == ']' || *cur == EOF) && 
+				(targetDepth == startDepth || targetDepth == 0)) break;
 		}
 
 		src.insert(cur, ')');

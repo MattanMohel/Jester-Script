@@ -10,38 +10,48 @@
 
 namespace jts { namespace env {
 
-	extern Pool<Obj> glbl_objPool(100, [](Obj* value)
+	void addSymbol(VM* vm, str key, Obj* value)
 	{
-		value->type = Type::NIL;
-		value->_int = 0;
+		bool hasKey = env::getSymbol(vm, key);
+		assert(vm, hasKey, "creating duplicate symbol " + key);
 
-		return value;
-	});
-
-	extern Pool<ObjNode> glbl_nodePool(100, [](ObjNode* value)
-	{
-		value->next = nullptr;
-		value->value = nullptr;
-
-		return value;
-	});
-
-	ObjNode* acquireNode()
-	{
-		auto* node = glbl_nodePool.acquire();
-		node->value = glbl_objPool.acquire();
-
-		return node;
+		vm->symbolMap->symbols.emplace(key, value);
 	}
 
-	void releaseNode(ObjNode* node)
+	Obj* getSymbol(VM* vm, str symbol)
 	{
-		glbl_nodePool.release(node);
-		glbl_objPool.release(node->value);
+		if (vm->symbolMap->symbols.find(symbol) != vm->symbolMap->symbols.end())
+		{
+			return vm->symbolMap->symbols[symbol];
+		}
+
+		auto obj = env::getSymbol(vm->symbolMap->prev, symbol);
+
+		if (obj) return obj;
+
+		return nullptr;
+	}
+
+	Obj* getSymbol(SymbolMap* map, str symbol)
+	{
+		if (!map) return nullptr;
+
+		if (map->symbols.find(symbol) != map->symbols.end())
+		{
+			return map->symbols[symbol];
+		}
+
+		auto obj = env::getSymbol(map->prev, symbol);
+
+		if (obj) return obj;
+
+		return nullptr;
 	}
 
 	void assert(VM* vm, bool cond, str mes, State warnType)
 	{
+		// NOT IMPLEMENTED
+
 		if (!cond) return;
 
 		switch (warnType)
@@ -63,12 +73,56 @@ namespace jts { namespace env {
 		}
 	}
 
-	void addSymbol(VM* vm, str key, Obj* value)
+	Obj* run(VM* vm)
 	{
-		bool hasKey = env::getSymbol(vm, key);
-		assert(vm, hasKey, "creating duplicate symbol " + key);
+		vm->stackPtrCur = vm->stackPtrBeg;
 
-		vm->symbolMap->symbols.emplace(key, value);
+		while (vm->stackPtrCur->next)
+		{
+			evalObj(vm->stackPtrCur->value, false, true);
+
+			vm->stackPtrCur = vm->stackPtrCur->next;
+		}
+
+		return evalObj(vm->stackPtrCur->value, false, true);
+	}
+
+	void runREPL(VM* vm)
+	{
+		str src;
+
+		size_t inputCount = 0;
+
+		while (1)
+		{
+			std::cout << "[" << inputCount++ << "]>> ";
+			std::getline(std::cin, src);
+			src += EOF;
+
+			if (src.empty()) continue;
+
+			// Reset VM
+
+			vm->stackPtrBeg = vm->stackPtrCur = nullptr;
+			vm->tokenPtrBeg = vm->tokenPtrCur = nullptr;
+
+			// Run input
+
+			parseSrc(vm, src);
+
+			printObj(env::run(vm), true);
+
+		#if DEBUG_ALLOC
+			std::cout << "have " << env::glbl_objPool.count() << " objects and " << env::glbl_nodePool.count() << " nodes\n";
+		#endif
+		}
+	}
+
+	void addLib(VM* vm, void(*lib)(VM* vm))
+	{
+		vm->libs.emplace_back(lib);
+
+		lib(vm);
 	}
 
 	Obj* addSrc(VM* vm, str src)
@@ -82,7 +136,7 @@ namespace jts { namespace env {
 	Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool))
 	{
 		Obj* obj = new Obj();
-		
+
 		obj->_native = native;
 		obj->type = Type::NAT_FN;
 		obj->spec = Spec::SYMBOL;
@@ -129,85 +183,35 @@ namespace jts { namespace env {
 		return obj;
 	}
 
-	void addLib(VM* vm, void(*lib)(VM* vm))
-	{
-		vm->libs.emplace_back(lib);
+	// Initializes both the Obj and ObjNode pools
 
-		lib(vm);
+	extern Pool<Obj> glbl_objPool(100, [](Obj* value)
+	{
+		value->type = Type::NIL;
+		value->_int = 0;
+
+		return value;
+	});
+
+	extern Pool<ObjNode> glbl_nodePool(100, [](ObjNode* value)
+	{
+		value->next = nullptr;
+		value->value = nullptr;
+
+		return value;
+	});
+
+	ObjNode* acquireNode()
+	{
+		auto* node = glbl_nodePool.acquire();
+		node->value = glbl_objPool.acquire();
+
+		return node;
 	}
 
-	Obj* getSymbol(VM* vm, str symbol)
+	void releaseNode(ObjNode* node)
 	{
-		if (vm->symbolMap->symbols.find(symbol) != vm->symbolMap->symbols.end())
-		{
-			return vm->symbolMap->symbols[symbol];
-		}
-
-		auto obj = env::getSymbol(vm->symbolMap->prev, symbol);
-		
-		if (obj) return obj;
-
-		return nullptr;
-	}
-
-	Obj* getSymbol(SymbolMap* map, str symbol)
-	{
-		if (!map) return nullptr;
-
-		if (map->symbols.find(symbol) != map->symbols.end())
-		{
-			return map->symbols[symbol];
-		}
-
-		auto obj = env::getSymbol(map->prev, symbol);
-
-		if (obj) return obj;
-
-		return nullptr;
-	}
-
-	void runREPL(VM* vm)
-	{
-		str src;
-
-		size_t inputCount = 0;
-
-		while (1)
-		{
-			std::cout << "[" << inputCount++ << "]>> ";
-			std::getline(std::cin, src);
-			src += EOF;
-
-			if (src.empty()) continue;
-
-			// Reset VM
-
-			vm->stackPtrBeg = vm->stackPtrCur = nullptr;
-			vm->tokenPtrBeg = vm->tokenPtrCur = nullptr;
-
-			// Run input
-
-			parseSrc(vm, src);
-
-			printObj(env::run(vm), true);
-
-		#if DEBUG_ALLOC
-			std::cout << "have " << env::glbl_objPool.count() << " objects and " << env::glbl_nodePool.count() << " nodes\n";
-		#endif
-		}
-	}
-
-	Obj* run(VM* vm)
-	{
-		vm->stackPtrCur = vm->stackPtrBeg;
-
-		while (vm->stackPtrCur->next)
-		{
-			evalObj(vm->stackPtrCur->value, false, true);
-
-			vm->stackPtrCur = vm->stackPtrCur->next;
-		}
-
-		return evalObj(vm->stackPtrCur->value, false, true);
+		glbl_nodePool.release(node);
+		glbl_objPool.release(node->value);
 	}
 }}

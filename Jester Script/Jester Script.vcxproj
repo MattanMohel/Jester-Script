@@ -190,10 +190,10 @@
     <ClInclude Include="utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="scripts\Games.jts" />
-    <None Include="scripts\Macros.jts" />
+    <None Include="scripts\Function.jts" />
     <None Include="scripts\Recursion.jts" />
     <None Include="scripts\Rock-Paper-Scissors.jts" />
+    <None Include="scripts\Scope.jts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

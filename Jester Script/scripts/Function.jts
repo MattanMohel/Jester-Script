@@ -1,0 +1,15 @@
+(set guess [fn (min max)
+	
+	(set num (random min max))
+	
+	(println "Guess a number between " min " and " max)
+	
+	(loop (not (= in num))
+					
+		(set in (string-int (input)))
+		
+		(if (> in num) (println "guess lower!")
+			(if (< in num) (println "guess higher!")
+				nil)))
+			
+	(println "you got it!")])

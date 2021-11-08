@@ -11,6 +11,19 @@
 
 namespace jts
 {
+	/*
+	  A templated function used to invoke C++ functions in JTS
+
+	  How It Works:
+
+	  An instance of CppFn_Impl stores a designated function pointer
+
+	  Upon function invocation...
+	  1) a linked list of objects is converted into a vector of objects
+	  2) the vector outputs parameters to the function pointer one by one
+	  3) the function value is returned
+	*/
+
 	struct CppFn
 	{
 		virtual Obj* call(Obj* ret, ObjNode* args) = 0;
@@ -19,7 +32,6 @@ namespace jts
 	template<typename Ret, typename... Args>
 	struct CppFn_Impl : public CppFn
 	{
-		// Func type
 		using Fn = Ret(*)(Args...);
 
 		Obj* call(Obj* ret, ObjNode* args) override
@@ -32,21 +44,21 @@ namespace jts
 		{
 			std::vector<Obj*> paramVec;
 
+			// create parameter vector
+
 			while (args->next)
 			{
 				paramVec.emplace_back(evalObj(args->next->value));
 				args = args->next;
 			}
 
-			// If func is void, evaluate and return NIL
-			if constexpr (std::is_void<Ret>::value)
+			if constexpr (std::is_void<Ret>::value)	// func is void, evaluate and return NIL
 			{
 				func(castObj<Args>(paramVec[I])...);
 				return setTo(ret, nullptr_t());
 			}
-			else
+			else // return the func value
 			{
-				// If func isn't void, return the func value
 				return setTo(ret, func(castObj<Args>(paramVec[I])...));
 			}
 		}

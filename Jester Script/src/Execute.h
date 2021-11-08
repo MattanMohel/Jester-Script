@@ -9,29 +9,28 @@
 namespace jts
 {
 	/* 
-		Evaluates an object and returns its evaluated value
+		Evaluates and returns an object
 
-		@param obj  : the object to be evaluated
 		@param eval : whether or not to evaluate quote values
+		@param top  : if true, all objects are released to pool upon termination of eval
 	*/
 	Obj* evalObj(Obj* obj, bool eval = false, bool top = false);
 
 	/* 
-		Executes an object with a callable type and returns its executed value
+		Executes amd returns an object with a callable type
 		
-		@param args - pointer to the first argument of the callable
-		@param eval - wether or not to evaluate quote values
+		@param args : pointer to the first argument of the callable
+		@param eval : wether or not to evaluate quote values
+		@param top  : if true, all objects are released to pool upon termination of eval
 	*/
 	Obj* execObj(ObjNode* args, bool eval, bool top = false);
 
-	/*
-		Takes object and returns as string
-	*/
+	// Takes object and returns its string value
+
 	str toString(Obj* obj);
 
-	/* 
-		Takes an object and returns the value of the object casted into type T 
-	*/
+	// Takes object and returns its T value
+
 	template<typename T>
 	inline T castObj(Obj* obj)
 	{
@@ -55,9 +54,8 @@ namespace jts
 		}
 	}
 
-	/* 
-		Takes type T and returns the corresponding enum Type value 
-	*/
+	// Takes T and returns corresponding enum-Type value 
+
 	template<typename T>
 	inline Type getType()
 	{

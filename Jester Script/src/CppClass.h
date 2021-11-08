@@ -12,8 +12,22 @@
 
 namespace jts
 {
+	/*
+	  A templated class used to port classes written in C++ to JTS
+	  
+	  How It Works:
+
+	  An instance class stores Object representations of its member variables
+	   - All the C++ member pointers are stored within the ClassTemplate struct
+		
+	  Upon method invocation...
+	  1) All object members are assigned back to the actual instance members
+	  2) The methods used for invoking functions is repeated but with instance methods
+	*/
+
 	struct MemberBridge
 	{
+		// sets instance member to given object
 		virtual void setMember(void* inst, Obj* obj) = 0;
 
 		size_t index = 0;
@@ -52,21 +66,21 @@ namespace jts
 		{
 			std::vector<Obj*> paramVec;
 
+			// create parameter vector
+
 			while (args->next)
 			{
 				paramVec.emplace_back(evalObj(args->next->value));
 				args = args->next;
 			}
 
-			// If method is void, evaluate and return NIL
-			if constexpr (std::is_void<Ret>::value)
+			if constexpr (std::is_void<Ret>::value)	// method is void, evaluate and return NIL
 			{
 				(((Cls*)inst)->*method)(castObj<Args>(paramVec[I])...);
 				return setTo(ret, nullptr_t());
 			}
-			else
+			else // return the method value
 			{
-				// If method isn't void, return the method value
 				return setTo(ret, (((Cls*)inst)->*method)(castObj<Args>(paramVec[I])...));
 			}
 		}
@@ -74,7 +88,7 @@ namespace jts
 		Method method;
 	};
 
-	struct CppClassTemplate
+	struct ClassTemplate
 	{
 		str typeName;
 		std::unordered_map<str, MemberBridge*> members;
@@ -85,7 +99,10 @@ namespace jts
 
 	struct CppClass
 	{
+		// Invokes a method call
 		virtual Obj* call(str& id, Obj* ret, ObjNode* args) = 0;
+
+		// creates a new class instance in JTS
 		virtual void instance(CppClass*& cppClass) = 0;
 
 		bool hasMember(str& symbol)
@@ -103,7 +120,7 @@ namespace jts
 			return instMembers[classTemplate->members[symbol]->index];
 		}
 
-		CppClassTemplate* classTemplate;
+		ClassTemplate* classTemplate;
 
 		std::vector<Obj*> instMembers;
 	};
@@ -146,11 +163,10 @@ namespace jts
 			// initialize new class bridge
 			CppClass_Impl<Cls>* inst = new CppClass_Impl<Cls>();
 
-			inst->classTemplate = new CppClassTemplate();
+			inst->classTemplate = new ClassTemplate();
 
 			Obj* obj = new Obj { Type::CPP_TYPE, Spec::SYMBOL };
 
-			// downcast implementation into base class
 			obj->_cppType = (CppClass*)inst;
 
 			return obj;
