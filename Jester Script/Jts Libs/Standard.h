@@ -162,8 +162,8 @@ namespace lib
 			return ret;
 		}));		
 		
-		// (: type member) or (: type method args...)
-		env::addSymbol(vm, ":", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		// (. type member) or (. type method args...)
+		env::addSymbol(vm, ".", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			auto node = args;
 

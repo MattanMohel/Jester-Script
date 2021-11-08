@@ -50,8 +50,6 @@ namespace jts
 
 				case Spec::SYMBOL:
 
-					// if symbol id doesn't exist, create it
-
 					if (!env::getSymbol(vm, it->symbol))
 					{
 						env::addSymbol(vm, it->symbol, new Obj { Type::NIL, Spec::SYMBOL });
@@ -75,12 +73,25 @@ namespace jts
 			{
 				case Spec::LST_BEG:
 					
+					if (it->symbol == "[")
+					{
+						auto prevMap = vm->symbolMap;
+						
+						vm->symbolMap = vm->symbolMap->next.emplace_back(new SymbolMap());
+						vm->symbolMap->prev = prevMap;
+					}
+
 					// set next to the list's argument node
 					funcHead.emplace(head);
 					head = &(*head)->value->_args;
 					break;
 
 				case Spec::LST_END:
+
+					if (it->symbol == "]")
+					{
+						vm->symbolMap = vm->symbolMap->prev;
+					}
 					
 					// set next to the last pushed list head's next node
 					head = &(*funcHead.pop())->next;

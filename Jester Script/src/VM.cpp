@@ -65,10 +65,10 @@ namespace jts { namespace env {
 
 	void addSymbol(VM* vm, str key, Obj* value)
 	{
-		bool hasKey = vm->symbols.find(key) != vm->symbols.end();
+		bool hasKey = env::getSymbol(vm, key);
 		assert(vm, hasKey, "creating duplicate symbol " + key);
 
-		vm->symbols.emplace(key, value);
+		vm->symbolMap->symbols.emplace(key, value);
 	}
 
 	Obj* addSrc(VM* vm, str src)
@@ -138,10 +138,30 @@ namespace jts { namespace env {
 
 	Obj* getSymbol(VM* vm, str symbol)
 	{
-		if (vm->symbols.find(symbol) != vm->symbols.end()) 
+		if (vm->symbolMap->symbols.find(symbol) != vm->symbolMap->symbols.end())
 		{
-			return vm->symbols[symbol];
+			return vm->symbolMap->symbols[symbol];
 		}
+
+		auto obj = env::getSymbol(vm->symbolMap->prev, symbol);
+		
+		if (obj) return obj;
+
+		return nullptr;
+	}
+
+	Obj* getSymbol(SymbolMap* map, str symbol)
+	{
+		if (!map) return nullptr;
+
+		if (map->symbols.find(symbol) != map->symbols.end())
+		{
+			return map->symbols[symbol];
+		}
+
+		auto obj = env::getSymbol(map->prev, symbol);
+
+		if (obj) return obj;
 
 		return nullptr;
 	}

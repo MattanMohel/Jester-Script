@@ -63,11 +63,8 @@ namespace jts
 		SYMBOL, // variable
 		VALUE,  // literal value
 
-		LST_BEG, // '('
-		LST_END, // ')'
-
-		SCP_BEG, // '['
-		SCP_END, // ']'
+		LST_BEG, // '(' or '['
+		LST_END, // ')' or ']'
 	};
 
 	// Symbol flags
@@ -89,6 +86,13 @@ namespace jts
 		MES, // message
 		WRN, // warning
 		ERR, // error
+	};
+
+	struct SymbolMap
+	{
+		std::unordered_map<str, Obj*> symbols;
+		std::vector<SymbolMap*> next;
+		SymbolMap* prev;
 	};
 
 	inline bool isType(Type type)

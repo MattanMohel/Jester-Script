@@ -11,20 +11,17 @@ namespace jts
 
 	struct VM
 	{
+		VM() : symbolMap(new SymbolMap()) {}
+
 		ObjNode* stackPtrCur = nullptr;
 		ObjNode* stackPtrBeg = nullptr;
 
 		Tok* tokenPtrCur = nullptr;
 		Tok* tokenPtrBeg = nullptr;
 
-		std::unordered_map<str, Obj*> symbols;
+		SymbolMap* symbolMap;
 
 		std::vector<void(*)(VM* vm)> libs;
-	};
-
-	struct SymbolMap
-	{
-		std::unordered_map<str, Obj*> symbols;
 	};
 
 	namespace env
@@ -61,6 +58,7 @@ namespace jts
 		void addLib(VM* vm, void(*lib)(VM* vm));
 
 		Obj* getSymbol(VM* vm, str symbol);
+		Obj* getSymbol(SymbolMap* map, str symbol);
 
 		void runREPL(VM* vm);
 

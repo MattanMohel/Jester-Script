@@ -75,7 +75,7 @@ namespace jts
 				case '[':
 				case ']':
 
-					depth += (*ch == '(') - (*ch == ')');
+					depth += (*ch == '(' || *ch == '[') - (*ch == ')' || *ch == ']');
 
 					lexer += *ch;
 					addToken(vm, lexer, line);
@@ -123,26 +123,15 @@ namespace jts
 			return;
 		}
 
-		else if (value == "(")
+		else if (value == "(" || value == "[")
 		{
 			vm->tokenPtrCur->spec = Spec::LST_BEG;
 		}		
 		
-		else if (value == ")")
+		else if (value == ")" || value == "]")
 		{
 			vm->tokenPtrCur->spec = Spec::LST_END;
-		}		
-				
-		
-		else if (value == "[")
-		{
-			vm->tokenPtrCur->spec = Spec::SCP_BEG;
-		}		
-		
-		else if (value == "]")
-		{
-			vm->tokenPtrCur->spec = Spec::SCP_END;
-		}		
+		}				
 		
 		// if symbol is in the VM
 		else if (env::getSymbol(vm, vm->tokenPtrCur->symbol))

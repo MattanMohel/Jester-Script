@@ -43,8 +43,8 @@ int main(char** argc, int** argv)
 	env_ADD_METHOD(vm, Timer, elapsed);
 	env_ADD_METHOD(vm, Timer, reset);
 
-	//parseSrc(vm, readSrc(vm, "scripts/Recursion.jts"));
-	//env::run(vm);	
+	parseSrc(vm, readSrc(vm, "scripts/Recursion.jts"));
+	env::run(vm);	
 	parseSrc(vm, readSrc(vm, "scripts/Type.jts"));
 	env::run(vm);	
 
