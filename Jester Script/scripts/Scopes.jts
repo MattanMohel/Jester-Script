@@ -1,14 +1,7 @@
-(set add 
-	(fn (a b)
-		(+ a b)))
-		
-; a and b can be accessed outside of 'add'
+(set a 100)
 
-(set add
-	[fn (c d)
-		(+ c d)])
-		
-; c and d may not be accessed outside of 'add'
-		
-(set vec3 (type x y z))
-(set vec3 [type x y z]) ; same difference
+(println a) ; prints 100
+
+[set b 100]
+
+(println b) ; prints nil
