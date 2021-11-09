@@ -132,12 +132,12 @@ namespace jts
 
 						case Type::JTS_FN:
 
-							retVal = args->value->_quote->_jtsFn->call(args, eval);
+							retVal = args->value->_quote->_jtsFn->call(args->next, eval);
 							break;				
 						
 						case Type::MAC_FN:
 
-							retVal = args->value->_quote->_macFn->call(args, eval);
+							retVal = args->value->_quote->_macFn->call(args->next, eval);
 							break;
 					}
 				}

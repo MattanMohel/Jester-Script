@@ -208,7 +208,8 @@ namespace lib
 						auto prevNode = node->next;
 
 						node->next = node->next->next;
-						ret = node->value->_cppType->call(node->next->value->symbol, ret, args);
+
+						ret = node->value->_cppType->call(prevNode->value->symbol, ret, args);
 
 						node->next = prevNode;
 
@@ -244,7 +245,7 @@ namespace lib
 		env::addSymbol(vm, "macro", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			ret->spec = Spec::SYMBOL;
-			ret->type = Type::JTS_FN;
+			ret->type = Type::MAC_FN;
 
 			ret->_macFn = new MacFn();
 			ret->_macFn->codeBlock = args->next;
