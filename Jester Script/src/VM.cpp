@@ -108,7 +108,7 @@ namespace jts { namespace env {
 
 			// Run input
 
-			parseSrc(vm, src);
+			parseSrc(vm, src, false);
 
 			printObj(env::run(vm), true);
 
