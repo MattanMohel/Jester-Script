@@ -255,6 +255,7 @@ namespace lib
 			while (param)
 			{
 				param->value = evalObj(param->value);
+				param->value->type = Type::QUOTE;
 				param = param->next;
 			}
 

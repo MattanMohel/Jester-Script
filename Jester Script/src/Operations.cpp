@@ -177,6 +177,11 @@ namespace jts
 
 				a->_jtsFn = b->_jtsFn;
 				break;
+							
+			case Type::MAC_FN:
+
+				a->_macFn = b->_macFn;
+				break;
 
 			case Type::CPP_FN:
 				

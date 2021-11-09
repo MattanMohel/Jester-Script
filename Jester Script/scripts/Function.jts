@@ -1,9 +1,9 @@
 
-(set time (macro (expr)
+(set timer (macro (expr)
 	
-	(set timer (new Timer))
-	(. timer reset)
+	(set t (new Timer))
+	(. t reset)
 	
 	(eval expr)
 	
-	(. timer elapsed)))
+	(. t elapsed)))
