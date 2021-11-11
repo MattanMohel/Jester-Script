@@ -5,9 +5,20 @@
 
 namespace jts
 {
-	static const char prefixes[] = { '(', ')', '\'', ';', ',', '~', ':', '[', ']', /*splicing characters*/ ' ', '\n', '\t', EOF};
+	static const char splicers[] = { ' ', '\n', '\t', EOF};
+	static const char prefixes[] = { '(', ')', '[', ']', ';' };
+
+	// {char (key), tuple<str (function), size_t (elements)>}
+	static std::unordered_map<char, std::tuple<str, size_t>> operators = 
+	{
+		{'\'', {"quote", 1}},
+		{'~',  {"eval" , 1}},
+		{':',  {"set"  , 2}},
+	};
 
 	bool isPrefix(char value);
+	bool isSplicer(char value); 
+	bool isOperator(char value);
 
 	// Takes a string source and tokenizes to VM
 
@@ -24,9 +35,11 @@ namespace jts
 	/* 
 	  Lexically replaces an operator with its function
 
-	  Converts '(+ 1 2) into (quote (+ 1 2))
+	  Converts:
+	   - '(+ 1 2) into (quote (+ 1 2))
+	   - :a :b 10 into (set a (set b 10))
 	*/
-	str::iterator addOperator(VM* vm, str op, str& src, size_t& depth, int line, str::iterator cur);
+	str::iterator addOperator(VM* vm, str& src, size_t startDepth, str::iterator cur, bool head = true);
 }
 
 #endif

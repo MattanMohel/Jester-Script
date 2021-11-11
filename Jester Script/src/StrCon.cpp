@@ -23,6 +23,8 @@ namespace jts
 
             for (size_t i = 0; i < len; i++)
             {
+                if (tok->symbol[i] == '-') continue;
+
                 if (tok->symbol[i] == '.')
                 {
                     perCount++;
@@ -58,6 +60,16 @@ namespace jts
             case Type::STRING:
 
                 obj->_string = new str(tok->symbol.substr(1, tok->symbol.length() - 2));
+                break;
+
+            case Type::FLOAT:
+
+                obj->_float = std::stof(tok->symbol);
+                break;         
+            
+            case Type::INT:
+
+                obj->_int = std::stoi(tok->symbol);
                 break;
 
             default: // case FLOAT, INT

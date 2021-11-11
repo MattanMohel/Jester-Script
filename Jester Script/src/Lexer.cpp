@@ -2,6 +2,7 @@
 #include "Token.h"
 #include "StrCon.h"
 #include "VM.h"
+#include <tuple>
 
 namespace jts
 {
@@ -15,6 +16,25 @@ namespace jts
 		return false;
 	}
 
+	bool isSplicer(char value)
+	{
+		for (char pref : splicers)
+		{
+			if (value == pref) return true;
+		}
+
+		return false;
+	}	
+	
+	bool isOperator(char value)
+	{ 
+		for (auto& pref : operators)
+		{
+			if (value == pref.first) return true;
+		}
+
+		return false;
+	}
 
 	void tokenizeFile(VM* vm, str src)
 	{
@@ -43,7 +63,7 @@ namespace jts
 		while (true)
 		{
 			// extract a single token
-			while (inLtrl || !isPrefix(*ch))
+			while (inLtrl || !(isPrefix(*ch) || isOperator(*ch) || isSplicer(*ch))) 
 			{
 				// if '\"', parse as string until next '\"'
 				if (*ch == '\"') inLtrl = !inLtrl;
@@ -82,13 +102,10 @@ namespace jts
 					break;
 
 				case '\'':
-
-					ch = addOperator(vm, "quote", src, depth, line, ch);
-					break;		
-				
 				case '~':
+				case ':':
 
-					ch = addOperator(vm, "eval", src, depth, line, ch);
+					ch = addOperator(vm, src, depth, ch);
 					break;						
 			}
 
@@ -148,11 +165,14 @@ namespace jts
 		}
 	}
 
-	str::iterator addOperator(VM* vm, str op, str& src, size_t& startDepth, int line, str::iterator cur)
+	str::iterator addOperator(VM* vm, str& src, size_t startDepth, str::iterator cur, bool head)
 	{
-		str symbol = '(' + op + ' ';
+		str symbol = '(' + std::get<str>(operators[*cur]) + ' ';
+		if (head) symbol.insert(symbol.begin(), ' ');
 
-		// calculate offset to current iterator and set to a new iterator
+		size_t elemCount = std::get<size_t>(operators[*cur]);
+
+		// calculate offset to current iterator in src and insert symbol
 
 		size_t totalOffset = cur - src.begin();
 		src.replace(src.begin() + totalOffset, src.begin() + totalOffset + 1, symbol);
@@ -160,28 +180,28 @@ namespace jts
 
 		cur += symbol.length() - 1;
 
-		int targetDepth = startDepth;
+		int depth = startDepth;
 
-		while (true)
+		while (elemCount)
 		{
-			++cur;
+			while (true)
+			{
+				++cur;
 
-			targetDepth += (*cur == '(' || *cur == '[') - (*cur == ')' || *cur == ']');
+				if (isOperator(*cur)) cur = addOperator(vm, src, depth, cur, false);
 
-			if ((*cur == ' ' || *cur == ')' || *cur == ']' || *cur == EOF) && 
-				(targetDepth == startDepth || targetDepth == 0)) break;
+				depth += (*cur == '(' || *cur == '[') - (*cur == ')' || *cur == ']');
+
+				if (depth == startDepth && (isSplicer(*cur) || *cur == ')' || *cur == ']')) break;
+			}
+
+			--elemCount;
 		}
 
-		src.insert(cur, ')');
+		cur -= (*cur == EOF);
+
+		src.insert(cur + 1, ')');
 		++startDepth;
-
-		// initialize new node 
-
-		vm->tokenPtrCur->symbol = '(';
-		vm->tokenPtrCur->spec = Spec::LST_BEG;
-
-		vm->tokenPtrCur->next = new Tok();
-		vm->tokenPtrCur = vm->tokenPtrCur->next;
 
 		return src.begin() + totalOffset;
 	}

@@ -1,11 +1,11 @@
 ; examples of JTS types
 
 ; vec2 class equivalent
-(set vec2 [type
-	(set x 99.0)
-	(set y 0.0)
+:vec2 [type
+	:x 1.0
+	:y 1.0
 	
-	(set mag (fn (self)
-		(sqrt (+ (pow (. self x) 2) (pow (. self y) 2)))))
-	])
+	:mag [fn (self)
+		(sqrt (+ (pow (. self x) 2) (pow (. self y) 2)))]
+	]
 
