@@ -13,6 +13,12 @@ namespace jts
 
 		// assert file
 
+		if (!file)
+		{
+			std::cout << path << " doesn't exist";
+			std::cin.get();
+		}
+
 		fseek(file, 0, SEEK_END);
 		long length = ftell(file);
 		fseek(file, 0, SEEK_SET);

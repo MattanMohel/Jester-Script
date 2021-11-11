@@ -73,7 +73,7 @@ namespace jts
 		  (See examples in the Jts-Libs directory)
 		*/
 		Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool));
-
+		
 		// Adds an object symbol by T
 
 		template<typename T>
@@ -88,8 +88,6 @@ namespace jts
 		template<> Obj* addConst(j_float value);
 		template<> Obj* addConst(std::nullptr_t value); 
 
-
-
 		// Obj and ObjNode memory pools
 
 		extern Pool<Obj>     glbl_objPool;
@@ -102,9 +100,6 @@ namespace jts
 		// Releases an ObjNode
 
 		void releaseNode(ObjNode* node);
-
-
-
 	}
 }
 

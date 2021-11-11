@@ -3,7 +3,6 @@
 
 #include <string>
 #include <unordered_map>
-#include <bitset>
 
 #include "../utils/IterableStack.h"
 

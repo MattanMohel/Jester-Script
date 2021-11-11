@@ -108,7 +108,14 @@ namespace jts { namespace env {
 
 			// Run input
 
-			parseSrc(vm, src, false);
+			if (src.substr(0, 2) == "--")
+			{
+				parseSrc(vm, readSrc(vm, src.substr(2, src.length() - 3)), false);
+			}
+			else
+			{
+				parseSrc(vm, src, false);
+			}
 
 			printObj(env::run(vm), true);
 

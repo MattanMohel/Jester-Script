@@ -16,6 +16,8 @@ using namespace jts;
 
 int main(char** argc, int** argv)
 {
+	std::cout << "---------- Welcome to Jester-Script ----------\n\n";
+
 	VM* vm = new VM();
 
 	env::addLib(vm, lib::StandardLib);
@@ -23,9 +25,11 @@ int main(char** argc, int** argv)
 	env::addLib(vm, lib::BooleanLib);
 	env::addLib(vm, lib::ListsLib);
 
+
 	env_ADD_CLASS(vm, Timer);
 	env_ADD_METHOD(vm, Timer, elapsed);
 	env_ADD_METHOD(vm, Timer, reset);
+
 
 	parseSrc(vm, readSrc(vm, "scripts/Recursion.jts"));
 	parseSrc(vm, readSrc(vm, "scripts/Type.jts"));

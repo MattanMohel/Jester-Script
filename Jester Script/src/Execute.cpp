@@ -40,6 +40,7 @@ namespace jts
 						{
 							switch (obj->_args->value->_quote->type)
 							{
+								case Type::MAC_FN:
 								case Type::NAT_FN:
 								case Type::JTS_FN:
 								case Type::CPP_FN:
@@ -85,7 +86,10 @@ namespace jts
 	{
 		Obj* retVal = nullptr;
 
-		switch (args->value->type)
+		Type type = args->value->type != Type::QUOTE? 
+			args->value->type : args->value->_quote->type;
+
+		switch (type)
 		{
 			case Type::NAT_FN:
 
@@ -97,7 +101,7 @@ namespace jts
 
 				retVal = args->value->_cppFn->call(env::glbl_objPool.acquire(), 
 												   args);
-				break;
+				break;			
 
 			case Type::JTS_FN:
 
@@ -107,41 +111,6 @@ namespace jts
 			case Type::MAC_FN:
 
 				retVal = args->value->_macFn->call(args->next, eval);
-				break;
-
-
-			case Type::QUOTE:
-				
-				// switch and execute quote value if to be eval'd
-
-				if (eval)
-				{
-					switch (args->value->_quote->type)
-					{
-						case Type::NAT_FN:
-
-							retVal = args->value->_quote->_native(env::glbl_objPool.acquire(), 
-																  args->next, eval);
-							break;
-
-						case Type::CPP_FN:
-
-							retVal = args->value->_quote->_cppFn->call(env::glbl_objPool.acquire(), 
-																	   args);
-							break;
-
-						case Type::JTS_FN:
-
-							retVal = args->value->_quote->_jtsFn->call(args->next, eval);
-							break;				
-						
-						case Type::MAC_FN:
-
-							retVal = args->value->_quote->_macFn->call(args->next, eval);
-							break;
-					}
-				}
-
 				break;
 		}
 

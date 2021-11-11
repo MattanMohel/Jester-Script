@@ -141,6 +141,11 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MinimalRebuild>true</MinimalRebuild>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -168,6 +173,7 @@
     <ClInclude Include="Jts Libs\Lists.h" />
     <ClInclude Include="Jts Libs\Standard.h" />
     <ClInclude Include="src\CppClass.h" />
+    <ClInclude Include="src\Internal.h" />
     <ClInclude Include="src\JtsType.h" />
     <ClInclude Include="scripts\Type.jts" />
     <ClInclude Include="src\CppFunc.h" />

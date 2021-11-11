@@ -26,7 +26,7 @@ namespace lib
 		env::addSymbol(vm, "quote", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			return quoteObj(args, eval);
-		}));
+		}));		
 
 		// (set to-set value)
 		env::addSymbol(vm, "set", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*

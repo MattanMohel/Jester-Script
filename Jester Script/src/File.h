@@ -10,6 +10,6 @@ namespace jts
 
 	// Takes a string source, converts it to VM code and executes
 
-	void parseSrc(VM* vm, str path, bool run = true);
+	void parseSrc(VM* vm, str src, bool run = true);
 }
 
