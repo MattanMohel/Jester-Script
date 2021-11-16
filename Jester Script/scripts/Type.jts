@@ -7,5 +7,8 @@
 	
 	:mag [fn (self)
 		(sqrt (+ (pow (. self x) 2) (pow (. self y) 2)))]
+
+	:rand [fn (self i)
+		i]
 	]
 

@@ -1,14 +1,14 @@
 #include "Operations.h"
 #include "Execute.h"
 #include "Object.h"
+#include "Log.h"
 #include "VM.h"
 
 // char, int and bool share the same data -> for switch check if its float, otherwise operate on int --> transmutable for char bool & float
 
 namespace jts
 {
-	template<> Obj* binaryOp<Binary::ADD>(Obj* a, Obj* b)
-	{
+	template<> Obj* binaryOp<Binary::ADD>(Obj* a, Obj* b) {
 		switch (a->type)
 		{
 			// later move to a method ".concat"

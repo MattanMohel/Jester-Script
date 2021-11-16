@@ -25,10 +25,6 @@ namespace jts
 	*/
 	Obj* execObj(ObjNode* args, bool eval, bool top = false);
 
-	// Takes object and returns its string value
-
-	str toString(Obj* obj);
-
 	// Takes object and returns its T value
 
 	template<typename T>

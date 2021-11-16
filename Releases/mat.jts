@@ -1,0 +1,30 @@
+:mat [type
+
+	:h 0
+	:w 0
+	:element ()
+	
+	:get-elem [fn (self row col)
+		(nth (nth elem row) col)]
+		
+	:new-mat [fn (self row col)
+				
+		:matrix (new mat)
+		
+		(loop (> row 0)
+			
+			:n 0
+			:arr ()
+			(loop (< n col)
+				(append 0 arr)
+				(++ n))
+			
+			(println arr)
+			
+			(append arr (. matrix element))
+			(println (. matrix element))
+			
+			(-- row))
+			
+			matrix]
+]

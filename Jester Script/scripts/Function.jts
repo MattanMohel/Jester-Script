@@ -7,5 +7,3 @@
 	(eval expr)
 	
 	(. timer elapsed)]
-
-(println "i")
