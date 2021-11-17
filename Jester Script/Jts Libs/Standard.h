@@ -294,6 +294,37 @@ namespace lib
 
 				block = args->next;
 			}
+		}));		
+		
+		// (for var cond result body)
+		env::addSymbol(vm, "for", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		{
+			evalObj(args->value, eval);
+
+			auto cond = args->next;
+			auto result = cond->next;
+			auto block = result->next;
+
+			bool state = isTrue(evalObj(cond->value, eval));
+
+			while (state)
+			{
+				while (block->next)
+				{
+					evalObj(block->value, eval);
+					block = block->next;
+				}
+
+				auto loopRet = evalObj(block->value, eval);
+
+				evalObj(result->value, eval);
+
+				state = isTrue(evalObj(cond->value, eval));
+
+				if (!state) return loopRet;
+
+				block = result->next;
+			}
 		}));	
 
 		// (do body...)

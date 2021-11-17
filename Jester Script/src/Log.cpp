@@ -75,13 +75,18 @@ namespace jts
 
 				auto elem = obj->_args;
 
-				while (elem && elem->next)
+				if (elem)
 				{
-					ret += toString(elem->value) + " ";
-					elem = elem->next;
+					while (elem && elem->next)
+					{
+						ret += toString(elem->value) + " ";
+						elem = elem->next;
+					}
+
+					ret += toString(elem->value);
 				}
 
-				return ret + toString(elem->value) + ')';
+				return ret + ')';
 			}
 
 			case Type::JTS_TYPE:

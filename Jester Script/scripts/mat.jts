@@ -1,30 +1,21 @@
-:mat [type
+:matrix [type
 
-	:h 0
-	:w 0
-	:element ()
+	(set x 0)
+	(set y 0)
 	
-	:get-elem [fn (self row col)
-		(nth (nth elem row) col)]
+	(set elements ())
+	
+	:create [fn (self new-x new-y (set value 0))
+		(set new-mat (new matrix))	
+		(set (. new-mat x) new-x)
+		(set (. new-mat y) new-y)
 		
-	:new-mat [fn (self row col)
+		[for (set i 0) (< i new-x) (++ i)		
+			(set col ())
+			(append [for (set j 0) (< j new-y) (++ j)
+				(append value col) col] (. new-mat elements))]
 				
-		:matrix (new mat)
+		new-mat]
 		
-		(loop (> row 0)
-			
-			:n 0
-			:arr ()
-			(loop (< n col)
-				(append 0 arr)
-				(++ n))
-			
-			(println arr)
-			
-			(append arr (. matrix element))
-			(println (. matrix element))
-			
-			(-- row))
-			
-			matrix]
-]
+	:set-element [fn (self xpos ypos value)
+		(set (nth ypos (nth xpos (. self elements))) value)]]
