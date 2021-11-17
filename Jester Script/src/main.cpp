@@ -1,5 +1,7 @@
 #pragma once
 
+// NOTE: stop allocating initial parsing object directly, all allocations should be done through the memory pool
+
 #include "File.h"
 #include "CppFunc.h"
 #include "CppClass.h"

@@ -143,20 +143,42 @@ namespace jts
 	
 	template<> Obj* binaryOp<Binary::SET>(Obj* a, Obj* b)
 	{
-		// memory collection -- need reference counting first
+		// memory collection
 
-		// delete -- strings, function pointers, lists in no references
+		if (!isIntegral(a->type))
+		{
+			switch (a->type)
+			{
+				case Type::LIST:
+				{
+					auto elem = a->_args;
 
-		//if (a->type == Type::LIST)
-		//{
-		//	auto* elem = a->_args;
+					while (elem)
+					{
+						env::releaseNode(elem);
+						elem = elem->next;
+					}
 
-		//	while (elem)
-		//	{
-		//		env::ReleaseNode(elem);
-		//		elem = elem->next;
-		//	}
-		//}
+					break;
+				}
+
+				case Type::JTS_TYPE:
+				{
+
+					break;
+				}
+
+				case Type::CPP_TYPE:
+				{
+
+					break;
+				}
+
+				default:
+
+					env::glbl_objPool.release(a);
+			}
+		}
 
 		a->type = b->type;
 
@@ -164,47 +186,56 @@ namespace jts
 		{
 			case Type::LIST:
 
+				++b->refCount;
 				a->_args = b->_args;
 
 				break;
 
 			case Type::NAT_FN:
 
+				++b->refCount;
 				a->_native = b->_native;
 				break;
 
 			case Type::JTS_FN:
 
+				++b->refCount;
 				a->_jtsFn = b->_jtsFn;
 				break;
 							
 			case Type::MAC_FN:
 
+				++b->refCount;
 				a->_macFn = b->_macFn;
 				break;
 
 			case Type::CPP_FN:
 				
+				++b->refCount;
 				a->_cppFn = b->_cppFn;
 				break;
 
 			case Type::JTS_TYPE:
 
+				++b->refCount;
 				a->_jtsType = b->_jtsType;
 				break;			
 			
 			case Type::CPP_TYPE:
 
+				++b->refCount;
 				a->_cppType = b->_cppType;
 				break;
 
 			case Type::QUOTE:
 
+				++b->_quote->refCount;
 				a->_quote = b->_quote;
 				break;
 
 			case Type::STRING:
 
+				++b->refCount;
 				a->_string = new str(*b->_string);
 				break;			
 			
