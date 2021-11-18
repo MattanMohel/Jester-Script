@@ -86,7 +86,7 @@ namespace jts
 
 				case ';':
 
-					while (*ch != '\n') { ++ch; }
+					while (*ch != '\n') { ++ch; } ++ch;
 					++line;
 					break;
 

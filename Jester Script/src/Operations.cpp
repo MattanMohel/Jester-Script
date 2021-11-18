@@ -145,7 +145,7 @@ namespace jts
 	{
 		// memory collection
 
-		if (!isIntegral(a->type))
+		/*if (!isIntegral(a->type))
 		{
 			switch (a->type)
 			{
@@ -178,7 +178,7 @@ namespace jts
 
 					env::glbl_objPool.release(a);
 			}
-		}
+		}*/
 
 		a->type = b->type;
 

@@ -36,6 +36,7 @@ int main(char** argc, int** argv)
 	parseSrc(vm, readSrc(vm, "scripts/Recursion.jts"));
 	parseSrc(vm, readSrc(vm, "scripts/Type.jts"));
 	parseSrc(vm, readSrc(vm, "scripts/Function.jts"));
+	//parseSrc(vm, readSrc(vm, "scripts/mat.jts"));
 
 	env::runREPL(vm);
 }

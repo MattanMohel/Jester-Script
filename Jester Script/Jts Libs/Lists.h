@@ -129,7 +129,6 @@ namespace lib
 		{
 			Obj* head = evalObj(args->next->value, eval);
 
-
 			if (!head) return NIL;
 
 			if (!head->_args)

@@ -19,3 +19,11 @@
 		
 	:set-element [fn (self xpos ypos value)
 		(set (nth ypos (nth xpos (. self elements))) value)]]
+		
+		
+		
+[for (set i 0) (< i 5) (++ i)
+	(set lst (1 2 3))
+	(append 4 lst) lst] 
+;lst points directly to the value (1 2 3) and so changes it directly
+;returns (1 2 3 4 4 4 4 4) should return (1 2 3 4)
