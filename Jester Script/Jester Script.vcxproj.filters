@@ -48,6 +48,9 @@
     <ClCompile Include="src\JtsMacro.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Types.h">
@@ -107,9 +110,6 @@
     <ClInclude Include="utils\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scripts\Type.jts">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="utils\IterableStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -125,14 +125,8 @@
     <ClInclude Include="src\CppClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="scripts\Recursion.jts" />
     <None Include="scripts\Rock-Paper-Scissors.jts" />
-    <None Include="scripts\Function.jts" />
-    <None Include="scripts\Scope.jts" />
   </ItemGroup>
 </Project>

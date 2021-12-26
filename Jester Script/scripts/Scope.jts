@@ -1,7 +1,0 @@
-(set a 100)
-
-(println a) ; prints 100
-
-[set b 100]
-
-(println b) ; prints nil

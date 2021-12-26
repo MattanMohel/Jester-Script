@@ -2,30 +2,30 @@
 #define VM_H
 
 #include "Types.h"
-#include "Object.h"
 #include "../utils/Pool.h"
 
-namespace jts
-{
+#define DEBUG 1
+
+namespace jts {
+
 	// Jester Script virtual machine
 
-	struct VM
-	{
-		VM() : symbolMap(new SymbolMap()) {}
-
+	struct VM {
 		ObjNode* stackPtrCur = nullptr;
 		ObjNode* stackPtrBeg = nullptr;
 
 		Tok* tokenPtrCur = nullptr;
 		Tok* tokenPtrBeg = nullptr;
 
-		SymbolMap* symbolMap;
+		std::unordered_map<str, Obj*> symbols;
+		std::vector<SymbolMap*> scopes;
+		SymbolMap* lexicalScope = nullptr;
 
 		std::vector<void(*)(VM* vm)> libs;
 	};
 
-	namespace env
-	{
+	namespace env {
+
 		// Emplaces new object to VM with key
 
 		void addSymbol(VM* vm, str key, Obj* value);
@@ -33,11 +33,14 @@ namespace jts
 		// Gets object from VM by key
 
 		Obj* getSymbol(VM* vm, str symbol);
-		Obj* getSymbol(SymbolMap* map, str symbol);
+
+		// Returns if a given symbol can shadow - if in global but not local scope
+
+		bool canShadow(VM* vm, str symbol);
 
 		// Asserts VM state
 
-		void assert(VM* vm, bool cond, str mes, State warnType = State::ERR);
+		inline void assert(bool cond, str mes, State warnType = State::ERR);
 
 		// Executes VM
 
@@ -73,12 +76,11 @@ namespace jts
 		  (See examples in the Jts-Libs directory)
 		*/
 		Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool));
-		
+
 		// Adds an object symbol by T
 
 		template<typename T>
-		inline Obj* addConst(T value)
-		{
+		inline Obj* addConst(T value) {
 			static_assert(false, "type unsupported");
 		}
 
@@ -86,7 +88,7 @@ namespace jts
 		template<> Obj* addConst(j_bool  value);
 		template<> Obj* addConst(j_int   value);
 		template<> Obj* addConst(j_float value);
-		template<> Obj* addConst(std::nullptr_t value); 
+		template<> Obj* addConst(std::nullptr_t value);
 
 		// Obj and ObjNode memory pools
 

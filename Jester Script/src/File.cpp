@@ -2,22 +2,15 @@
 #include "Lexer.h"
 #include "Parser.h"
 #include "VM.h"
+#include "Log.h"
 
-namespace jts
-{
-	str readSrc(VM* vm, const str& path)
-	{
+namespace jts {
+	str readSrc(VM* vm, const str& path) {
 		FILE* file = nullptr;
 
 		fopen_s(&file, path.c_str(), "r");
 
-		// assert file
-
-		if (!file)
-		{
-			std::cout << path << " doesn't exist";
-			std::cin.get();
-		}
+		env::assert(!file, mes("file % doesn't exist", path));
 
 		fseek(file, 0, SEEK_END);
 		long length = ftell(file);
@@ -29,8 +22,7 @@ namespace jts
 		char ch = ' ';
 		str::iterator bufferIt = srcBuffer.begin();
 
-		while (ch != EOF)
-		{
+		while (ch != EOF) {
 			ch = fgetc(file);
 			*bufferIt = ch;
 
@@ -40,8 +32,7 @@ namespace jts
 		return srcBuffer;
 	}
 
-	void parseSrc(VM* vm, str src, bool run)
-	{
+	void parseSrc(VM* vm, str src, bool run) {
 		tokenizeFile(vm, src);
 
 		parseTokens(vm);

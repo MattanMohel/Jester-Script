@@ -5,10 +5,10 @@
 #include "StrCon.h"
 #include "VM.h"
 
-namespace jts
-{
-	void parseTokens(VM* vm)
-	{
+namespace jts {
+
+	void parseTokens(VM* vm) {
+
 		/*
 			Parses a tokenized source file into a linked-list tree of objects
 
@@ -17,10 +17,10 @@ namespace jts
 			EX:
 
 			---------------------
-			1: (set x (+ 5 5)) 
-			2: (println x)     
-			3:                 
-			4: x               
+			1: (set x (+ 5 5))
+			2: (println x)
+			3:
+			4: x
 			---------------------
 
 			translates to:
@@ -32,79 +32,98 @@ namespace jts
 			--Everything translates to recursive lists
 		*/
 
+		size_t prnth_depth = 0;
+		 
 		ObjNode** head = &vm->stackPtrBeg;
 		stack_itr<ObjNode**> funcHead;
 
 		Tok* it = vm->tokenPtrBeg;
 
 		// iterate over Tokens
-		while (it->spec != Spec::NIL)
-		{
- 		    switch (it->spec)
-			{
-				case Spec::LST_BEG:
+		while (it->spec != Spec::NIL) {
+			switch (it->spec) {
 
-					(*head) = new ObjNode(new Obj{ Type::LIST, Spec::VALUE });
+			case Spec::LST_BEG:
 
-					break;
+				(*head) = new ObjNode(new Obj{ Type::LIST, Spec::VALUE });
 
-				case Spec::SYMBOL:
+				break;
 
-					if (!env::getSymbol(vm, it->symbol))
-					{
-						env::addSymbol(vm, it->symbol, new Obj { Type::NIL, Spec::SYMBOL });
-					}
+			case Spec::SYMBOL:
 
-					(*head) = new ObjNode(env::getSymbol(vm, it->symbol));
-					(*head)->value->symbol = it->symbol;
+				if (!env::getSymbol(vm, it->symbol) || env::canShadow(vm, it->symbol)) {
+					env::addSymbol(vm, it->symbol, new Obj{ Type::NIL, Spec::SYMBOL });
+				}
 
-					break;
+				(*head) = new ObjNode(env::getSymbol(vm, it->symbol));
+				(*head)->value->symbol = it->symbol;
 
-				case Spec::VALUE:
+				break;
 
-					(*head) = new ObjNode(tokToLtrl(it));
-					(*head)->value->symbol = it->symbol;
+			case Spec::VALUE:
 
-					break;
+				(*head) = new ObjNode(tokToLtrl(it));
+				(*head)->value->symbol = it->symbol;
+
+				break;
 			}
 
+			switch (it->spec) {
 
-			switch (it->spec)
-			{
-				case Spec::LST_BEG:
-					
-					if (it->symbol == "[")
-					{
-						auto prevMap = vm->symbolMap;
-						
-						vm->symbolMap = vm->symbolMap->next.emplace_back(new SymbolMap());
-						vm->symbolMap->prev = prevMap;
+			case Spec::LST_BEG:
+
+				if (it->symbol == "[") {
+					SymbolMap* scope;
+
+					if (!vm->lexicalScope) {
+						scope = vm->scopes.emplace_back(new SymbolMap());
+					}
+					else {
+						scope = new SymbolMap();
+						vm->lexicalScope->next = scope;
+						scope->prev = vm->lexicalScope;
 					}
 
-					// set next to the list's argument node
-					funcHead.emplace(head);
-					head = &(*head)->value->_args;
-					break;
+					scope->prnth_depth = prnth_depth;
+					scope->open = true;
 
-				case Spec::LST_END:
+					vm->lexicalScope = scope;
+				}
+	
+				++prnth_depth;
 
-					if (it->symbol == "]")
-					{
-						vm->symbolMap = vm->symbolMap->prev;
+				// set next to the list's argument node
+				funcHead.emplace(head);
+				head = &(*head)->value->_args;
+				break;
+
+			case Spec::LST_END:
+
+				--prnth_depth;
+
+				if (it->symbol == "]") {
+					env::assert(!vm->lexicalScope, "closed a closure without opening one");
+					vm->lexicalScope->open = false;
+				}
+
+				if (vm->lexicalScope && vm->lexicalScope->prnth_depth > prnth_depth) {
+					if (vm->lexicalScope) {
+						vm->lexicalScope = vm->lexicalScope->prev;
 					}
-					
-					// set next to the last pushed list head's next node
-					head = &(*funcHead.pop())->next;
-					break;
+				}
 
-				default:
-					
-					// set next to the next value of the current node
-					head = &(*head)->next;
-					break;
+				// set next to the last pushed list head's next node
+				head = &(*funcHead.pop())->next;
+				break;
+
+			default:
+
+				// set next to the next value of the current node
+				head = &(*head)->next;
+				break;
 
 			}
-			
+
 			it = it->next;
 		}
 	}

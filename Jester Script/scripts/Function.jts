@@ -1,9 +1,0 @@
-
-:time [macro (expr)
-	(set timer (new Timer))
-	
-	(. timer reset)	
-	
-	(eval expr)
-	
-	(. timer elapsed)]

@@ -4,38 +4,38 @@
 #include "Operations.h"
 #include "VM.h"
 
-namespace jts
-{
-	Obj* JtsFn::call (ObjNode* args, bool eval)
-	{
-		ObjNode* paramCpy = nullptr; 
+namespace jts {
+
+	Obj* JtsFn::call(ObjNode* args, bool eval) {
+
+		ObjNode* paramCpy = nullptr;
 		auto* paramPtr = params->value->_args;
 
-		if (params->value->_args && args)
-		{
+		if (params->value->_args && args) {
+			
 			/*
 				1) Assigns passed parameter values to the parameter-copy
 				2) Assigned copy-values are copied to intermediary object 'value'
 				3) copy-values assigned to the preliminary param values
 				4) param values assigned to intermediary object
 
-				- Copy reverts the parameters to their previous state upon 
+				- Copy reverts the parameters to their previous state upon
 				  termination of function which allows for recursion
 
 				EX:
-					
-					(defn fac (n) 
-						(if (= n 0) 
-							1 
+
+					(defn fac (n)
+						(if (= n 0)
+							1
 							(* n (fac (- n 1)))))
 
 					(fac 5)
 
 					n's values go from 5 -> 4 -> 3 -> 2 -> 1 -> 0
-					
+
 					once end condition is met, the recursive call 'recoils' to return (* 1 1 2 3 4 5)
 					n has to reset to the previous parameter value so it doesn't return (* 1 1 1 1 1 1)
-					n then 'recoils' back 1 -> 1 -> 2 -> 3 -> 4 -> 5 -> nil (original velue) 
+					n then 'recoils' back 1 -> 1 -> 2 -> 3 -> 4 -> 5 -> nil (original velue)
 			*/
 
 			paramCpy = env::acquireNode();
@@ -43,14 +43,12 @@ namespace jts
 
 			// assign copy to passed values
 
-			while (true)
-			{
+			while (true) {
 				binaryOp<Binary::SET>(paramCpyPtr->value, evalObj(args->value, eval));
 
 				args = args->next;
 
-				if (args)
-				{
+				if (args) {
 					paramCpyPtr->next = env::acquireNode();
 					paramCpyPtr = paramCpyPtr->next;
 					continue;
@@ -63,8 +61,7 @@ namespace jts
 
 			// assign params to passed values and copy to original values
 
-			while (paramCpyPtr)
-			{
+			while (paramCpyPtr) {
 				Obj* value = env::glbl_objPool.peek();
 
 				binaryOp<Binary::SET>(value, paramCpyPtr->value);
@@ -80,8 +77,7 @@ namespace jts
 
 		auto* block = codeBlock;
 
-		while (block->next)
-		{
+		while (block->next) {
 			evalObj(block->value, eval);
 			block = block->next;
 		}
@@ -96,10 +92,9 @@ namespace jts
 		paramCpy = paramCpy;
 		paramPtr = params->value->_args;
 
-		while (paramCpy)
-		{
+		while (paramCpy) {
 			binaryOp<Binary::SET>(paramPtr->value, paramCpy->value);
-			
+
 			env::releaseNode(paramCpy);
 			paramCpy = paramCpy->next;
 

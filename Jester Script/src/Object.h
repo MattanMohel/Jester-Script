@@ -3,19 +3,16 @@
 
 #include "Types.h"
 
-namespace jts
-{
+namespace jts {
+	
 	// Jester Script object
-
-	struct Obj
-	{
+	struct Obj {
 		Type type;
 		Spec spec;
 
 		str symbol;
-	 
-		union 
-		{
+
+		union {
 			// Integrals
 
 			j_char _char;
@@ -26,7 +23,6 @@ namespace jts
 			// Structures
 
 			str* _string;
-			ObjNode* _iterator;
 			JtsType* _jtsType;
 			CppClass* _cppType;
 
@@ -44,19 +40,22 @@ namespace jts
 		};
 
 		size_t refCount = 0;
+		bool constant = false;
+		bool initialized = false;
+
+		void assert(bool cond, str message);
 	};
 
-	static Obj* NIL = new Obj { Type::NIL, Spec::SYMBOL };
+	static Obj* NIL = new Obj{ Type::NIL, Spec::SYMBOL };
 
 	// Jester Script non-destructive object wrapper
 
-	struct ObjNode
-	{
+	struct ObjNode {
 		ObjNode() = default;
 
 		ObjNode(Obj* obj) :
-			value(obj)
-		{}
+			value(obj) {
+		}
 
 		ObjNode* next = nullptr;
 

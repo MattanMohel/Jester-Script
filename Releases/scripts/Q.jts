@@ -1,0 +1,26 @@
+:abs [fn (n)
+	(if (> n 0) n
+		(* n -1))]
+
+:CADD [fn (n)
+	
+	; (0 1) -> (0 0 2 2) -> (0 0 0 0 4 4 4 4)
+	;  n = 1        n = 2                n = 3
+	(set Qsize (pow 2 n))
+	(set Qbit (list Qsize 0))
+	
+	
+	(set i 1) (loop (<= i n)
+		
+		(set setBit F)
+		
+		(set j 1) (loop (<= j Qsize)
+			
+			(if (= (% j (pow 2 i)) 0)
+				(set setBit (not setBit))
+			)
+			
+			(+= (nth j Qbit) (pow 2 i))
+		)
+	)]
+	

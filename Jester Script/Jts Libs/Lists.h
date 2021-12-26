@@ -9,22 +9,19 @@
 
 using namespace jts;
 
-namespace lib
-{
-	inline void ListsLib(VM* vm)
-	{
+namespace lib {
+	inline void ListsLib(VM* vm) {
+
 		// (iterate variable list body)
 		env::addSymbol(vm, "iterate", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			auto list = evalObj(args->next->value, eval)->_args;
 			auto block = args->next->next;
 
-			while (list)
-			{
+			while (list) {
 				binaryOp<Binary::SET>(evalObj(args->value, eval), evalObj(list->value, eval));
 
-				while (block->next)
-				{
+				while (block->next) {
 					evalObj(block->value, eval);
 					block = block->next;
 				}
@@ -57,8 +54,7 @@ namespace lib
 
 			auto* elem = head->_args;
 
-			while (elem->next)
-			{
+			while (elem->next) {
 				elem = elem->next;
 			}
 
@@ -74,8 +70,7 @@ namespace lib
 
 			auto* elem = head->_args;
 
-			for (size_t i = 0; i < castObj<j_int>(evalObj(args->value, eval)); ++i)
-			{
+			for (size_t i = 0; i < castObj<j_int>(evalObj(args->value, eval)); ++i) {
 				elem = elem->next;
 
 				if (!elem) return NIL;
@@ -94,8 +89,7 @@ namespace lib
 			auto* elem = head->_args;
 			j_int size = 0;
 
-			while (elem)
-			{
+			while (elem) {
 				++size;
 				elem = elem->next;
 			}
@@ -110,8 +104,7 @@ namespace lib
 
 			if (!head) return NIL;
 
-			if (!head->_args)
-			{
+			if (!head->_args) {
 				head->_args = env::acquireNode();
 				return binaryOp<Binary::SET>(head->_args->value, evalObj(args->value, eval));
 			}
@@ -131,16 +124,14 @@ namespace lib
 
 			if (!head) return NIL;
 
-			if (!head->_args)
-			{
+			if (!head->_args) {
 				head->_args = env::acquireNode();
 				return binaryOp<Binary::SET>(head->_args->value, evalObj(args->value, eval));
 			}
 
 			auto* elem = head->_args;
 
-			while (elem->next)
-			{
+			while (elem->next) {
 				elem = elem->next;
 			}
 
@@ -156,8 +147,7 @@ namespace lib
 
 			if (!head) return NIL;
 
-			if (castObj<j_int>(evalObj(args->value, eval)) <= 0)
-			{
+			if (castObj<j_int>(evalObj(args->value, eval)) <= 0) {
 				auto* cur = head->_args;
 				head->_args = env::acquireNode();
 				head->_args->next = cur;
@@ -167,8 +157,7 @@ namespace lib
 
 			auto* elem = head->_args;
 
-			for (size_t i = 1; i < castObj<j_int>(evalObj(args->value, eval)); ++i)
-			{
+			for (size_t i = 1; i < castObj<j_int>(evalObj(args->value, eval)); ++i) {
 				elem = elem->next;
 
 				if (!elem) return NIL;

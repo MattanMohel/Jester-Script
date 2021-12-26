@@ -3,13 +3,12 @@
 
 #include "Types.h"
 
-namespace jts
-{
-	static const char splicers[] = { ' ', '\n', '\t', EOF};
+namespace jts {
+	static const char splicers[] = { ' ', '\n', '\t', EOF };
 	static const char prefixes[] = { '(', ')', '[', ']', ';' };
 
 	// {char (key), tuple<str (function), size_t (elements)>}
-	static std::unordered_map<char, std::tuple<str, size_t>> operators = 
+	static std::unordered_map<char, std::tuple<str, size_t>> operators =
 	{
 		{'\'', {"quote", 1}},
 		{'~',  {"eval" , 1}},
@@ -17,7 +16,7 @@ namespace jts
 	};
 
 	bool isPrefix(char value);
-	bool isSplicer(char value); 
+	bool isSplicer(char value);
 	bool isOperator(char value);
 
 	// Takes a string source and tokenizes to VM
@@ -32,7 +31,7 @@ namespace jts
 
 	void matchTokenType(VM* vm);
 
-	/* 
+	/*
 	  Lexically replaces an operator with its function
 
 	  Converts:

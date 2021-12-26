@@ -3,13 +3,13 @@
 
 #include <string>
 #include <unordered_map>
+#include <functional>
 
 #include "../utils/IterableStack.h"
 
 #define ENUM_SIZE(e) (size_t)e::END
 
-namespace jts
-{
+namespace jts {
 	using str = std::string;
 
 	// JTS integral types
@@ -31,8 +31,7 @@ namespace jts
 	struct CppClass;
 
 	// Symbol type
-	enum class Type
-	{
+	enum class Type {
 		NIL = 0,
 
 		CHAR,      // 1
@@ -55,8 +54,7 @@ namespace jts
 	};
 
 	// Symbol specialization
-	enum class Spec
-	{
+	enum class Spec {
 		NIL = 0,
 
 		SYMBOL, // variable
@@ -67,8 +65,7 @@ namespace jts
 	};
 
 	// Symbol flags
-	enum class SFlag
-	{
+	enum class SFlag {
 		NIL = 0,
 
 		STAT,
@@ -78,8 +75,7 @@ namespace jts
 		END,
 	};
 
-	enum class State
-	{
+	enum class State {
 		NIL = 0,
 
 		MES, // message
@@ -87,30 +83,28 @@ namespace jts
 		ERR, // error
 	};
 
-	struct SymbolMap
-	{
+	struct SymbolMap {
 		std::unordered_map<str, Obj*> symbols;
-		std::vector<SymbolMap*> next;
-		SymbolMap* prev;
+
+		SymbolMap *next, *prev;
+
+		size_t prnth_depth;
+		bool open = false;
 	};
 
-	inline bool isType(Type type)
-	{
+	inline bool isType(Type type) {
 		return (size_t)type > 10 && (size_t)type < 13;
 	}
 
-	inline bool isIntegral(Type type)
-	{
+	inline bool isIntegral(Type type) {
 		return (size_t)type > 0 && (size_t)type < 5;
-	}		
-	
-	inline bool isValue(Type type)
-	{
+	}
+
+	inline bool isValue(Type type) {
 		return ((size_t)type > 0 && (size_t)type < 5) || ((size_t)type > 10 && (size_t)type < 13);
-	}	
-	
-	inline bool isCallable(Type type)
-	{
+	}
+
+	inline bool isCallable(Type type) {
 		return (size_t)type > 6 && (size_t)type < 11;
 	}
 }

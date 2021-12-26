@@ -9,8 +9,8 @@
 
 #include <vector>
 
-namespace jts
-{
+namespace jts {
+
 	/*
 	  A templated function used to invoke C++ functions in JTS
 
@@ -24,30 +24,26 @@ namespace jts
 	  3) the function value is returned
 	*/
 
-	struct CppFn
-	{
+	struct CppFn {
 		virtual Obj* call(Obj* ret, ObjNode* args) = 0;
 	};
 
 	template<typename Ret, typename... Args>
-	struct CppFn_Impl : public CppFn
-	{
+	struct CppFn_Impl : public CppFn {
+		
 		using Fn = Ret(*)(Args...);
 
-		Obj* call(Obj* ret, ObjNode* args) override
-		{
+		Obj* call(Obj* ret, ObjNode* args) override {
 			return call_Impl(ret, args, std::make_index_sequence<sizeof...(Args)>());
 		}
 
 		template<size_t... I>
-		Obj* call_Impl(Obj* ret, ObjNode* args, std::index_sequence<I...>)
-		{
+		Obj* call_Impl(Obj* ret, ObjNode* args, std::index_sequence<I...>) {
 			std::vector<Obj*> paramVec;
 
 			// create parameter vector
 
-			while (args->next)
-			{
+			while (args->next) {
 				paramVec.emplace_back(evalObj(args->next->value));
 				args = args->next;
 			}
@@ -66,13 +62,12 @@ namespace jts
 		Fn func;
 	};
 
-	namespace env
-	{
+	namespace env {
 		// Add a bridge symbol
 		template<typename Ret, typename... Args>
-		Obj* addFunction(Ret(*func)(Args...))
-		{
-			Obj* obj = new Obj { Type::CPP_FN, Spec::SYMBOL };
+		Obj* addFunction(Ret(*func)(Args...)) {
+			
+			Obj* obj = new Obj{ Type::CPP_FN, Spec::SYMBOL };
 
 			auto* cppPtr = new CppFn_Impl<Ret, Args...>();
 			cppPtr->func = func;

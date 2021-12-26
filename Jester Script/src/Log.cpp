@@ -9,125 +9,114 @@
 #include <iostream>
 #include <limits>
 
-namespace jts 
-{
-	Obj* printObj(Obj* value, bool newLine)
-	{
-		std::cout << toString(value); 
+namespace jts {
+
+	Obj* printObj(Obj* value, bool newLine) {
+		std::cout << toString(value);
 
 		if (newLine) std::cout << '\n';
 
 		return value;
 	}
 
-	str toString(Obj* obj)
-	{
-		switch (obj->type)
+	str toString(Obj* obj) {
+		switch (obj->type) {
+		case Type::NIL:
+
+			return "nil";
+
+		case Type::STRING:
+
+			return *obj->_string;
+
+
+		case Type::INT:
+
+			return std::to_string(obj->_int);
+
+		case Type::CHAR:
+
+			return str(1, obj->_char);
+
+		case Type::BOOL:
+
+			return obj->_bool ? "true" : "false";
+
+		case Type::QUOTE:
 		{
-			case Type::NIL:
+			str ret = "";
 
-				return "nil";
+			for (char c : obj->_quote->symbol) {
+				ret += toupper(c);
+			}
 
-			case Type::STRING:
+			return ret;
+		}
 
-				return *obj->_string;
 
+		case Type::FLOAT:
+		{
+			str ret = std::to_string(obj->_float);
+			ret.erase(ret.find_last_not_of('0') + 1, str::npos);
 
-			case Type::INT:
+			return ret;
+		}
 
-				return std::to_string(obj->_int);
+		case Type::LIST:
+		{
+			str ret = "(";
 
-			case Type::CHAR:
+			auto elem = obj->_args;
 
-				return str(1, obj->_char);
-
-			case Type::BOOL:
-
-				return obj->_bool ? "true" : "false";
-
-			case Type::QUOTE:
-			{
-				str ret = "";
-
-				if (obj->_quote->spec == Spec::SYMBOL)
-				{
-					for (char c : obj->_quote->symbol)
-					{
-						ret += toupper(c);
-					}
+			if (elem) {
+				while (elem && elem->next) {
+					ret += toString(elem->value) + " ";
+					elem = elem->next;
 				}
 
-				return ret;
+				ret += toString(elem->value);
 			}
 
+			return ret + ')';
+		}
 
-			case Type::FLOAT:
-			{
-				str ret = std::to_string(obj->_float);
-				ret.erase(ret.find_last_not_of('0') + 1, str::npos);
+		case Type::JTS_TYPE:
+		{
+			str ret = '(' + obj->symbol + " : ";
 
-				return ret;
+			bool first = true;
+
+			for (auto& member : obj->_jtsType->members) {
+				if (!first) ret += " ";
+
+				ret += '(' + member.first + " : " + toString(member.second) + ')';
+
+				first = false;
 			}
 
-			case Type::LIST:
-			{
-				str ret = "(";
+			return ret + ')';
+		}
 
-				auto elem = obj->_args;
+		case Type::CPP_TYPE:
+		{
+			str ret = '(' + obj->symbol + " : ";
 
-				if (elem)
-				{
-					while (elem && elem->next)
-					{
-						ret += toString(elem->value) + " ";
-						elem = elem->next;
-					}
+			bool first = true;
 
-					ret += toString(elem->value);
-				}
+			for (auto& member : obj->_cppType->classTemplate->members) {
+				if (!first) ret += " ";
 
-				return ret + ')';
+				ret += '(' + member.first + " : " + toString(obj->_cppType->getMember_NonRef(member.first)) + ')';
+
+				first = false;
 			}
 
-			case Type::JTS_TYPE:
-			{
-				str ret = '(' + obj->symbol + " : ";
+			return ret + ')';
+		}
 
-				bool first = true;
+		default:
 
-				for (auto& member : obj->_jtsType->members)
-				{
-					if (!first) ret += " ";
-
-					ret += '(' + member.first + " : " + toString(member.second) + ')';
-
-					first = false;
-				}
-
-				return ret + ')';
-			}
-
-			case Type::CPP_TYPE:
-			{
-				str ret = '(' + obj->symbol + " : ";
-
-				bool first = true;
-
-				for (auto& member : obj->_cppType->classTemplate->members)
-				{
-					if (!first) ret += " ";
-
-					ret += '(' + member.first + " : " + toString(obj->_cppType->getMember_NonRef(member.first)) + ')';
-
-					first = false;
-				}
-
-				return ret + ')';
-			}
-
-			default:
-
-				return obj->symbol;
+			return obj->symbol;
 		}
 	}
 }

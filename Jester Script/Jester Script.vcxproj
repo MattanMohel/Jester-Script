@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -159,6 +159,7 @@
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\JtsFunc.cpp" />
     <ClCompile Include="src\Execute.cpp" />
+    <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Operations.cpp" />
     <ClCompile Include="src\Parser.cpp" />
     <ClCompile Include="src\Lexer.cpp" />
@@ -173,9 +174,7 @@
     <ClInclude Include="Jts Libs\Lists.h" />
     <ClInclude Include="Jts Libs\Standard.h" />
     <ClInclude Include="src\CppClass.h" />
-    <ClInclude Include="src\Internal.h" />
     <ClInclude Include="src\JtsType.h" />
-    <ClInclude Include="scripts\Type.jts" />
     <ClInclude Include="src\CppFunc.h" />
     <ClInclude Include="utils\Pool.h" />
     <ClInclude Include="src\JtsMacro.h" />
@@ -196,10 +195,7 @@
     <ClInclude Include="utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="scripts\Function.jts" />
-    <None Include="scripts\Recursion.jts" />
     <None Include="scripts\Rock-Paper-Scissors.jts" />
-    <None Include="scripts\Scope.jts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

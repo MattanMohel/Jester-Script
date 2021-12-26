@@ -3,12 +3,11 @@
 
 #include "Types.h"
 
-namespace jts
-{
+namespace jts {
+
 	// Jester Script Token struct
 
-	struct Tok
-	{
+	struct Tok {
 		Tok* next = nullptr;
 
 		str symbol;
