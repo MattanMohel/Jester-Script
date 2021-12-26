@@ -30,7 +30,6 @@ namespace jts {
 
 			Obj* (*_native)(Obj*, ObjNode*, bool);
 			CppFn* _cppFn;
-			MacFn* _macFn;
 			JtsFn* _jtsFn;
 
 			// Lists

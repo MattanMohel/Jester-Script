@@ -216,12 +216,6 @@ namespace jts {
 			a->_jtsFn = b->_jtsFn;
 			break;
 
-		case Type::MAC_FN:
-
-			++b->refCount;
-			a->_macFn = b->_macFn;
-			break;
-
 		case Type::CPP_FN:
 
 			++b->refCount;

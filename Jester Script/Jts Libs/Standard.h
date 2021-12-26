@@ -7,7 +7,6 @@
 #include "../src/Execute.h"
 #include "../src/Operations.h"
 #include "../src/JtsFunc.h"
-#include "../src/JtsMacro.h"
 #include "../src/JtsType.h"
 #include "../src/CppClass.h"
 #include "../src/Log.h"
@@ -66,9 +65,9 @@ namespace lib {
 			ret->_jtsFn->params = args;
 
 			return ret;
-		}));		
+		}));			
 		
-		// (fn name (params) body)
+		// (defn name (params) body)
 		env::addSymbol(vm, "defn", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
 		{
 			args->value->spec = Spec::SYMBOL;
@@ -87,7 +86,7 @@ namespace lib {
 			args->value->_jtsFn->params = args->next;
 
 			return args->value;
-		}));
+		}));		
 
 		// (eval target)
 		env::addSymbol(vm, "eval", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*

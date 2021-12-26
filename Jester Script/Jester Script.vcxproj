@@ -155,7 +155,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\JtsMacro.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\JtsFunc.cpp" />
     <ClCompile Include="src\Execute.cpp" />
@@ -177,7 +176,6 @@
     <ClInclude Include="src\JtsType.h" />
     <ClInclude Include="src\CppFunc.h" />
     <ClInclude Include="utils\Pool.h" />
-    <ClInclude Include="src\JtsMacro.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="utils\IterableStack.h" />
     <ClInclude Include="src\JtsFunc.h" />
@@ -195,6 +193,7 @@
     <ClInclude Include="utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="scripts\Jester.jts" />
     <None Include="scripts\Rock-Paper-Scissors.jts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

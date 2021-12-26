@@ -1,6 +1,5 @@
 #include "Execute.h"
 #include "JtsFunc.h"
-#include "JtsMacro.h"
 #include "Object.h"
 #include "Operations.h"
 #include "JtsType.h"
@@ -21,7 +20,6 @@ namespace jts {
 			if (!obj->_args) return obj;
 
 			switch (obj->_args->value->type) {
-			case Type::MAC_FN:
 			case Type::NAT_FN:
 			case Type::JTS_FN:
 			case Type::CPP_FN:
@@ -35,7 +33,6 @@ namespace jts {
 
 				if (eval) {
 					switch (obj->_args->value->_quote->type) {
-					case Type::MAC_FN:
 					case Type::NAT_FN:
 					case Type::JTS_FN:
 					case Type::CPP_FN:
@@ -97,11 +94,6 @@ namespace jts {
 			retVal = args->value->_jtsFn->call(args->next, eval);
 			break;
 
-		case Type::MAC_FN:
-
-			retVal = args->value->_macFn->call(args->next, eval);
-			break;
-
 		case Type::QUOTE:
 		{
 			switch (args->value->_quote->type) {
@@ -120,11 +112,6 @@ namespace jts {
 			case Type::JTS_FN:
 
 				retVal = args->value->_quote->_jtsFn->call(args->next, eval);
-				break;
-
-			case Type::MAC_FN:
-
-				retVal = args->value->_quote->_macFn->call(args->next, eval);
 				break;
 			}
 		}
