@@ -17,7 +17,6 @@ namespace jts {
 			assert(false, "creating duplicate symbol " + key);
 
 			if (vm->lexicalScope && vm->lexicalScope->open) {
-				std::cout << "added to scope " << key << std::endl;
 				vm->lexicalScope->symbols.emplace(key, value);
 			}
 			else {

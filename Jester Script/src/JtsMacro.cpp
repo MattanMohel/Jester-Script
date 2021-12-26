@@ -10,9 +10,9 @@ namespace jts {
 
 		auto* paramPtr = params->value->_args;
 
-		if (params->value->_args) {
-			// assign copy to passed values
+		// assign copy to passed values
 
+		if (params->value->_args) {
 			while (args) {
 				paramPtr->value->_quote = args->value;
 
