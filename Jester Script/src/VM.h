@@ -4,7 +4,7 @@
 #include "Types.h"
 #include "../utils/Pool.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 namespace jts {
 

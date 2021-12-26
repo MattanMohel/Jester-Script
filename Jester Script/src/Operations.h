@@ -104,7 +104,14 @@ namespace jts {
 
 	Obj* quoteObj(Obj* a, bool eval);
 
-	Obj* transformList(Obj* lst, std::function<Obj* (Obj*)> trans = 
+	Obj* copyList(Obj* lst, std::function<Obj* (Obj*)> trans = 
+		[](Obj* obj) { 
+			Obj* ret = env::glbl_objPool.acquire();
+			binaryOp<Binary::SET>(ret, obj);
+			return ret; 
+	});	
+	
+	Obj* copyList(ObjNode* lst, std::function<Obj* (Obj*)> trans =
 		[](Obj* obj) { 
 			Obj* ret = env::glbl_objPool.acquire();
 			binaryOp<Binary::SET>(ret, obj);

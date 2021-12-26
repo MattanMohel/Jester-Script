@@ -196,7 +196,7 @@ namespace jts {
 			++b->refCount;
 
 			if (b->spec == Spec::VALUE) {
-				a->_args = transformList(b)->_args;
+				a->_args = copyList(b)->_args;
 			}
 			else {
 				a->_args = b->_args;
@@ -557,7 +557,7 @@ namespace jts {
 			return quote;
 		}
 
-		quote = transformList(a,
+		quote = copyList(a,
 							  [&eval](Obj* obj)
 		{
 			return quoteObj(evalObj(obj, eval), eval);
@@ -566,12 +566,38 @@ namespace jts {
 		return quote;
 	}
 
-	Obj* transformList(Obj* lst, std::function<Obj* (Obj*)> trans) {
+	Obj* copyList(Obj* lst, std::function<Obj* (Obj*)> trans) {
 		if (!lst->_args) {
 			return nullptr;
 		}
 
 		auto elem = lst->_args;
+
+		auto res = env::glbl_objPool.acquire();
+
+		res->spec = Spec::VALUE;
+		res->type = Type::LIST;
+
+		auto lstPtr = &res->_args;
+
+		while (elem) {
+			(*lstPtr) = env::glbl_nodePool.acquire();
+			(*lstPtr)->value = trans(elem->value);
+
+			elem = elem->next;
+			lstPtr = &(*lstPtr)->next;
+		}
+
+		return res;
+	}
+
+
+	Obj* copyList(ObjNode* lst, std::function<Obj* (Obj*)> trans) {
+		if (!lst) {
+			return nullptr;
+		}
+
+		auto elem = lst;
 
 		auto res = env::glbl_objPool.acquire();
 

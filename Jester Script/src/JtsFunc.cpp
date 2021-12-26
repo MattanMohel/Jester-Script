@@ -8,8 +8,11 @@ namespace jts {
 
 	Obj* JtsFn::call(ObjNode* args, bool eval) {
 
-		ObjNode* paramCpy = nullptr;
-		auto* paramPtr = params->value->_args;
+		auto paramPtr = params->value->_args;
+		auto paramValPtr = args;
+		
+		auto prevParamPtr = copyList(params->value->_args)->_args;
+		
 
 		if (params->value->_args && args) {
 			
@@ -38,44 +41,21 @@ namespace jts {
 					n then 'recoils' back 1 -> 1 -> 2 -> 3 -> 4 -> 5 -> nil (original velue)
 			*/
 
-			paramCpy = env::acquireNode();
-			auto* paramCpyPtr = paramCpy;
+			// assign params to passed values and copy to original values -
+			// actual params now point to their passed value and paramValPtr 
+			// stores their previous value
 
-			// assign copy to passed values
+			while (paramPtr) {
+				binaryOp<Binary::SET>(paramPtr->value, paramValPtr->value);
 
-			while (true) {
-				binaryOp<Binary::SET>(paramCpyPtr->value, evalObj(args->value, eval));
-
-				args = args->next;
-
-				if (args) {
-					paramCpyPtr->next = env::acquireNode();
-					paramCpyPtr = paramCpyPtr->next;
-					continue;
-				}
-
-				break;
-			}
-
-			paramCpyPtr = paramCpy;
-
-			// assign params to passed values and copy to original values
-
-			while (paramCpyPtr) {
-				Obj* value = env::glbl_objPool.peek();
-
-				binaryOp<Binary::SET>(value, paramCpyPtr->value);
-				binaryOp<Binary::SET>(paramCpyPtr->value, paramPtr->value);
-				binaryOp<Binary::SET>(paramPtr->value, value);
-
-				paramCpyPtr = paramCpyPtr->next;
+				paramValPtr = paramValPtr->next;
 				paramPtr = paramPtr->next;
 			}
 		}
 
 		// Execute function body
 
-		auto* block = codeBlock;
+		auto block = codeBlock;
 
 		while (block->next) {
 			evalObj(block->value, eval);
@@ -89,15 +69,12 @@ namespace jts {
 
 		// Reset parameters
 
-		paramCpy = paramCpy;
 		paramPtr = params->value->_args;
 
-		while (paramCpy) {
-			binaryOp<Binary::SET>(paramPtr->value, paramCpy->value);
+		while (paramPtr) {
+			binaryOp<Binary::SET>(paramPtr->value, prevParamPtr->value);
 
-			env::releaseNode(paramCpy);
-			paramCpy = paramCpy->next;
-
+			prevParamPtr = prevParamPtr->next;
 			paramPtr = paramPtr->next;
 		}
 
