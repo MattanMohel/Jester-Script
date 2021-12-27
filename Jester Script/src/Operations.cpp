@@ -563,7 +563,7 @@ namespace jts {
 				elem = elem->next;
 			}
 		}
-		}
+		} 
 	}
 
 	Obj* copyList(Obj* lst, std::function<Obj* (Obj*)> trans) {

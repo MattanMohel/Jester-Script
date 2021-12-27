@@ -103,6 +103,7 @@ namespace jts {
 	bool isGreaterEq(Obj* a, Obj* b);
 
 	Obj* quoteObj(Obj* a, bool eval);
+	void freeObj(Obj* obj);
 
 	Obj* copyList(Obj* lst, std::function<Obj* (Obj*)> trans = 
 		[](Obj* obj) { 
