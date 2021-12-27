@@ -12,6 +12,7 @@
 namespace jts {
 
 	Obj* evalObj(Obj* obj, bool eval, bool top) {
+		
 		if (!obj) return NIL;
 
 		switch (obj->type) {

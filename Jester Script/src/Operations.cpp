@@ -146,42 +146,12 @@ namespace jts {
 	}
 
 	template<> Obj* binaryOp<Binary::SET>(Obj* a, Obj* b) {
+		
 		// memory collection
 
-		/*if (!isIntegral(a->type))
-		{
-		switch (a->type)
-		{
-		case Type::LIST:
-		{
-		auto elem = a->_args;
-
-		while (elem)
-		{
-		env::releaseNode(elem);
-		elem = elem->next;
+		if (a->refCount < 1 && !isIntegral(a->type)) {
+			freeObj(a);
 		}
-
-		break;
-		}
-
-		case Type::JTS_TYPE:
-		{
-
-		break;
-		}
-
-		case Type::CPP_TYPE:
-		{
-
-		break;
-		}
-
-		default:
-
-		env::glbl_objPool.release(a);
-		}
-		}*/
 
 	#if DEBUG
 		a->assert(a->spec == Spec::VALUE || a->constant, "tried setting a constant value %");
@@ -193,13 +163,12 @@ namespace jts {
 		switch (b->type) {
 		case Type::LIST:
 
-			++b->refCount;
-
 			if (b->spec == Spec::VALUE) {
 				a->_args = copyList(b)->_args;
 			}
 			else {
 				a->_args = b->_args;
+				++b->refCount;
 			}
 
 			break;
@@ -552,12 +521,49 @@ namespace jts {
 		}
 
 		quote = copyList(a,
-							  [&eval](Obj* obj)
-		{
+		[&eval](Obj* obj) {
 			return quoteObj(evalObj(obj, eval), eval);
 		});
 
 		return quote;
+	}
+
+	void freeObj(Obj* obj) {
+		switch (obj->type) {
+		case Type::JTS_FN:
+
+			delete obj->_jtsFn;
+			return;
+
+		case Type::CPP_FN:
+
+			delete obj->_cppFn;
+			return;
+
+		case Type::QUOTE:
+
+			freeObj(obj->_quote);
+			env::glbl_objPool.release(obj->_quote);
+
+			return;
+
+		case Type::STRING:
+
+			delete obj->_string;
+			return;
+
+		case Type::LIST: {
+
+			auto elem = obj->_args;
+
+			while (elem) {
+				freeObj(elem->value);
+				env::glbl_nodePool.release(elem);
+
+				elem = elem->next;
+			}
+		}
+		}
 	}
 
 	Obj* copyList(Obj* lst, std::function<Obj* (Obj*)> trans) {
