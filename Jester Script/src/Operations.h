@@ -102,22 +102,17 @@ namespace jts {
 	bool isGreater(Obj* a, Obj* b);
 	bool isGreaterEq(Obj* a, Obj* b);
 
-	Obj* quoteObj(Obj* a, bool eval);
+	Obj* quoteObj(Obj* a, Obj* res, bool eval);
 	void freeObj(Obj* obj);
-
-	Obj* copyList(Obj* lst, std::function<Obj* (Obj*)> trans = 
-		[](Obj* obj) { 
-			Obj* ret = env::glbl_objPool.acquire();
-			binaryOp<Binary::SET>(ret, obj);
-			return ret; 
-	});	
 	
-	Obj* copyList(ObjNode* lst, std::function<Obj* (Obj*)> trans =
+	ObjNode* listCopy(ObjNode* lst, std::function<Obj* (Obj*)> copy =
 		[](Obj* obj) { 
 			Obj* ret = env::glbl_objPool.acquire();
 			binaryOp<Binary::SET>(ret, obj);
 			return ret; 
 	});
+
+	void listTransform(ObjNode* lst, std::function<void(ObjNode*)> trans);
 
 	int random(int min, int max);
 }

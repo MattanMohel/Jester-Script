@@ -147,15 +147,24 @@ namespace jts {
 
 	template<> Obj* binaryOp<Binary::SET>(Obj* a, Obj* b) {
 		
-		// memory collection
-
-		if (a->refCount < 1 && !isIntegral(a->type)) {
-			freeObj(a);
-		}
 
 	#if DEBUG
 		a->assert(a->spec == Spec::VALUE || a->constant, "tried setting a constant value %");
 	#endif 
+
+		// memory collection
+		if (a->refCount) {
+			if (*a->refCount < 2 && !isIntegral(a->type)) {
+				freeObj(a);
+			}
+			else {
+				--(*a->refCount);
+			}
+		}
+
+		if (!b->refCount && !isIntegral(b->type)) {
+			b->refCount = new size_t(0);
+		}
 
 		a->type = b->type;
 		a->initialized = true;
@@ -164,42 +173,43 @@ namespace jts {
 		case Type::LIST:
 
 			if (b->spec == Spec::VALUE) {
-				a->_args = copyList(b)->_args;
+				a->_args = listCopy(b->_args);
 			}
 			else {
 				a->_args = b->_args;
-				++b->refCount;
 			}
+
+			++(*b->refCount);
 
 			break;
 
 		case Type::NAT_FN:
 
-			++b->refCount;
+			++(*b->refCount);
 			a->_native = b->_native;
 			break;
 
 		case Type::JTS_FN:
 
-			++b->refCount;
+			++(*b->refCount);
 			a->_jtsFn = b->_jtsFn;
 			break;
 
 		case Type::CPP_FN:
 
-			++b->refCount;
+			++(*b->refCount);
 			a->_cppFn = b->_cppFn;
 			break;
 
 		case Type::QUOTE:
 
-			++b->_quote->refCount;
+			++(*b->_quote->refCount);
 			a->_quote = b->_quote;
 			break;
 
 		case Type::STRING:
 
-			++b->refCount;
+			++(*b->refCount);
 			a->_string = new str(*b->_string);
 			break;
 
@@ -213,6 +223,8 @@ namespace jts {
 			a->_int = castObj<j_int>(b);
 			break;
 		}
+
+		a->refCount = b->refCount;
 
 		return a;
 	}
@@ -506,30 +518,36 @@ namespace jts {
 		return false;
 	}
 
-	Obj* quoteObj(Obj* a, bool eval) {
-		Obj* quote;
-
+	Obj* quoteObj(Obj* a, Obj* res, bool eval) {
 		// if quoting non-list item
 		if (a->type != Type::LIST) {
-			quote = env::glbl_objPool.acquire();
-
-			quote->type = Type::QUOTE;
-			quote->_quote = evalObj(a, eval);
+			res->type = Type::QUOTE;
+			res->_quote = evalObj(a, eval);
 			++a->refCount;
 
-			return quote;
+			return res;
 		}
 
-		quote = copyList(a,
-		[&eval](Obj* obj) {
-			return quoteObj(evalObj(obj, eval), eval);
+		res->type = Type::LIST;
+
+		res->_args = listCopy(a->_args,
+			[&eval](Obj* obj) {
+				return quoteObj(evalObj(obj, eval), env::glbl_objPool.acquire(), eval);
 		});
 
-		return quote;
+		return res;
 	}
 
 	void freeObj(Obj* obj) {
+	
+	#if DEBUG_ALLOC
+			std::cout << "freeing " << obj->symbol << " - " << obj << '\n';
+	#endif
+
+		delete obj->refCount;
+
 		switch (obj->type) {
+
 		case Type::JTS_FN:
 
 			delete obj->_jtsFn;
@@ -542,8 +560,10 @@ namespace jts {
 
 		case Type::QUOTE:
 
-			freeObj(obj->_quote);
-			env::glbl_objPool.release(obj->_quote);
+			if ((*obj->_quote->refCount) <= 1 && !isIntegral(obj->type)) {
+				env::glbl_objPool.release(obj->_quote);
+				freeObj(obj->_quote);
+			}
 
 			return;
 
@@ -552,69 +572,51 @@ namespace jts {
 			delete obj->_string;
 			return;
 
-		case Type::LIST: {
+		case Type::LIST: 
 
-			auto elem = obj->_args;
-
-			while (elem) {
-				freeObj(elem->value);
-				env::glbl_nodePool.release(elem);
-
-				elem = elem->next;
-			}
-		}
+			listTransform(obj->_args,
+				[](ObjNode* node) {
+					if (!node->value->refCount <= 1 && isIntegral(node->value->type)) {
+						env::releaseNode(node);
+						freeObj(node->value);
+					}
+					else {
+						env::glbl_nodePool.release(node);
+					}
+			});
 		} 
 	}
 
-	Obj* copyList(Obj* lst, std::function<Obj* (Obj*)> trans) {
-		if (!lst->_args) {
-			return nullptr;
-		}
-
-		auto elem = lst->_args;
-
-		auto res = env::glbl_objPool.acquire();
-
-		res->spec = Spec::VALUE;
-		res->type = Type::LIST;
-
-		auto lstPtr = &res->_args;
-
-		while (elem) {
-			(*lstPtr) = env::glbl_nodePool.acquire();
-			(*lstPtr)->value = trans(elem->value);
-
-			elem = elem->next;
-			lstPtr = &(*lstPtr)->next;
-		}
-
-		return res;
-	}
-
-
-	Obj* copyList(ObjNode* lst, std::function<Obj* (Obj*)> trans) {
+	ObjNode* listCopy(ObjNode* lst, std::function<Obj* (Obj*)> copy) {
 		if (!lst) {
 			return nullptr;
 		}
 
-		auto elem = lst;
+		ObjNode* res = nullptr;
 
-		auto res = env::glbl_objPool.acquire();
+		auto lstPtr = &res;
 
-		res->spec = Spec::VALUE;
-		res->type = Type::LIST;
-
-		auto lstPtr = &res->_args;
-
-		while (elem) {
+		while (lst) {
 			(*lstPtr) = env::glbl_nodePool.acquire();
-			(*lstPtr)->value = trans(elem->value);
+			(*lstPtr)->value = copy(lst->value);
 
-			elem = elem->next;
+			lst = lst->next;
 			lstPtr = &(*lstPtr)->next;
 		}
 
 		return res;
+	}
+
+	void listTransform(ObjNode* lst, std::function<void(ObjNode*)> trans) {
+		if (!lst) {
+			return;
+		}
+
+		while (lst) {
+			trans(lst);
+
+			lst = lst->next;
+		}
 	}
 
 	int random(int min, int max) {

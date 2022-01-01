@@ -76,12 +76,12 @@ namespace jts {
 			vm->stackPtrCur = vm->stackPtrBeg;
 
 			while (vm->stackPtrCur->next) {
-				evalObj(vm->stackPtrCur->value, false, true);
+				evalObj(vm->stackPtrCur->value);
 
 				vm->stackPtrCur = vm->stackPtrCur->next;
 			}
 
-			return evalObj(vm->stackPtrCur->value, false, true);
+			return evalObj(vm->stackPtrCur->value);
 		}
 
 		void runREPL(VM* vm) {
@@ -131,7 +131,7 @@ namespace jts {
 			return env::run(vm);
 		}
 
-		Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool)) {
+		Obj* addNative(void (*native)(Obj*, ObjNode*, bool)) {
 			Obj* obj = new Obj();
 
 			obj->_native = native;
@@ -193,15 +193,16 @@ namespace jts {
 
 		// Initializes both the Obj and ObjNode pools
 
-		extern Pool<Obj> glbl_objPool(100, [](Obj* value)
+		extern Pool<Obj> glbl_objPool("Object", 100, [](Obj* value)
 		{
 			value->type = Type::NIL;
 			value->_int = 0;
+			value->refCount = nullptr;
 
 			return value;
 		});
 
-		extern Pool<ObjNode> glbl_nodePool(100, [](ObjNode* value)
+		extern Pool<ObjNode> glbl_nodePool("Node", 100, [](ObjNode* value)
 		{
 			value->next = nullptr;
 			value->value = nullptr;

@@ -12,12 +12,12 @@ namespace jts {
 		auto paramValPtr = args;
 		
 		// store a copy of previous parameter values
-		auto prevParamPtr = copyList(params->value->_args, 
+		auto prevParamPtr = listCopy(params->value->_args, 
 			[&eval](Obj* obj) {
 				Obj* ret = env::glbl_objPool.acquire();
 				binaryOp<Binary::SET>(ret, evalObj(obj, eval));
 				return ret;
-		})->_args;
+		});
 		
 		if (params->value->_args && args) {
 			while (paramPtr) {
@@ -48,6 +48,8 @@ namespace jts {
 
 		while (paramPtr) {
 			binaryOp<Binary::SET>(paramPtr->value, prevParamPtr->value);
+
+			env::releaseNode(prevParamPtr);
 
 			prevParamPtr = prevParamPtr->next;
 			paramPtr = paramPtr->next;

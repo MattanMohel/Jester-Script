@@ -28,7 +28,7 @@ namespace jts {
 
 			// Callables
 
-			Obj* (*_native)(Obj*, ObjNode*, bool);
+			void (*_native)(Obj*, ObjNode*, bool);
 			CppFn* _cppFn;
 			JtsFn* _jtsFn;
 
@@ -38,7 +38,7 @@ namespace jts {
 			Obj* _quote;
 		};
 
-		size_t refCount = 0;
+		size_t* refCount = 0;
 		bool constant = false;
 		bool initialized = false;
 

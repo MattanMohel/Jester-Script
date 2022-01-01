@@ -27,9 +27,7 @@ int main(char** argc, int** argv) {
 	env::addLib(vm, lib::BooleanLib);
 	env::addLib(vm, lib::ListsLib);
 
-	env::addSrc(vm, "(defn fac [n] (if (= n 0) 1 (* n (fac (- n 1)))))");
-	env::addSrc(vm, "(defn when [cond result] (if cond result nil))");
-	env::addSrc(vm, "(defn impl-or [cond-lst] (set stop F) (iterate cond cond-lst (if (not stop) (set stop ~cond) nil)) stop)");
+	//env::addSrc(vm, "(defn fac [n] (if (= n 0) 1 (* n (fac (- n 1)))))");
 
 	env::runREPL(vm);
 }

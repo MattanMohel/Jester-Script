@@ -13,7 +13,7 @@ namespace lib {
 	inline void ListsLib(VM* vm) {
 
 		// (iterate variable list body)
-		env::addSymbol(vm, "iterate", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "iterate", env::addNative([](Obj* ret, ObjNode* args, bool eval)
 		{
 			auto list = evalObj(args->next->value, eval)->_args;
 			auto block = args->next->next;
@@ -28,7 +28,10 @@ namespace lib {
 
 				auto loopRet = evalObj(block->value, eval);
 
-				if (!list->next) return loopRet;
+				if (!list->next) {
+					binaryOp<Binary::SET>(ret, loopRet);
+					break;
+				}
 
 				list = list->next;
 				block = args->next->next;
@@ -36,21 +39,27 @@ namespace lib {
 		}));
 
 		// (head list)
-		env::addSymbol(vm, "head", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "head", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
 		{
 			Obj* head = evalObj(args->value, eval);
 
-			if (!head) return NIL;
-
-			return head->_args->value;
+			if (!head) {
+				binaryOp<Binary::SET>(ret, NIL);
+				return;
+			}
+				
+			binaryOp<Binary::SET>(ret, head->_args->value);
 		}));
 
 		// (tail list)
-		env::addSymbol(vm, "tail", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "tail", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
 		{
 			Obj* head = evalObj(args->value, eval);
 
-			if (!head) return NIL;
+			if (!head) {
+				binaryOp<Binary::SET>(ret, NIL);
+				return;
+			}
 
 			auto* elem = head->_args;
 
@@ -58,33 +67,66 @@ namespace lib {
 				elem = elem->next;
 			}
 
-			return elem->value;
+			binaryOp<Binary::SET>(ret, elem->value);
 		}));
 
 		// (nth index list)
-		env::addSymbol(vm, "nth", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "nth", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
 		{
-			Obj* head = evalObj(args->next->value, eval);
+			Obj* head = args->next->value;
 
-			if (!head) return NIL;
-
+			if (!head) {
+				binaryOp<Binary::SET>(ret, NIL);
+				return;
+			}
+			
 			auto* elem = head->_args;
 
 			for (size_t i = 0; i < castObj<j_int>(evalObj(args->value, eval)); ++i) {
 				elem = elem->next;
 
-				if (!elem) return NIL;
+				if (!elem) {
+					binaryOp<Binary::SET>(ret, NIL);
+					return;
+				}
 			}
 
-			return elem->value;
+			binaryOp<Binary::SET>(ret, elem->value);
+		}));	
+		
+		// (seth index value list)
+		env::addSymbol(vm, "seth", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		{
+			Obj* head = args->next->next->value;
+
+			if (!head) {
+				binaryOp<Binary::SET>(ret, NIL);
+				return;
+			}
+			
+			auto* elem = head->_args;
+
+			for (size_t i = 0; i < castObj<j_int>(evalObj(args->value, eval)); ++i) {
+				elem = elem->next;
+
+				if (!elem) {
+					binaryOp<Binary::SET>(ret, NIL);
+					return;
+				}
+			}
+
+			binaryOp<Binary::SET>(ret, binaryOp<Binary::SET>(elem->value, evalObj(args->next->value, eval)));
 		}));
 
 		// (size list)
-		env::addSymbol(vm, "size", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "size", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
 		{
 			Obj* head = evalObj(args->value, eval);
 
-			if (!head) return NIL;
+			if (!head) {
+				binaryOp<Binary::SET>(ret, NIL);
+				return;
+			}
 
 			auto* elem = head->_args;
 			j_int size = 0;
@@ -94,19 +136,23 @@ namespace lib {
 				elem = elem->next;
 			}
 
-			return setTo(ret, size);
+			setTo<j_int>(ret, size);
 		}));
 
 		// (prepend value list)
-		env::addSymbol(vm, "prepend", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "prepend", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
 		{
 			Obj* head = evalObj(args->next->value, eval);
 
-			if (!head) return NIL;
+			if (!head) {
+				binaryOp<Binary::SET>(ret, NIL);
+				return;
+			}
 
 			if (!head->_args) {
 				head->_args = env::acquireNode();
-				return binaryOp<Binary::SET>(head->_args->value, evalObj(args->value, eval));
+				binaryOp<Binary::SET>(head->_args->value, evalObj(args->value, eval));
+				return;
 			}
 
 			auto* cur = head->_args;
@@ -114,19 +160,23 @@ namespace lib {
 			head->_args = env::acquireNode();
 			head->_args->next = cur;
 
-			return binaryOp<Binary::SET>(head->_args->value, evalObj(args->value, eval));
+			binaryOp<Binary::SET>(ret, binaryOp<Binary::SET>(head->_args->value, evalObj(args->value, eval)));
 		}));
 
 		// (append value list)
-		env::addSymbol(vm, "append", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "append", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
 		{
 			Obj* head = evalObj(args->next->value, eval);
 
-			if (!head) return NIL;
+			if (!head) {
+				binaryOp<Binary::SET>(ret, NIL);
+				return;
+			}
 
 			if (!head->_args) {
 				head->_args = env::acquireNode();
-				return binaryOp<Binary::SET>(head->_args->value, evalObj(args->value, eval));
+				binaryOp<Binary::SET>(head->_args->value, evalObj(args->value, eval));
+				return;
 			}
 
 			auto* elem = head->_args;
@@ -137,22 +187,26 @@ namespace lib {
 
 			elem->next = env::acquireNode();
 
-			return binaryOp<Binary::SET>(elem->next->value, evalObj(args->value, eval));
+			binaryOp<Binary::SET>(ret, binaryOp<Binary::SET>(elem->next->value, evalObj(args->value, eval)));
 		}));
 
 		// (insert index value list)
-		env::addSymbol(vm, "insert", env::addNative([](Obj* ret, ObjNode* args, bool eval) -> Obj*
+		env::addSymbol(vm, "insert", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
 		{
 			Obj* head = evalObj(args->next->next->value, eval);
 
-			if (!head) return NIL;
+			if (!head) {
+				binaryOp<Binary::SET>(ret, NIL);
+				return;
+			}
 
 			if (castObj<j_int>(evalObj(args->value, eval)) <= 0) {
 				auto* cur = head->_args;
 				head->_args = env::acquireNode();
 				head->_args->next = cur;
 
-				return binaryOp<Binary::SET>(head->_args->value, evalObj(args->next->value, eval));
+				binaryOp<Binary::SET>(head->_args->value, evalObj(args->next->value, eval));
+				return;
 			}
 
 			auto* elem = head->_args;
@@ -160,14 +214,17 @@ namespace lib {
 			for (size_t i = 1; i < castObj<j_int>(evalObj(args->value, eval)); ++i) {
 				elem = elem->next;
 
-				if (!elem) return NIL;
+				if (!elem) {
+					binaryOp<Binary::SET>(ret, NIL);
+					return;
+				}
 			}
 
 			auto* prev = elem->next;
 			elem->next = env::acquireNode();
 			elem->next->next = prev;
 
-			return binaryOp<Binary::SET>(elem->next->value, evalObj(args->next->value, eval));
+			binaryOp<Binary::SET>(ret, binaryOp<Binary::SET>(elem->next->value, evalObj(args->next->value, eval)));
 		}));
 	}
 }

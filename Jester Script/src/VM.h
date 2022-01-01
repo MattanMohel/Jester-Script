@@ -4,7 +4,7 @@
 #include "Types.h"
 #include "../utils/Pool.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 namespace jts {
 
@@ -27,27 +27,21 @@ namespace jts {
 	namespace env {
 
 		// Emplaces new object to VM with key
-
 		void addSymbol(VM* vm, str key, Obj* value);
 
 		// Gets object from VM by key
-
 		Obj* getSymbol(VM* vm, str symbol);
 
 		// Returns if a given symbol can shadow - if in global but not local scope
-
 		bool canShadow(VM* vm, str symbol);
 
 		// Asserts VM state
-
 		inline void assert(bool cond, str mes, State warnType = State::ERR);
 
 		// Executes VM
-
 		Obj* run(VM* vm);
 
 		// Executes VM in REPL mode
-
 		void runREPL(VM* vm);
 
 		/*
@@ -75,7 +69,7 @@ namespace jts {
 
 		  (See examples in the Jts-Libs directory)
 		*/
-		Obj* addNative(Obj* (*native)(Obj*, ObjNode*, bool));
+		Obj* addNative(void (*native)(Obj*, ObjNode*, bool));
 
 		// Adds an object symbol by T
 

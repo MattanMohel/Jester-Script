@@ -11,14 +11,17 @@
 
 namespace jts {
 
-	Obj* evalObj(Obj* obj, bool eval, bool top) {
-		
-		if (!obj) return NIL;
+	Obj* evalObj(Obj* obj, bool eval) {	
+		if (!obj) {
+			return NIL;
+		}
 
 		switch (obj->type) {
 		case Type::LIST:
 
-			if (!obj->_args) return obj;
+			if (!obj->_args) {
+				return obj;
+			}
 
 			switch (obj->_args->value->type) {
 			case Type::NAT_FN:
@@ -74,51 +77,59 @@ namespace jts {
 		}
 	}
 
-	Obj* execObj(ObjNode* args, bool eval, bool top) {
+	Obj* execObj(ObjNode* args, bool eval) {
 		Obj* retVal = nullptr;
+		Obj* retPtr = nullptr;
 
 		switch (args->value->type) {
 		case Type::NAT_FN:
 
-			retVal = args->value->_native(env::glbl_objPool.acquire(),
-										  args->next, eval);
+			retVal = env::glbl_objPool.acquire();
+			args->value->_native(retVal, args->next, eval);
 			break;
 
 		case Type::CPP_FN:
 
-			retVal = args->value->_cppFn->call(env::glbl_objPool.acquire(),
-											   args);
+			retVal = env::glbl_objPool.acquire();
+			args->value->_cppFn->call(retVal, args);
 			break;
 
 		case Type::JTS_FN:
 
-			retVal = args->value->_jtsFn->call(args->next, eval);
-			break;
+ 			return args->value->_jtsFn->call(args->next, eval);
 
 		case Type::QUOTE:
-		{
 			switch (args->value->_quote->type) {
 			case Type::NAT_FN:
 
-				retVal = args->value->_quote->_native(env::glbl_objPool.acquire(),
-													  args->next, eval);
+				retVal = env::glbl_objPool.acquire();
+				args->value->_quote->_native(retVal, args->next, eval);
 				break;
 
 			case Type::CPP_FN:
 
-				retVal = args->value->_quote->_cppFn->call(env::glbl_objPool.acquire(),
-														   args);
+				retVal = env::glbl_objPool.acquire();
+				args->value->_quote->_cppFn->call(retVal, args);
 				break;
 
 			case Type::JTS_FN:
 
-				retVal = args->value->_quote->_jtsFn->call(args->next, eval);
-				break;
+				return args->value->_quote->_jtsFn->call(args->next, eval);
 			}
 		}
-		}
 
-		if (top) env::glbl_objPool.release_all();
+		//if (retVal && retVal == retPtr) {
+		//	env::glbl_objPool.release(retVal);
+		//}
+		//else {
+		//	env::glbl_objPool.release(retPtr);
+		//}
+
+		env::glbl_objPool.release(retVal);
+		
+		if (retVal->refCount) {
+			--(*retVal->refCount);
+		}
 
 		return retVal;
 	}

@@ -1,7 +1,7 @@
 #ifndef POOL_H
 #define POOL_H
 
-#define DEBUG_ALLOC 0
+#define DEBUG_ALLOC 1
 
 #include "../src/Types.h"
 #include <iostream>
@@ -16,8 +16,8 @@ class Pool
 
 public:
 
-	Pool(size_t size, InitFunc initFunc)
-		: m_initFunc(initFunc)
+	Pool(str name, size_t size, InitFunc initFunc)
+		: m_initFunc(initFunc), name(name)
 	{
 		m_buffer.reserve(size * 2);
 		m_usedBuffer.reserve(size * 2);
@@ -42,11 +42,11 @@ public:
 			return new T();
 		}
 
-	#if DEBUG_ALLOC
-		std::cout << "acquiring - " << m_buffer.size() << " left\n";
-	#endif
-
 		T* value = m_buffer.back();
+
+	#if DEBUG_ALLOC
+		std::cout << "acquiring " << value << " - " << m_buffer.size() << " " << name << "s left\n";
+	#endif
 
 		m_usedBuffer.emplace_back(value);
 		m_buffer.pop_back();
@@ -84,7 +84,7 @@ public:
 		}
 
 	#if DEBUG_ALLOC
-		std::cout << "releasing - " << m_buffer.size() << " left\n";
+		std::cout << "releasing " << value << " - " << m_buffer.size() << " " << name << "s left\n";
 	#endif
 
 		m_buffer.emplace_back(value);
@@ -121,6 +121,8 @@ private:
 
 	std::vector<T*> m_buffer, m_usedBuffer;
 	InitFunc m_initFunc;
+
+	str name;
 };
 
 #endif

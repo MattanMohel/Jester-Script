@@ -90,7 +90,7 @@ namespace jts {
 	};
 
 	inline bool isIntegral(Type type) {
-		return (size_t)type > 0 && (size_t)type < 5;
+		return (size_t)type >= 0 && (size_t)type < 5;
 	}
 
 	inline bool isValue(Type type) {
