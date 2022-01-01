@@ -11,7 +11,7 @@ namespace jts {
 
 	// Converts a token literal to an object
 
-	Obj* tokToLtrl(Tok* tok);
+	Obj* tokToLtrl(VM* vm, Tok* tok);
 }
 
 #endif

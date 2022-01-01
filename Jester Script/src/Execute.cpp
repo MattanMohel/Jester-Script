@@ -11,7 +11,7 @@
 
 namespace jts {
 
-	Obj* evalObj(Obj* obj, bool eval) {	
+	Obj* evalObj(VM* vm, Obj* obj, bool eval) {	
 		if (!obj) {
 			return NIL;
 		}
@@ -29,7 +29,7 @@ namespace jts {
 			case Type::CPP_FN:
 
 				// if first argument is a callable
-				return execObj(obj->_args, eval);
+				return execObj(vm, obj->_args, eval);
 
 			case Type::QUOTE:
 
@@ -42,7 +42,7 @@ namespace jts {
 					case Type::CPP_FN:
 
 						// if first argument's quote value is a callable
-						return execObj(obj->_args, eval);
+						return execObj(vm, obj->_args, eval);
 					}
 				}
 
@@ -55,7 +55,7 @@ namespace jts {
 				auto* elem = obj->_args;
 
 				while (elem) {
-					elem->value = evalObj(elem->value, eval);
+					elem->value = evalObj(vm, elem->value, eval);
 					elem = elem->next;
 				}
 
@@ -66,7 +66,7 @@ namespace jts {
 
 			// if a quote to be eval'd, return the quote value, otherwise return the quote
 
-			if (eval) return evalObj(obj->_quote, false);
+			if (eval) return evalObj(vm, obj->_quote, false);
 			return obj;
 
 		default:
@@ -77,55 +77,47 @@ namespace jts {
 		}
 	}
 
-	Obj* execObj(ObjNode* args, bool eval) {
+	Obj* execObj(VM* vm, ObjNode* args, bool eval) {
 		Obj* retVal = nullptr;
-		Obj* retPtr = nullptr;
 
 		switch (args->value->type) {
 		case Type::NAT_FN:
 
-			retVal = env::glbl_objPool.acquire();
-			args->value->_native(retVal, args->next, eval);
+			retVal = vm->objPool->acquire();
+			args->value->_native(vm, retVal, args->next, eval);
 			break;
 
 		case Type::CPP_FN:
 
-			retVal = env::glbl_objPool.acquire();
-			args->value->_cppFn->call(retVal, args);
+			retVal = vm->objPool->acquire();
+			args->value->_cppFn->call(vm, retVal, args);
 			break;
 
 		case Type::JTS_FN:
 
- 			return args->value->_jtsFn->call(args->next, eval);
+ 			return args->value->_jtsFn->call(vm, args->next, eval);
 
 		case Type::QUOTE:
 			switch (args->value->_quote->type) {
 			case Type::NAT_FN:
 
-				retVal = env::glbl_objPool.acquire();
-				args->value->_quote->_native(retVal, args->next, eval);
+				retVal = vm->objPool->acquire();
+				args->value->_quote->_native(vm, retVal, args->next, eval);
 				break;
 
 			case Type::CPP_FN:
 
-				retVal = env::glbl_objPool.acquire();
-				args->value->_quote->_cppFn->call(retVal, args);
+				retVal = vm->objPool->acquire();
+				args->value->_quote->_cppFn->call(vm, retVal, args);
 				break;
 
 			case Type::JTS_FN:
 
-				return args->value->_quote->_jtsFn->call(args->next, eval);
+				return args->value->_quote->_jtsFn->call(vm, args->next, eval);
 			}
 		}
 
-		//if (retVal && retVal == retPtr) {
-		//	env::glbl_objPool.release(retVal);
-		//}
-		//else {
-		//	env::glbl_objPool.release(retPtr);
-		//}
-
-		env::glbl_objPool.release(retVal);
+		vm->objPool->release(retVal);
 		
 		if (retVal->refCount) {
 			--(*retVal->refCount);

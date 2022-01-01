@@ -11,6 +11,27 @@
 namespace jts {
 	namespace env {
 
+		VM* newVM() {
+			VM* vm = new VM();
+
+			vm->objPool = new Pool<Obj>("Object", STARTING_COUNT, [](Obj* value) {
+				value->refCount = nullptr;
+				value->type = Type::NIL;
+				value->_int = 0;
+
+				return value;
+			});
+
+			vm->nodePool = new Pool<ObjNode>("Node", STARTING_COUNT, [](ObjNode* value) {
+				value->next = nullptr;
+				value->value = nullptr;
+
+				return value;
+			});
+
+			return vm;
+		}
+
 		void addSymbol(VM* vm, str key, Obj* value) {
 			bool hasKey = env::getSymbol(vm, key);
 
@@ -44,11 +65,10 @@ namespace jts {
 			return nullptr;
 		}
 
-		bool canShadow(VM* vm, str symbol) {
-			if (!vm->lexicalScope) return false;
+		bool symbolInScope(VM* vm, str symbol) {
+			bool exists = getSymbol(vm, symbol);
 
-			return vm->lexicalScope->symbols.find(symbol) == vm->lexicalScope->symbols.end() &&
-				getSymbol(vm, symbol);
+			return exists && (!vm->lexicalScope || vm->lexicalScope->symbols.find(symbol) == vm->lexicalScope->symbols.end());
 		}
 
 		inline void assert(bool cond, str mes, State warnType) {
@@ -76,12 +96,23 @@ namespace jts {
 			vm->stackPtrCur = vm->stackPtrBeg;
 
 			while (vm->stackPtrCur->next) {
-				evalObj(vm->stackPtrCur->value);
+				evalObj(vm, vm->stackPtrCur->value);
 
 				vm->stackPtrCur = vm->stackPtrCur->next;
 			}
 
-			return evalObj(vm->stackPtrCur->value);
+			return evalObj(vm, vm->stackPtrCur->value);
+		}
+
+		void clear(VM* vm) {
+			vm->stackPtrCur = vm->stackPtrBeg;
+
+			while (vm->stackPtrCur) {
+
+				vm->nodePool->release(vm->stackPtrCur);
+
+				vm->stackPtrCur = vm->stackPtrCur->next;
+			}
 		}
 
 		void runREPL(VM* vm) {
@@ -112,8 +143,10 @@ namespace jts {
 
 				printObj(env::run(vm), true);
 
+				clear(vm);
+
 			#if DEBUG_ALLOC
-				std::cout << "have " << env::glbl_objPool.count() << " objects and " << env::glbl_nodePool.count() << " nodes\n";
+				std::cout << "have " << vm->objPool->count() << " objects and " << vm->nodePool->count() << " nodes\n";
 			#endif
 			}
 		}
@@ -131,7 +164,7 @@ namespace jts {
 			return env::run(vm);
 		}
 
-		Obj* addNative(void (*native)(Obj*, ObjNode*, bool)) {
+		Obj* addNative(void (*native)(VM*, Obj*, ObjNode*, bool)) {
 			Obj* obj = new Obj();
 
 			obj->_native = native;
@@ -191,35 +224,27 @@ namespace jts {
 			return obj;
 		}
 
-		// Initializes both the Obj and ObjNode pools
+		ObjNode* acquireNode(VM* vm, Type type, Spec spec) {
+			auto* node = vm->nodePool->acquire();
+			node->value = vm->objPool->acquire();
 
-		extern Pool<Obj> glbl_objPool("Object", 100, [](Obj* value)
-		{
-			value->type = Type::NIL;
-			value->_int = 0;
-			value->refCount = nullptr;
-
-			return value;
-		});
-
-		extern Pool<ObjNode> glbl_nodePool("Node", 100, [](ObjNode* value)
-		{
-			value->next = nullptr;
-			value->value = nullptr;
-
-			return value;
-		});
-
-		ObjNode* acquireNode() {
-			auto* node = glbl_nodePool.acquire();
-			node->value = glbl_objPool.acquire();
+			node->value->type = type;
+			node->value->spec = spec;
 
 			return node;
 		}
 
-		void releaseNode(ObjNode* node) {
-			glbl_nodePool.release(node);
-			glbl_objPool.release(node->value);
+		ObjNode* acquireNode(VM* vm, Obj* obj) {
+			auto* node = vm->nodePool->acquire();
+
+			node->value = obj;
+
+			return node;
+		}
+
+		void releaseNode(VM* vm, ObjNode* node) {
+			vm->objPool->release(node->value);
+			vm->nodePool->release(node);
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace jts
 		@param eval : whether or not to evaluate quote values
 		@param top  : if true, all objects are released to pool upon termination of eval
 	*/
-	Obj* evalObj(Obj* obj, bool eval = false);
+	Obj* evalObj(VM* vm, Obj* obj, bool eval = false);
 
 	/* 
 		Executes amd returns an object with a callable type
@@ -23,7 +23,7 @@ namespace jts
 		@param eval : wether or not to evaluate quote values
 		@param top  : if true, all objects are released to pool upon termination of eval
 	*/
-	Obj* execObj(ObjNode* args, bool eval);
+	Obj* execObj(VM* vm, ObjNode* args, bool eval);
 
 	// Takes object and returns its T value
 

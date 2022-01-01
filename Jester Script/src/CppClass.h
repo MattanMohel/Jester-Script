@@ -43,25 +43,25 @@ namespace jts {
 	};
 
 	struct MethodBridge {
-		virtual Obj* call(void* inst, Obj* ret, ObjNode* args) = 0;
+		virtual Obj* call(VM* vm, void* inst, Obj* ret, ObjNode* args) = 0;
 	};
 
 	template <typename Cls, typename Ret, typename... Args>
 	struct MethodBridge_Impl : public MethodBridge {
 		using Method = Ret(Cls::*)(Args...);
 
-		Obj* call(void* inst, Obj* ret, ObjNode* args) override {
-			return call_Impl(inst, ret, args, std::make_index_sequence<sizeof...(Args)>());
+		Obj* call(VM* vm, void* inst, Obj* ret, ObjNode* args) override {
+			return call_Impl(vm, inst, ret, args, std::make_index_sequence<sizeof...(Args)>());
 		}
 
 		template<size_t... I>
-		Obj* call_Impl(void* inst, Obj* ret, ObjNode* args, std::index_sequence<I...>) {
+		Obj* call_Impl(VM* vm, void* inst, Obj* ret, ObjNode* args, std::index_sequence<I...>) {
 			std::vector<Obj*> paramVec;
 
 			// create parameter vector
 
 			while (args->next) {
-				paramVec.emplace_back(evalObj(args->next->value));
+				paramVec.emplace_back(evalObj(vm, args->next->value));
 				args = args->next;
 			}
 
@@ -89,10 +89,10 @@ namespace jts {
 
 	struct CppClass {
 		// Invokes a method call
-		virtual Obj* call(str& id, Obj* ret, ObjNode* args) = 0;
+		virtual Obj* call(VM* vm, str& id, Obj* ret, ObjNode* args) = 0;
 
 		// creates a new class instance in JTS
-		virtual void instance(CppClass*& cppClass) = 0;
+		virtual void instance(VM* vm, CppClass*& cppClass) = 0;
 
 		bool hasMember(str& symbol) {
 			return classTemplate->members.find(symbol) != classTemplate->members.end();
@@ -113,20 +113,20 @@ namespace jts {
 
 	template<typename Cls>
 	struct CppClass_Impl : public CppClass {
-		Obj* call(str& id, Obj* ret, ObjNode* args) {
-			for (auto bridge : classTemplate->members) {
+		Obj* call(VM* vm, str& id, Obj* ret, ObjNode* args) {
+			for (auto& bridge : classTemplate->members) {
 				bridge.second->setMember(&inst, instMembers[bridge.second->index]);
 			}
 
-			return classTemplate->methods[id]->call(&inst, ret, args);
+			return classTemplate->methods[id]->call(vm, &inst, ret, args);
 		}
 
-		void instance(CppClass*& cppClass) override {
+		void instance(VM* vm, CppClass*& cppClass) override {
 			CppClass_Impl<Cls>* newClass = new CppClass_Impl<Cls>();
 			newClass->classTemplate = classTemplate;
 
 			for (auto instMember : instMembers) {
-				newClass->instMembers.emplace_back(binaryOp<Binary::SET>(new Obj{ Type::NIL, Spec::SYMBOL }, instMember));
+				newClass->instMembers.emplace_back(set(vm, new Obj{ Type::NIL, Spec::SYMBOL }, instMember));
 			}
 
 			cppClass = (CppClass*)newClass;

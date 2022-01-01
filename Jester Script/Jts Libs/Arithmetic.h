@@ -37,197 +37,197 @@ namespace lib {
 
 		// Arithmetic Binary Operations
 
-		env::addSymbol(vm, "+", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "+", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 
 			while (args->next) {
-				binaryOp<Binary::ADD>(ret, evalObj(args->next->value, eval));
+				binaryOp<Binary::ADD>(ret, evalObj(vm, args->next->value, eval));
 				args = args->next;
 			}
 		}));
 
-		env::addSymbol(vm, "-", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "-", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 
 			while (args->next) {
-				binaryOp<Binary::SUB>(ret, evalObj(args->next->value, eval));
+				binaryOp<Binary::SUB>(ret, evalObj(vm, args->next->value, eval));
 				args = args->next;
 			}
 		}));
 
-		env::addSymbol(vm, "*", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "*", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 
 			while (args->next) {
-				binaryOp<Binary::MUL>(ret, evalObj(args->next->value, eval));
+				binaryOp<Binary::MUL>(ret, evalObj(vm, args->next->value, eval));
 				args = args->next;
 			}
 		}));
 
-		env::addSymbol(vm, "/", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "/", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 
 			while (args->next) {
-				binaryOp<Binary::DIV>(ret, evalObj(args->next->value, eval));
+				binaryOp<Binary::DIV>(ret, evalObj(vm, args->next->value, eval));
 				args = args->next;
 			}
 		}));
 
-		env::addSymbol(vm, "mod", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "mod", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 
 			while (args->next) {
-				binaryOp<Binary::MOD>(ret, evalObj(args->next->value, eval));
+				binaryOp<Binary::MOD>(ret, evalObj(vm, args->next->value, eval));
 				args = args->next;
 			}
 		}));
 
-		env::addSymbol(vm, "pow", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "pow", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 
 			while (args->next) {
-				binaryOp<Binary::POW>(ret, evalObj(args->next->value, eval));
+				binaryOp<Binary::POW>(ret, evalObj(vm, args->next->value, eval));
 				args = args->next;
 			}
 		}));
 
-		env::addSymbol(vm, "root", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "root", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 
 			while (args->next) {
-				binaryOp<Binary::ROOT>(ret, evalObj(args->next->value, eval));
+				binaryOp<Binary::ROOT>(ret, evalObj(vm, args->next->value, eval));
 				args = args->next;
 			}
 		}));
 
-		env::addSymbol(vm, "log", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "log", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 
 			while (args->next) {
-				binaryOp<Binary::LOG>(ret, evalObj(args->next->value, eval));
+				binaryOp<Binary::LOG>(ret, evalObj(vm, args->next->value, eval));
 				args = args->next;
 			}
 		}));
 
-		env::addSymbol(vm, "+=", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "+=", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			auto val = args->value;
 
 			while (args->next) {
-				binarySet<Binary::ADD>(val, evalObj(args->next->value, eval));
+				set(vm, val, binaryOp<Binary::ADD>(val, evalObj(vm, args->next->value, eval)));
 				args = args->next;
 			}
 
-			binaryOp<Binary::SET>(ret, val);
+			set(vm, ret, val);
 		}));
 
-		env::addSymbol(vm, "-=", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "-=", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			auto val = args->value;
 
 			while (args->next) {
-				binarySet<Binary::SUB>(val, evalObj(args->next->value, eval));
+				set(vm, val, binaryOp<Binary::SUB>(val, evalObj(vm, args->next->value, eval)));
 				args = args->next;
 			}
 
-			binaryOp<Binary::SET>(ret, val);
+			set(vm, ret, val);
 		}));
 
-		env::addSymbol(vm, "*=", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "*=", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			auto val = args->value;
 
 			while (args->next) {
-				binarySet<Binary::MUL>(val, evalObj(args->next->value, eval));
+				set(vm, val, binaryOp<Binary::MUL>(val, evalObj(vm, args->next->value, eval)));
 				args = args->next;
 			}
 
-			binaryOp<Binary::SET>(ret, val);
+			set(vm, ret, val);
 		}));
 
-		env::addSymbol(vm, "/=", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "/=", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			auto val = args->value;
 
 			while (args->next) {
-				binarySet<Binary::DIV>(val, evalObj(args->next->value, eval));
+				set(vm, val, binaryOp<Binary::DIV>(val, evalObj(vm, args->next->value, eval)));
 				args = args->next;
 			}
 
-			binaryOp<Binary::SET>(ret, val);
+			set(vm, ret, val);
 		}));
 
-		env::addSymbol(vm, "%=", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "%=", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			auto val = args->value;
 
 			while (args->next) {
-				binarySet<Binary::MOD>(val, evalObj(args->next->value, eval));
+				set(vm, val, binaryOp<Binary::MOD>(val, evalObj(vm, args->next->value, eval)));
 				args = args->next;
 			}
 
-			binaryOp<Binary::SET>(ret, val);
+			set(vm, ret, val);
 		}));
 
 		// Arithmetic Unary Operations
 
-		env::addSymbol(vm, "ln", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "ln", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 			unaryOp<Unary::LN>(ret);
 		}));
 
-		/*		env::addSymbol(vm, "incr", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		/*		env::addSymbol(vm, "incr", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 				{
-					return unaryOp<Unary::INCR>(evalObj(args->value, eval));
+					return unaryOp<Unary::INCR>(evalObj(vm, args->value, eval));
 				}));
 
-				env::addSymbol(vm, "decr", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+				env::addSymbol(vm, "decr", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 				{
-					return unaryOp<Unary::DECR>(evalObj(args->value, eval));
+					return unaryOp<Unary::DECR>(evalObj(vm, args->value, eval));
 				}));	*/
 
-		env::addSymbol(vm, "sin", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "sin", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 			unaryOp<Unary::SIN>(ret);
 		}));
 
-		env::addSymbol(vm, "asin", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "asin", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 			unaryOp<Unary::ASIN>(ret);
 		}));
 
-		env::addSymbol(vm, "cos", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "cos", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 			unaryOp<Unary::COS>(ret);
 		}));
 
-		env::addSymbol(vm, "acos", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "acos", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 			unaryOp<Unary::ACOS>(ret);
 		}));
 
-		env::addSymbol(vm, "tan", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "tan", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 			unaryOp<Unary::TAN>(ret);
 		}));
 
-		env::addSymbol(vm, "atan", env::addNative([](Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "atan", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
 		{
-			binaryOp<Binary::SET>(ret, evalObj(args->value, eval));
+			set(vm, ret, evalObj(vm, args->value, eval));
 			unaryOp<Unary::ATAN>(ret);
 		}));
 	}

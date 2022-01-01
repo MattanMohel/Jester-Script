@@ -16,8 +16,6 @@ namespace jts {
 		POW,
 		ROOT,
 		COPY,
-
-		SET,
 	};
 
 	enum class Unary {
@@ -39,12 +37,6 @@ namespace jts {
 	template<Binary op>
 	inline Obj* binaryOp(Obj* a, Obj* b) {
 		static_assert(false, "binary operator not supported");
-	}
-
-	// Preforms binary Obj operations
-	template<Binary op>
-	inline Obj* binarySet(Obj* a, Obj* b) {
-		static_assert(false, "binary setter not supported");
 	}
 
 	// Preforms unary Obj operations
@@ -69,13 +61,6 @@ namespace jts {
 	template<> Obj* binaryOp<Binary::POW>(Obj* a, Obj* b);
 	template<> Obj* binaryOp<Binary::ROOT>(Obj* a, Obj* b);
 	template<> Obj* binaryOp<Binary::LOG>(Obj* a, Obj* b);
-	template<> Obj* binaryOp<Binary::SET>(Obj* a, Obj* b);
-
-	template<> Obj* binarySet<Binary::ADD>(Obj* a, Obj* b);
-	template<> Obj* binarySet<Binary::SUB>(Obj* a, Obj* b);
-	template<> Obj* binarySet<Binary::MUL>(Obj* a, Obj* b);
-	template<> Obj* binarySet<Binary::DIV>(Obj* a, Obj* b);
-	template<> Obj* binarySet<Binary::MOD>(Obj* a, Obj* b);
 
 	template<> Obj* unaryOp<Unary::INCR>(Obj* a);
 	template<> Obj* unaryOp<Unary::DECR>(Obj* a);
@@ -87,6 +72,8 @@ namespace jts {
 	template<> Obj* unaryOp<Unary::ATAN>(Obj* a);
 	template<> Obj* unaryOp<Unary::LN>(Obj* a);
 	template<> Obj* unaryOp<Unary::HASH>(Obj* a);
+
+	Obj* set(VM* vm, Obj* a, Obj* b);
 
 	template<> Obj* setTo<j_char>(Obj* a, j_char value);
 	template<> Obj* setTo<j_bool>(Obj* a, j_bool value);
@@ -102,13 +89,13 @@ namespace jts {
 	bool isGreater(Obj* a, Obj* b);
 	bool isGreaterEq(Obj* a, Obj* b);
 
-	Obj* quoteObj(Obj* a, Obj* res, bool eval);
-	void freeObj(Obj* obj);
+	Obj* quoteObj(VM* vm, Obj* a, Obj* res, bool eval);
+	void freeObj(VM* vm, Obj* obj);
 	
-	ObjNode* listCopy(ObjNode* lst, std::function<Obj* (Obj*)> copy =
-		[](Obj* obj) { 
-			Obj* ret = env::glbl_objPool.acquire();
-			binaryOp<Binary::SET>(ret, obj);
+	ObjNode* listCopy(VM* vm, ObjNode* lst, std::function<Obj* (VM*, Obj*)> copy =
+		[](VM* vm, Obj* obj) { 
+			Obj* ret = vm->objPool->acquire();
+			set(vm, ret, obj);
 			return ret; 
 	});
 

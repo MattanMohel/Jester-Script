@@ -4,7 +4,10 @@
 #include "Types.h"
 #include "../utils/Pool.h"
 
-#define DEBUG 1
+#define VALIDATE 1
+#define DEBUG_ALLOC 0
+
+#define STARTING_COUNT 250
 
 namespace jts {
 
@@ -22,9 +25,14 @@ namespace jts {
 		SymbolMap* lexicalScope = nullptr;
 
 		std::vector<void(*)(VM* vm)> libs;
+
+		Pool<ObjNode>* nodePool = nullptr;
+		Pool<Obj>* objPool = nullptr;
 	};
 
 	namespace env {
+
+		VM* newVM();
 
 		// Emplaces new object to VM with key
 		void addSymbol(VM* vm, str key, Obj* value);
@@ -33,13 +41,16 @@ namespace jts {
 		Obj* getSymbol(VM* vm, str symbol);
 
 		// Returns if a given symbol can shadow - if in global but not local scope
-		bool canShadow(VM* vm, str symbol);
+		bool symbolInScope(VM* vm, str symbol);
 
 		// Asserts VM state
 		inline void assert(bool cond, str mes, State warnType = State::ERR);
 
 		// Executes VM
-		Obj* run(VM* vm);
+		Obj* run(VM* vm);	
+		
+		// Clears VM
+		void clear(VM* vm);
 
 		// Executes VM in REPL mode
 		void runREPL(VM* vm);
@@ -69,9 +80,9 @@ namespace jts {
 
 		  (See examples in the Jts-Libs directory)
 		*/
-		Obj* addNative(void (*native)(Obj*, ObjNode*, bool));
+		Obj* addNative(void (*native)(VM*, Obj*, ObjNode*, bool));
 
-		// Adds an object symbol by T
+		// Adds an object symbol of type
 
 		template<typename T>
 		inline Obj* addConst(T value) {
@@ -84,18 +95,14 @@ namespace jts {
 		template<> Obj* addConst(j_float value);
 		template<> Obj* addConst(std::nullptr_t value);
 
-		// Obj and ObjNode memory pools
-
-		extern Pool<Obj>     glbl_objPool;
-		extern Pool<ObjNode> glbl_nodePool;
-
 		// Acquires an initialized ObjNode from Obj and ObjNode pool
 
-		ObjNode* acquireNode();
+		ObjNode* acquireNode(VM* vm, Type type = Type::NIL, Spec spec = Spec::NIL);
+		ObjNode* acquireNode(VM* vm, Obj* obj);
 
 		// Releases an ObjNode
 
-		void releaseNode(ObjNode* node);
+		void releaseNode(VM* vm, ObjNode* node);
 	}
 }
 

@@ -20,7 +20,7 @@ using namespace jts;
 int main(char** argc, int** argv) {
 	std::cout << "---------- Welcome to Jester-Script ----------\n\n";
 
-	VM* vm = new VM();
+	VM* vm = env::newVM();
 
 	env::addLib(vm, lib::StandardLib);
 	env::addLib(vm, lib::ArithmeticLib);

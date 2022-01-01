@@ -40,8 +40,10 @@ namespace jts {
         return true;
     }
 
-    Obj* tokToLtrl(Tok* tok) {
-        Obj* obj = new Obj{ tok->type, Spec::VALUE };
+    Obj* tokToLtrl(VM* vm, Tok* tok) {
+        Obj* obj = vm->objPool->acquire();
+        obj->type = tok->type;
+        obj->spec = Spec::VALUE;
 
         switch (tok->type) {
         case Type::CHAR:

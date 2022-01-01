@@ -45,24 +45,28 @@ namespace jts {
 
 			case Spec::LST_BEG:
 
-				(*head) = new ObjNode(new Obj{ Type::LIST, Spec::VALUE });
+				(*head) = env::acquireNode(vm, Type::LIST, Spec::VALUE);
 
 				break;
 
 			case Spec::SYMBOL:
 
-				if (!env::getSymbol(vm, it->symbol) || env::canShadow(vm, it->symbol)) {
-					env::addSymbol(vm, it->symbol, new Obj{ Type::NIL, Spec::SYMBOL });
+				if (!env::getSymbol(vm, it->symbol) || !env::symbolInScope(vm, it->symbol)) {
+					Obj* value = vm->objPool->acquire();
+					value->spec = Spec::SYMBOL;
+					value->type = Type::NIL;
+
+					env::addSymbol(vm, it->symbol, value);
 				}
 
-				(*head) = new ObjNode(env::getSymbol(vm, it->symbol));
+				(*head) = env::acquireNode(vm, env::getSymbol(vm, it->symbol));
 				(*head)->value->symbol = it->symbol;
 
 				break;
 
 			case Spec::VALUE:
 
-				(*head) = new ObjNode(tokToLtrl(it));
+				(*head) = env::acquireNode(vm, tokToLtrl(vm, it));
 				(*head)->value->symbol = it->symbol;
 
 				break;
@@ -74,7 +78,7 @@ namespace jts {
 
 				if (it->symbol == "[") {
 					SymbolMap* scope;
-
+					
 					if (!vm->lexicalScope) {
 						scope = vm->scopes.emplace_back(new SymbolMap());
 					}

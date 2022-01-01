@@ -1,8 +1,6 @@
 #ifndef POOL_H
 #define POOL_H
 
-#define DEBUG_ALLOC 1
-
 #include "../src/Types.h"
 #include <iostream>
 #include <vector>

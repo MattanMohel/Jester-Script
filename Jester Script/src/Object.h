@@ -28,7 +28,7 @@ namespace jts {
 
 			// Callables
 
-			void (*_native)(Obj*, ObjNode*, bool);
+			void (*_native)(VM*, Obj*, ObjNode*, bool);
 			CppFn* _cppFn;
 			JtsFn* _jtsFn;
 

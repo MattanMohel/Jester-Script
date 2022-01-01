@@ -145,17 +145,16 @@ namespace jts {
 		return a;
 	}
 
-	template<> Obj* binaryOp<Binary::SET>(Obj* a, Obj* b) {
-		
+	Obj* set(VM* vm, Obj* a, Obj* b) {
 
-	#if DEBUG
+	#if VALIDATE
 		a->assert(a->spec == Spec::VALUE || a->constant, "tried setting a constant value %");
 	#endif 
 
 		// memory collection
 		if (a->refCount) {
 			if (*a->refCount < 2 && !isIntegral(a->type)) {
-				freeObj(a);
+				freeObj(vm, a);
 			}
 			else {
 				--(*a->refCount);
@@ -173,7 +172,7 @@ namespace jts {
 		case Type::LIST:
 
 			if (b->spec == Spec::VALUE) {
-				a->_args = listCopy(b->_args);
+				a->_args = listCopy(vm, b->_args);
 			}
 			else {
 				a->_args = b->_args;
@@ -228,27 +227,6 @@ namespace jts {
 
 		return a;
 	}
-
-	template<> Obj* binarySet<Binary::ADD>(Obj* a, Obj* b) {
-		return binaryOp<Binary::SET>(a, binaryOp<Binary::ADD>(a, b));
-	}
-
-	template<> Obj* binarySet<Binary::SUB>(Obj* a, Obj* b) {
-		return binaryOp<Binary::SET>(a, binaryOp<Binary::SUB>(a, b));
-	}
-
-	template<> Obj* binarySet<Binary::MUL>(Obj* a, Obj* b) {
-		return binaryOp<Binary::SET>(a, binaryOp<Binary::MUL>(a, b));
-	}
-
-	template<> Obj* binarySet<Binary::DIV>(Obj* a, Obj* b) {
-		return binaryOp<Binary::SET>(a, binaryOp<Binary::DIV>(a, b));
-	}
-
-	template<> Obj* binarySet<Binary::MOD>(Obj* a, Obj* b) {
-		return binaryOp<Binary::SET>(a, binaryOp<Binary::MOD>(a, b));
-	}
-
 
 	template<> Obj* unaryOp<Unary::INCR>(Obj* a) {
 		switch (a->type) {
@@ -518,11 +496,11 @@ namespace jts {
 		return false;
 	}
 
-	Obj* quoteObj(Obj* a, Obj* res, bool eval) {
+	Obj* quoteObj(VM* vm, Obj* a, Obj* res, bool eval) {
 		// if quoting non-list item
 		if (a->type != Type::LIST) {
 			res->type = Type::QUOTE;
-			res->_quote = evalObj(a, eval);
+			res->_quote = evalObj(vm, a, eval);
 			++a->refCount;
 
 			return res;
@@ -530,15 +508,15 @@ namespace jts {
 
 		res->type = Type::LIST;
 
-		res->_args = listCopy(a->_args,
-			[&eval](Obj* obj) {
-				return quoteObj(evalObj(obj, eval), env::glbl_objPool.acquire(), eval);
+		res->_args = listCopy(vm, a->_args,
+			[&eval](VM* vm, Obj* obj) {
+				return quoteObj(vm, evalObj(vm, obj, eval), vm->objPool->acquire(), eval);
 		});
 
 		return res;
 	}
 
-	void freeObj(Obj* obj) {
+	void freeObj(VM* vm, Obj* obj) {
 	
 	#if DEBUG_ALLOC
 			std::cout << "freeing " << obj->symbol << " - " << obj << '\n';
@@ -561,8 +539,8 @@ namespace jts {
 		case Type::QUOTE:
 
 			if ((*obj->_quote->refCount) <= 1 && !isIntegral(obj->type)) {
-				env::glbl_objPool.release(obj->_quote);
-				freeObj(obj->_quote);
+				vm->objPool->release(obj->_quote);
+				freeObj(vm, obj->_quote);
 			}
 
 			return;
@@ -575,19 +553,19 @@ namespace jts {
 		case Type::LIST: 
 
 			listTransform(obj->_args,
-				[](ObjNode* node) {
+				[&vm](ObjNode* node) {
 					if (!node->value->refCount <= 1 && isIntegral(node->value->type)) {
-						env::releaseNode(node);
-						freeObj(node->value);
+						env::releaseNode(vm, node);
+						freeObj(vm, node->value);
 					}
 					else {
-						env::glbl_nodePool.release(node);
+						vm->nodePool->release(node);
 					}
 			});
 		} 
 	}
 
-	ObjNode* listCopy(ObjNode* lst, std::function<Obj* (Obj*)> copy) {
+	ObjNode* listCopy(VM* vm, ObjNode* lst, std::function<Obj* (VM*, Obj*)> copy) {
 		if (!lst) {
 			return nullptr;
 		}
@@ -597,8 +575,8 @@ namespace jts {
 		auto lstPtr = &res;
 
 		while (lst) {
-			(*lstPtr) = env::glbl_nodePool.acquire();
-			(*lstPtr)->value = copy(lst->value);
+			(*lstPtr) = vm->nodePool->acquire();
+			(*lstPtr)->value = copy(vm, lst->value);
 
 			lst = lst->next;
 			lstPtr = &(*lstPtr)->next;

@@ -17,30 +17,30 @@ namespace lib {
 		env::addSymbol(vm, "F", env::addConst<bool>(false));
 
 		// (if cond if-true else)
-		env::addSymbol(vm, "if", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "if", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			if (isTrue(evalObj(args->value, eval))) {
-				binaryOp<Binary::SET>(ret, evalObj(args->next->value, eval));
+			if (isTrue(evalObj(vm, args->value, eval))) {
+				set(vm, ret, evalObj(vm, args->next->value, eval));
 			}
 			else {
-				binaryOp<Binary::SET>(ret, evalObj(args->next->next->value, eval));
+				set(vm, ret, evalObj(vm, args->next->next->value, eval));
 			}
 		}));
 
 		// (match value case 1 if-true... case n if-true)
-		env::addSymbol(vm, "match", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "match", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			Obj* val = evalObj(args->value, eval);
+			Obj* val = evalObj(vm, args->value, eval);
 
 			auto* pattern = args->next;
 
 			while (true) {
-				if (isEqual(val, evalObj(pattern->value, eval))) {
-					evalObj(pattern->next->value, eval);
+				if (isEqual(val, evalObj(vm, pattern->value, eval))) {
+					evalObj(vm, pattern->next->value, eval);
 					break;
 				}
 				else if (!pattern->next) {
-					binaryOp<Binary::SET>(ret, NIL);
+					set(vm, ret, NIL);
 					break;
 				}
 
@@ -48,62 +48,62 @@ namespace lib {
 			}
 		}));
 
-		env::addSymbol(vm, "when", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "when", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			if (isTrue(evalObj(args->value, eval))) {
-				binaryOp<Binary::SET>(ret, evalObj(args->next->value, eval));
+			if (isTrue(evalObj(vm, args->value, eval))) {
+				set(vm, ret, evalObj(vm, args->next->value, eval));
 			}
 			else {
-				binaryOp<Binary::SET>(ret, NIL);
+				set(vm, ret, NIL);
 			}
 		}));
 
-		env::addSymbol(vm, "unless", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "unless", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			if (!isTrue(evalObj(args->value, eval))) {
-				binaryOp<Binary::SET>(ret, evalObj(args->next->value, eval));
+			if (!isTrue(evalObj(vm, args->value, eval))) {
+				set(vm, ret, evalObj(vm, args->next->value, eval));
 			}
 			else {
-				binaryOp<Binary::SET>(ret, NIL);
+				set(vm, ret, NIL);
 			}
 		}));
 
-		env::addSymbol(vm, "=", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "=", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			setTo<bool>(ret, isEqual(evalObj(args->value, eval), evalObj(args->next->value, eval)));
+			setTo<bool>(ret, isEqual(evalObj(vm, args->value, eval), evalObj(vm, args->next->value, eval)));
 		}));
 
-		env::addSymbol(vm, ">", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, ">", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			setTo<bool>(ret, isGreater(evalObj(args->value, eval), evalObj(args->next->value, eval)));
+			setTo<bool>(ret, isGreater(evalObj(vm, args->value, eval), evalObj(vm, args->next->value, eval)));
 		}));
 
-		env::addSymbol(vm, ">=", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, ">=", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			setTo<bool>(ret, isGreaterEq(evalObj(args->value, eval), evalObj(args->next->value, eval)));
+			setTo<bool>(ret, isGreaterEq(evalObj(vm, args->value, eval), evalObj(vm, args->next->value, eval)));
 		}));
 
-		env::addSymbol(vm, "<", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "<", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			setTo<bool>(ret, !isGreaterEq(evalObj(args->value, eval), evalObj(args->next->value, eval)));
+			setTo<bool>(ret, !isGreaterEq(evalObj(vm, args->value, eval), evalObj(vm, args->next->value, eval)));
 		}));
 
-		env::addSymbol(vm, "<=", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "<=", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			setTo<bool>(ret, !isGreater(evalObj(args->value, eval), evalObj(args->next->value, eval)));
+			setTo<bool>(ret, !isGreater(evalObj(vm, args->value, eval), evalObj(vm, args->next->value, eval)));
 		}));
 
-		env::addSymbol(vm, "not", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "not", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
-			setTo<bool>(ret, !isTrue(evalObj(args->value, eval)));
+			setTo<bool>(ret, !isTrue(evalObj(vm, args->value, eval)));
 		}));
 
-		env::addSymbol(vm, "and", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "and", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			bool state = false;
 
 			while (args) {
-				state = isTrue(evalObj(args->value, eval));
+				state = isTrue(evalObj(vm, args->value, eval));
 
 				if (!state) {
 					break;
@@ -115,12 +115,12 @@ namespace lib {
 			setTo<bool>(ret, state);
 		}));
 
-		env::addSymbol(vm, "or", env::addNative([](Obj* ret, ObjNode* args, bool eval)
+		env::addSymbol(vm, "or", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			bool state = false;
 
 			while (args) {
-				state = isTrue(evalObj(args->value, eval));
+				state = isTrue(evalObj(vm, args->value, eval));
 
 				if (state) {
 					break;
