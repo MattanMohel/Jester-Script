@@ -9,7 +9,7 @@ namespace jts {
         size_t len = tok->symbol.length();
 
         if (tok->symbol[0] == '\"' && tok->symbol[len - 1] == '\"') {
-            if (len == 3) tok->type = Type::CHAR;
+            if (len == 3 || len == 4 && tok->symbol[1] == '\\') tok->type = Type::CHAR;
             else tok->type = Type::STRING;
 
             return true;
@@ -48,7 +48,25 @@ namespace jts {
         switch (tok->type) {
         case Type::CHAR:
 
-            obj->_char = tok->symbol.substr(1, 1)[0];
+            if (tok->symbol.length() == 4) {
+                char c = tok->symbol.substr(2, 2)[0];
+                switch (c) {
+                case 'n':
+                    obj->_char = '\n';
+                    break;
+                case '0':
+                    obj->_char = '\0';
+                    break;
+                case 't':
+                    obj->_char = '\t';
+                    break;
+                default:
+                    env::assert(true, "created invalid char '\\'" + c);
+                }            
+            }
+            else {
+                obj->_char = tok->symbol.substr(1, 1)[0];
+            }
             break;
 
         case Type::STRING:
