@@ -37,8 +37,8 @@ namespace jts {
 
 			assert(false, "creating duplicate symbol " + key);
 
-			if (vm->lexicalScope && vm->lexicalScope->open) {
-				vm->lexicalScope->symbols.emplace(key, value);
+			if (vm->curScope && vm->curScope->open) {
+				vm->curScope->symbols.emplace(key, value);
 			}
 			else {
 				vm->symbols.emplace(key, value);
@@ -46,8 +46,8 @@ namespace jts {
 		}
 
 		Obj* getSymbol(VM* vm, str symbol) {
-			if (vm->lexicalScope) {
-				auto scope = vm->lexicalScope;
+			if (vm->curScope) {
+				auto scope = vm->curScope;
 
 				while (scope) {
 					if (scope->symbols.find(symbol) != scope->symbols.end()) {
@@ -65,10 +65,8 @@ namespace jts {
 			return nullptr;
 		}
 
-		bool symbolInScope(VM* vm, str symbol) {
-			bool exists = getSymbol(vm, symbol);
-
-			return exists && (!vm->lexicalScope || vm->lexicalScope->symbols.find(symbol) == vm->lexicalScope->symbols.end());
+		bool symbolExistsOutOfScope(VM* vm, str symbol) {
+			return getSymbol(vm, symbol) && vm->curScope && vm->curScope->symbols.find(symbol) == vm->curScope->symbols.end();
 		}
 
 		inline void assert(bool cond, str mes, State warnType) {
@@ -157,7 +155,11 @@ namespace jts {
 			lib(vm);
 		}
 
-		Obj* addSrc(VM* vm, str src) {
+		void addScript(VM* vm, const str& path) {
+			jts::parseSrc(vm, readSrc(vm, path));
+		}
+
+		Obj* addSrcCode(VM* vm, str src) {
 			src += EOF;
 			parseSrc(vm, src);
 

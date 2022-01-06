@@ -73,7 +73,7 @@ namespace jts {
 	template<> Obj* unaryOp<Unary::LN>(Obj* a);
 	template<> Obj* unaryOp<Unary::HASH>(Obj* a);
 
-	Obj* set(VM* vm, Obj* a, Obj* b);
+	Obj* set(VM* vm, Obj* a, Obj* b, bool canFree = true);
 
 	template<> Obj* setTo<j_char>(Obj* a, j_char value);
 	template<> Obj* setTo<j_bool>(Obj* a, j_bool value);

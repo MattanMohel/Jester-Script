@@ -28,6 +28,7 @@ int main(char** argc, int** argv) {
 	env::addLib(vm, lib::ListsLib);
 
 	//env::addSrc(vm, "(defn fac [n] (if (= n 0) 1 (* n (fac (- n 1)))))");
+	env::addScript(vm, "scripts/Jester.jts");
 
 	env::runREPL(vm);
 }

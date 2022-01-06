@@ -1,1 +1,13 @@
 
+(defn integrate [function beg end]
+	(set delta 0.001)
+	(set x (float beg))
+	(set area 0.0)
+	
+	(loop (< x end)
+		(+= area (* delta (function x)))
+		(+= x delta))
+		
+	area)
+		
+	

@@ -145,14 +145,14 @@ namespace jts {
 		return a;
 	}
 
-	Obj* set(VM* vm, Obj* a, Obj* b) {
+	Obj* set(VM* vm, Obj* a, Obj* b, bool canFree) {
 
 	#if VALIDATE
 		a->assert(a->spec == Spec::VALUE || a->constant, "tried setting a constant value %");
 	#endif 
 
 		// memory collection
-		if (a->refCount) {
+		if (canFree && a->refCount) {
 			if (*a->refCount < 2 && !isIntegral(a->type)) {
 				freeObj(vm, a);
 			}

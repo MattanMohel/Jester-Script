@@ -32,7 +32,7 @@ namespace jts {
 			--Everything translates to recursive lists
 		*/
 
-		size_t prnth_depth = 0;
+		size_t prnthDepth = 0;
 		 
 		ObjNode** head = &vm->stackPtrBeg;
 		stack_itr<ObjNode**> funcHead;
@@ -51,7 +51,9 @@ namespace jts {
 
 			case Spec::SYMBOL:
 
-				if (!env::getSymbol(vm, it->symbol) || !env::symbolInScope(vm, it->symbol)) {
+				// TODO - problem with this (some-fun x [x]...) -- conflicting variables
+				// should create a shadow variable for scope only if initialized in []
+				if (!env::getSymbol(vm, it->symbol) || env::symbolExistsOutOfScope(vm, it->symbol)) {
 					Obj* value = vm->objPool->acquire();
 					value->spec = Spec::SYMBOL;
 					value->type = Type::NIL;
@@ -79,22 +81,22 @@ namespace jts {
 				if (it->symbol == "[") {
 					SymbolMap* scope;
 					
-					if (!vm->lexicalScope) {
+					if (!vm->curScope) {
 						scope = vm->scopes.emplace_back(new SymbolMap());
 					}
 					else {
 						scope = new SymbolMap();
-						vm->lexicalScope->next = scope;
-						scope->prev = vm->lexicalScope;
+						vm->curScope->next = scope;
+						scope->prev = vm->curScope;
 					}
 
-					scope->prnth_depth = prnth_depth;
+					scope->prnthDepth = prnthDepth;
 					scope->open = true;
 
-					vm->lexicalScope = scope;
+					vm->curScope = scope;
 				}
 	
-				++prnth_depth;
+				++prnthDepth;
 
 				// set next to the list's argument node
 				funcHead.emplace(head);
@@ -103,16 +105,16 @@ namespace jts {
 
 			case Spec::LST_END:
 
-				--prnth_depth;
+				--prnthDepth;
 
 				if (it->symbol == "]") {
-					env::assert(!vm->lexicalScope, "closed a closure without opening one");
-					vm->lexicalScope->open = false;
+					env::assert(!vm->curScope, "closed a closure without opening one");
+					vm->curScope->open = false;
 				}
 
-				if (vm->lexicalScope && vm->lexicalScope->prnth_depth > prnth_depth) {
-					if (vm->lexicalScope) {
-						vm->lexicalScope = vm->lexicalScope->prev;
+				if (vm->curScope && vm->curScope->prnthDepth > prnthDepth) {
+					if (vm->curScope) {
+						vm->curScope = vm->curScope->prev;
 					}
 				}
 

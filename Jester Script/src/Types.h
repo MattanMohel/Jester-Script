@@ -85,7 +85,7 @@ namespace jts {
 
 		SymbolMap *next, *prev;
 
-		size_t prnth_depth;
+		size_t prnthDepth;
 		bool open = false;
 	};
 

@@ -21,30 +21,46 @@ namespace lib {
 		env::addSymbol(vm, "nil", env::addConst(nullptr));
 
 		// (quote target)
-		env::addSymbol(vm, "quote", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
-		{
+		env::addSymbol(vm, "quote", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) {
 			quoteObj(vm, args->value, ret, eval);
 		}));
-		
+
 		// (set to-set value)
-		env::addSymbol(vm, "set", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
-		{
+		env::addSymbol(vm, "set", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) {
 			set(vm, ret, set(vm, args->value, evalObj(vm, args->next->value, eval)));
 		}));
 
+		// (let [name value] body)
+		env::addSymbol(vm, "let", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) {
+			auto elem = args->value->_args;
+
+			while (elem) {
+				set(vm, elem->value, evalObj(vm, elem->next->value, eval));
+				elem = elem->next->next;
+			}
+
+			auto body = args->next;
+
+			while (body->next) {
+				evalObj(vm, body->value, eval);
+				body = body->next;
+			}
+
+			set(vm, ret, evalObj(vm, body->value, eval));
+		}));
+
 		// (const to-set value)
-		env::addSymbol(vm, "const", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
-		{
-		#if VALIDATE
+		env::addSymbol(vm, "const", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) {
+#if VALIDATE
 			args->value->assert(args->value->initialized, "trying to make an initialized value % const");
-		#endif
+#endif
 
 			args->value->constant = true;
 			set(vm, ret, set(vm, args->value, evalObj(vm, args->next->value, eval)));
 		}));
 
 		// (fn (params) body)
-		env::addSymbol(vm, "fn", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "fn", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			ret->spec = Spec::SYMBOL;
 			ret->type = Type::JTS_FN;
@@ -60,10 +76,10 @@ namespace lib {
 			}
 
 			ret->_jtsFn->params = args;
-		}));			
-		
+		}));
+
 		// (defn name (params) body)
-		env::addSymbol(vm, "defn", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "defn", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			args->value->spec = Spec::SYMBOL;
 			args->value->type = Type::JTS_FN;
@@ -81,16 +97,16 @@ namespace lib {
 			args->value->_jtsFn->params = args->next;
 
 			set(vm, ret, args->value);
-		}));		
+		}));
 
 		// (eval target)
-		env::addSymbol(vm, "eval", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "eval", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, evalObj(vm, evalObj(vm, args->value, false), true));
 		}));
 
 		// (loop cond body)
-		env::addSymbol(vm, "loop", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "loop", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			auto cond = args;
 			auto block = args->next;
@@ -117,7 +133,7 @@ namespace lib {
 		}));
 
 		// (do body...)
-		env::addSymbol(vm, "do", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "do", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			while (args->next) {
 				evalObj(vm, args->value, eval);
@@ -128,61 +144,61 @@ namespace lib {
 		}));
 
 		// (string-int value)
-		env::addSymbol(vm, "string-int", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "string-int", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, setTo(ret, std::stoi(*evalObj(vm, args->value, eval)->_string)));
 		}));
 
 		// (string-bool value)
-		env::addSymbol(vm, "string-bool", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "string-bool", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, setTo(ret, (bool)std::stoi(*evalObj(vm, args->value, eval)->_string)));
 		}));
 
 		// (string-char value)
-		env::addSymbol(vm, "string-char", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "string-char", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, setTo(ret, (*evalObj(vm, args->value, eval)->_string)[0]));
 		}));
 
 		// (string-int value)
-		env::addSymbol(vm, "string-float", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "string-float", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, setTo(ret, std::stof(*evalObj(vm, args->value, eval)->_string)));
 		}));
 
 		// (int value)
-		env::addSymbol(vm, "int", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "int", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, setTo(ret, castObj<j_int>(evalObj(vm, args->value, eval))));
 		}));
 
 		// (float value)
-		env::addSymbol(vm, "float", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "float", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, setTo(ret, castObj<j_float>(evalObj(vm, args->value, eval))));
 		}));
 
 		// (char value)
-		env::addSymbol(vm, "char", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "char", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, setTo(ret, castObj<j_char>(evalObj(vm, args->value, eval))));
 		}));
 
 		// (bool value)
-		env::addSymbol(vm, "bool", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "bool", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, setTo(ret, castObj<j_bool>(evalObj(vm, args->value, eval))));
 		}));
 
 		// (string value)
-		env::addSymbol(vm, "string", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "string", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			set(vm, ret, setTo(ret, new str(toString(evalObj(vm, args->value, eval)))));
 		}));
 
 		// (print args)
-		env::addSymbol(vm, "print", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "print", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			while (args->next) {
 				printObj(evalObj(vm, args->value, eval), false);
@@ -193,7 +209,7 @@ namespace lib {
 		}));
 
 		// (println args)
-		env::addSymbol(vm, "println", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "println", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			while (args->next) {
 				printObj(evalObj(vm, args->value, eval), false);
@@ -204,7 +220,7 @@ namespace lib {
 		}));
 
 		// (input) --> (set in (input))
-		env::addSymbol(vm, "input", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "input", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
 		{
 			str* input = new str();
 
