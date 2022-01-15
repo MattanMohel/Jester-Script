@@ -15,19 +15,23 @@ namespace jts {
 	}
 
 	bool isSplicer(char value) {
-		for (char pref : splicers) {
-			if (value == pref) return true;
+		for (char splice : splicers) {
+			if (value == splice) return true;
 		}
 
 		return false;
 	}
 
 	bool isOperator(char value) {
-		for (auto& pref : operators) {
-			if (value == pref.first) return true;
+		for (auto& op : operators) {
+			if (value == op) return true;
 		}
 
 		return false;
+	}
+
+	bool isNonToken(char value) {
+		return isPrefix(value) || isSplicer(value) || isOperator(value);
 	}
 
 	void tokenizeFile(VM* vm, str src) {
@@ -55,7 +59,7 @@ namespace jts {
 
 		while (true) {
 			// extract a single token
-			while (inLtrl || !(isPrefix(*ch) || isOperator(*ch) || isSplicer(*ch))) {
+			while (inLtrl || !isNonToken(*ch)) {
 				// if '\"', parse as string until next '\"'
 				if (*ch == '\"') inLtrl = !inLtrl;
 
@@ -82,20 +86,19 @@ namespace jts {
 
 			case '(':
 			case ')':
-			case '[':
-			case ']':
 
-				depth += (*ch == '(' || *ch == '[') - (*ch == ')' || *ch == ']');
+				depth += (*ch == '(') - (*ch == ')');
 
 				lexer += *ch;
 				addToken(vm, lexer, line);
 				break;
 
 			case '\'':
-			case '~':
-			case ':':
+				ch = addOperator(vm, src, "quote", ch);
+				break;
 
-				ch = addOperator(vm, src, depth, ch);
+			case '~':
+				ch = addOperator(vm, src, "eval", ch);
 				break;
 			}
 
@@ -126,10 +129,10 @@ namespace jts {
 		if (value.empty()) {
 			return;
 		}
-		else if (value == "(" || value == "[") {
+		else if (value == "(") {
 			vm->tokenPtrCur->spec = Spec::LST_BEG;
 		}
-		else if (value == ")" || value == "]") {
+		else if (value == ")") {
 			vm->tokenPtrCur->spec = Spec::LST_END;
 		}
 
@@ -148,42 +151,31 @@ namespace jts {
 		}
 	}
 
-	str::iterator addOperator(VM* vm, str& src, size_t startDepth, str::iterator cur, bool head) {
+	str::iterator addOperator(VM* vm, str& src, const str& rplc, str::iterator it) {
+		// store offset to iterator
+		size_t offset = it - src.begin();
 
-		str symbol = '(' + std::get<str>(operators[*cur]) + ' ';
-		if (head) symbol.insert(symbol.begin(), ' ');
+		src.replace(it, it + 1, " (" + rplc + ' ');
+		it = src.begin() + rplc.length() + offset + 2;
 
-		size_t elemCount = std::get<size_t>(operators[*cur]);
+		int depth = 0;
 
-		// calculate offset to current iterator in src and insert symbol
+		do {
+			do {
+				++it;
+			} while (isOperator(*it));
 
-		size_t totalOffset = cur - src.begin();
-		src.replace(src.begin() + totalOffset, src.begin() + totalOffset + 1, symbol);
-		cur = src.begin() + totalOffset;
+			int prnth = (*it == '(') - (*it == ')');
 
-		cur += symbol.length() - 1;
-
-		int depth = startDepth;
-
-		while (elemCount) {
-			while (true) {
-				++cur;
-
-				if (isOperator(*cur)) cur = addOperator(vm, src, depth, cur, false);
-
-				depth += (*cur == '(' || *cur == '[') - (*cur == ')' || *cur == ']');
-
-				if (depth <= startDepth && (isSplicer(*cur) || *cur == ')' || *cur == ']')) break;
+			if (prnth != 0) {
+				depth += prnth;
+				++it;
 			}
+		} 
+		while (!(depth == 0 && isNonToken(*it)));
 
-			--elemCount;
-		}
+		src.insert(it, ')');
 
-		cur -= (*cur == EOF);
-
-		src.insert(cur + 1, ')');
-		++startDepth;
-
-		return src.begin() + totalOffset;
+		return src.begin() + offset;
 	}
 }

@@ -12,10 +12,10 @@ namespace jts {
 
 	// JTS integral types
 
-	using j_int = int;
-	using j_bool = bool;
-	using j_char = char;
-	using j_float = float;
+	using jtsi = int;
+	using jtsb = bool;
+	using jtsc = char;
+	using jtsf = float;
 
 	struct VM;
 	struct Tok;
@@ -24,7 +24,7 @@ namespace jts {
 	struct MacFn;
 	struct JtsType;
 	struct CppFn;
-	struct ObjNode;
+	struct Node;
 
 	struct CppClass;
 
@@ -32,22 +32,22 @@ namespace jts {
 	enum class Type {
 		NIL = 0,
 
-		CHAR,      // 1
-		BOOL,      // 2
-		INT,       // 3
-		FLOAT,     // 4
+		CHAR,        // 1
+		BOOL,        // 2
+		INT,         // 3
+		FLOAT,       // 4
+				    
+		QUOTE,       // 5
+		LIST,        // 6
+				    
+		NAT_FN,      // 7
+		CPP_FN,      // 8
+		JTS_FN,      // 9
 
-		QUOTE,     // 5
-		LIST,      // 6
-
-		NAT_FN,    // 7
-		CPP_FN,    // 8
-		JTS_FN,    // 9
-
-		JTS_TYPE,  // 10
-		CPP_TYPE,  // 11
-
-		STRING,    // 12
+		JTS_TYPE,    // 11
+		CPP_TYPE,    // 12
+				     
+		STRING,      // 13
 	};
 
 	// Symbol specialization

@@ -1,22 +1,10 @@
-
-(defn integrate [function beg end]
-	(set delta 0.001)
-	(set x (float beg))
-	(set area 0.0)
-	
-	(loop (< x end)
-		(+= area (* delta (function x)))
-		(+= x delta))
+(defun bizbuz (range)
+	(let
+		((n 0))
 		
-	area)
-
-(defn bizbuz [range]
-	(let [n 0]
-		(loop (< n range)
-			(print n "-")
-			(if (= (mod n 3) 0) (print "bizz") nil)
-			(if (= (mod n 5) 0) (print "buzz") nil)
-			(println "")
+		(loop (<= n range)
+			(print n " - ")
+			(if (= (mod n 3) 0) (print "biz") nil)
+			(if (= (mod n 5) 0) (print "buz") nil)
+			(print "\n")
 			(+= n 1))))
-		
-	

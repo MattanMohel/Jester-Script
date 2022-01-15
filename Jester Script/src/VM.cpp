@@ -1,6 +1,7 @@
 #include "VM.h"
 #include "Token.h"
 #include "Execute.h"
+#include "Operations.h"
 #include "Object.h"
 #include "Lexer.h"
 #include "File.h"
@@ -11,53 +12,148 @@
 namespace jts {
 	namespace env {
 
+		//////////////////////
+		/////Constructors/////
+		//////////////////////
+
 		VM* newVM() {
 			VM* vm = new VM();
 
-			vm->objPool = new Pool<Obj>("Object", STARTING_COUNT, [](Obj* value) {
-				value->refCount = nullptr;
-				value->type = Type::NIL;
-				value->_int = 0;
+			vm->objPool = new Pool<Obj>("Object", START_OBJ_COUNT, [](Obj* val) {
+				val->refCount = nullptr;
+				val->spec = Spec::SYMBOL;
+				val->type = Type::NIL;
+				val->_int = 0;
 
-				return value;
+				return val;
 			});
 
-			vm->nodePool = new Pool<ObjNode>("Node", STARTING_COUNT, [](ObjNode* value) {
-				value->next = nullptr;
-				value->value = nullptr;
+			vm->nodePool = new Pool<Node>("Node", START_OBJ_COUNT, [](Node* val) {
+				val->nxt = nullptr;
+				val->val = nullptr;
 
-				return value;
+				return val;
 			});
 
 			return vm;
 		}
 
-		void addSymbol(VM* vm, str key, Obj* value) {
-			bool hasKey = env::getSymbol(vm, key);
+		Node* newNode(VM* vm, Type t, Spec s) {
+			auto* node = vm->nodePool->acquire();
 
-			assert(false, "creating duplicate symbol " + key);
+			node->val = env::newObj(vm, t, s);
 
-			if (vm->curScope && vm->curScope->open) {
-				vm->curScope->symbols.emplace(key, value);
-			}
-			else {
-				vm->symbols.emplace(key, value);
-			}
+			return node;
+		}
+				
+		Node* newNode(VM* vm, Obj* obj) {
+			auto* node = vm->nodePool->acquire();
+
+			node->val = obj;
+
+			return node;
 		}
 
-		Obj* getSymbol(VM* vm, str symbol) {
-			if (vm->curScope) {
-				auto scope = vm->curScope;
+		void releaseNode(VM* vm, Node* node) {
+			vm->nodePool->release(node);
+		}
 
-				while (scope) {
-					if (scope->symbols.find(symbol) != scope->symbols.end()) {
-						return scope->symbols[symbol];
-					}
+		Obj* newObj(VM* vm, Type t, Spec s) {
+			auto obj = vm->objPool->acquire();
+			obj->type = t;
+			obj->spec = s;
 
-					scope = scope->prev;
-				}
-			}
+			return obj;
+		}
 
+		Obj* newObj(VM* vm, Obj* val) {
+			return setObj(vm, vm->objPool->acquire(), val);
+		}
+
+		void releaseObj(VM* vm, Obj* obj) {
+			vm->objPool->release(obj);
+		}
+
+		/////////////////
+		/////Symbols/////
+		/////////////////
+
+		void addSymbol(VM* vm, const str& symbol, Obj* val) {
+			bool hasKey = env::getSymbol(vm, symbol);
+
+			assert(false, "creating duplicate symbol " + symbol);
+
+			vm->symbols.emplace(symbol, val);
+		}
+
+		Obj* addNative(Obj* (*native)(VM*, Node*)) {
+			Obj* obj = new Obj();
+
+			obj->_native = native;
+			obj->type = Type::NAT_FN;
+			obj->spec = Spec::SYMBOL;
+
+			obj->constant = true;
+
+			return obj;
+		}		
+
+		Obj* addSrcCode(VM* vm, str src) {
+			src += EOF;
+			parseSrc(vm, src);
+
+			return env::run(vm);
+		}
+
+		template<> Obj* addConst(jtsc val) {
+			Obj* obj = new Obj{ Type::CHAR, Spec::SYMBOL };
+			obj->constant = true;
+			obj->_char = val;
+
+			obj->constant = true;
+
+			return obj;
+		}
+
+		template<> Obj* addConst(jtsb val) {
+			Obj* obj = new Obj{ Type::BOOL, Spec::SYMBOL };
+			obj->constant = true;
+			obj->_bool = val;
+
+			obj->constant = true;
+
+			return obj;
+		}
+
+		template<> Obj* addConst(jtsi  val) {
+			Obj* obj = new Obj{ Type::INT, Spec::SYMBOL };
+			obj->constant = true;
+			obj->_int = val;
+
+			obj->constant = true;
+
+			return obj;
+		}
+
+		template<> Obj* addConst(jtsf val) {
+			Obj* obj = new Obj{ Type::FLOAT, Spec::SYMBOL };
+			obj->constant = true;
+			obj->_float = val;
+
+			obj->constant = true;
+
+			return obj;
+		}
+
+		template<> Obj* addConst(std::nullptr_t val) {
+			Obj* obj = new Obj{ Type::NIL, Spec::SYMBOL };
+
+			obj->constant = true;
+
+			return obj;
+		}
+
+		Obj* getSymbol(VM* vm, const str& symbol) {
 			if (vm->symbols.find(symbol) != vm->symbols.end()) {
 				return vm->symbols[symbol]; 
 			}
@@ -65,52 +161,22 @@ namespace jts {
 			return nullptr;
 		}
 
-		bool symbolExistsOutOfScope(VM* vm, str symbol) {
-			return getSymbol(vm, symbol) && vm->curScope && vm->curScope->symbols.find(symbol) == vm->curScope->symbols.end();
-		}
-
-		inline void assert(bool cond, str mes, State warnType) {
-			if (!cond) return;
-
-			switch (warnType) {
-			case State::MES:
-
-				std::cout << "MESSAGE: " << mes;
-				break;
-
-			case State::WRN:
-
-				std::cout << "WARING: " << mes;
-				break;
-
-			case State::ERR:
-
-				std::cout << "ERROR: " << mes;
-				exit(EXIT_FAILURE);
-			}
-		}
+		///////////////////
+		/////Execution/////
+		///////////////////
 
 		Obj* run(VM* vm) {
+
+
 			vm->stackPtrCur = vm->stackPtrBeg;
 
-			while (vm->stackPtrCur->next) {
-				evalObj(vm, vm->stackPtrCur->value);
+			while (vm->stackPtrCur->nxt) {
+				evalObj(vm, vm->stackPtrCur->val);
 
-				vm->stackPtrCur = vm->stackPtrCur->next;
+				vm->stackPtrCur = vm->stackPtrCur->nxt;
 			}
 
-			return evalObj(vm, vm->stackPtrCur->value);
-		}
-
-		void clear(VM* vm) {
-			vm->stackPtrCur = vm->stackPtrBeg;
-
-			while (vm->stackPtrCur) {
-
-				vm->nodePool->release(vm->stackPtrCur);
-
-				vm->stackPtrCur = vm->stackPtrCur->next;
-			}
+			return evalObj(vm, vm->stackPtrCur->val);
 		}
 
 		void runREPL(VM* vm) {
@@ -132,23 +198,67 @@ namespace jts {
 
 				// Run input
 
-				if (src.substr(0, 2) == "--") {
-					parseSrc(vm, readSrc(vm, src.substr(2, src.length() - 3)), false);
-				}
-				else {
-					parseSrc(vm, src, false);
-				}
+				parseSrc(vm, src, false);
 
 				printObj(env::run(vm), true);
 
 				clear(vm);
-
+				 
 			#if DEBUG_ALLOC
 				std::cout << "have " << vm->objPool->count() << " objects and " << vm->nodePool->count() << " nodes\n";
 			#endif
 			}
 		}
 
+		// leaking memory - prevVal
+		Obj* beginScope(VM* vm, Node* params, std::function<Obj* (VM*)> body) {
+			Node* prevVal = listCpy(vm, params, [](VM* vm, Obj* obj) {
+				
+				Obj* ret = nullptr;
+
+				if (obj->type == Type::LIST) {
+					ret = setObj(vm, env::newObj(vm), obj->_args->val);
+					setObj(vm, obj->_args->val, evalObj(vm, obj->_args->nxt->val));
+				}
+				else {
+					ret = setObj(vm, env::newObj(vm), obj);
+					setObj(vm, obj, NIL);
+				}
+				
+				return ret;
+			});
+
+			Obj* ret = body(vm);
+
+			listForEach(vm, params, [&prevVal](VM* vm, Node* node) {
+				if (node->val->type == Type::LIST) {
+					setObj(vm, node->val->_args->val, prevVal->val);
+				}
+				else {
+					setObj(vm, node->val, prevVal->val);
+				}
+
+				prevVal = prevVal->nxt;
+			});
+
+			return ret;
+		}
+
+		void clear(VM* vm) {
+			vm->stackPtrCur = vm->stackPtrBeg;
+
+			while (vm->stackPtrCur) {
+
+				vm->nodePool->release(vm->stackPtrCur);
+
+				vm->stackPtrCur = vm->stackPtrCur->nxt;
+			}
+		}
+
+		///////////////////////
+		/////Miscellaneous/////
+		///////////////////////
+		
 		void addLib(VM* vm, void(*lib)(VM* vm)) {
 			vm->libs.emplace_back(lib);
 
@@ -159,94 +269,25 @@ namespace jts {
 			jts::parseSrc(vm, readSrc(vm, path));
 		}
 
-		Obj* addSrcCode(VM* vm, str src) {
-			src += EOF;
-			parseSrc(vm, src);
+		void assert(bool cond, const str& mes, State warnType) {
+			if (!cond) return;
 
-			return env::run(vm);
-		}
+			switch (warnType) {
+			case State::MES:
 
-		Obj* addNative(void (*native)(VM*, Obj*, ObjNode*, bool)) {
-			Obj* obj = new Obj();
+				std::cout << "MESSAGE: " << mes;
+				break;
 
-			obj->_native = native;
-			obj->type = Type::NAT_FN;
-			obj->spec = Spec::SYMBOL;
+			case State::WRN:
 
-			obj->constant = true;
+				std::cout << "WARING: " << mes;
+				break;
 
-			return obj;
-		}
+			case State::ERR:
 
-		template<> Obj* addConst(j_char value) {
-			Obj* obj = new Obj{ Type::CHAR, Spec::SYMBOL };
-			obj->constant = true;
-			obj->_char = value;
-
-			obj->constant = true;
-
-			return obj;
-		}
-
-		template<> Obj* addConst(j_bool value) {
-			Obj* obj = new Obj{ Type::BOOL, Spec::SYMBOL };
-			obj->constant = true;
-			obj->_bool = value;
-
-			obj->constant = true;
-
-			return obj;
-		}
-
-		template<> Obj* addConst(j_int  value) {
-			Obj* obj = new Obj{ Type::INT, Spec::SYMBOL };
-			obj->constant = true;
-			obj->_int = value;
-
-			obj->constant = true;
-
-			return obj;
-		}
-
-		template<> Obj* addConst(j_float value) {
-			Obj* obj = new Obj{ Type::FLOAT, Spec::SYMBOL };
-			obj->constant = true;
-			obj->_float = value;
-
-			obj->constant = true;
-
-			return obj;
-		}
-
-		template<> Obj* addConst(std::nullptr_t value) {
-			Obj* obj = new Obj{ Type::NIL, Spec::SYMBOL };
-
-			obj->constant = true;
-
-			return obj;
-		}
-
-		ObjNode* acquireNode(VM* vm, Type type, Spec spec) {
-			auto* node = vm->nodePool->acquire();
-			node->value = vm->objPool->acquire();
-
-			node->value->type = type;
-			node->value->spec = spec;
-
-			return node;
-		}
-
-		ObjNode* acquireNode(VM* vm, Obj* obj) {
-			auto* node = vm->nodePool->acquire();
-
-			node->value = obj;
-
-			return node;
-		}
-
-		void releaseNode(VM* vm, ObjNode* node) {
-			vm->objPool->release(node->value);
-			vm->nodePool->release(node);
+				std::cout << "ERROR: " << mes;
+				exit(EXIT_FAILURE);
+			}
 		}
 	}
 }

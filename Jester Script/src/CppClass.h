@@ -43,26 +43,26 @@ namespace jts {
 	};
 
 	struct MethodBridge {
-		virtual Obj* call(VM* vm, void* inst, Obj* ret, ObjNode* args) = 0;
+		virtual Obj* call(VM* vm, void* inst, Obj* ret, Node* args) = 0;
 	};
 
 	template <typename Cls, typename Ret, typename... Args>
 	struct MethodBridge_Impl : public MethodBridge {
 		using Method = Ret(Cls::*)(Args...);
 
-		Obj* call(VM* vm, void* inst, Obj* ret, ObjNode* args) override {
+		Obj* call(VM* vm, void* inst, Obj* ret, Node* args) override {
 			return call_Impl(vm, inst, ret, args, std::make_index_sequence<sizeof...(Args)>());
 		}
 
 		template<size_t... I>
-		Obj* call_Impl(VM* vm, void* inst, Obj* ret, ObjNode* args, std::index_sequence<I...>) {
+		Obj* call_Impl(VM* vm, void* inst, Obj* ret, Node* args, std::index_sequence<I...>) {
 			std::vector<Obj*> paramVec;
 
 			// create parameter vector
 
-			while (args->next) {
-				paramVec.emplace_back(evalObj(vm, args->next->value));
-				args = args->next;
+			while (args->nxt) {
+				paramVec.emplace_back(evalObj(vm, args->nxt->val));
+				args = args->nxt;
 			}
 
 			if constexpr (std::is_void<Ret>::value)	// method is void, evaluate and return NIL
@@ -89,7 +89,7 @@ namespace jts {
 
 	struct CppClass {
 		// Invokes a method call
-		virtual Obj* call(VM* vm, str& id, Obj* ret, ObjNode* args) = 0;
+		virtual Obj* call(VM* vm, str& id, Obj* ret, Node* args) = 0;
 
 		// creates a new class instance in JTS
 		virtual void instance(VM* vm, CppClass*& cppClass) = 0;
@@ -113,7 +113,7 @@ namespace jts {
 
 	template<typename Cls>
 	struct CppClass_Impl : public CppClass {
-		Obj* call(VM* vm, str& id, Obj* ret, ObjNode* args) {
+		Obj* call(VM* vm, str& id, Obj* ret, Node* args) {
 			for (auto& bridge : classTemplate->members) {
 				bridge.second->setMember(&inst, instMembers[bridge.second->index]);
 			}
@@ -126,7 +126,7 @@ namespace jts {
 			newClass->classTemplate = classTemplate;
 
 			for (auto instMember : instMembers) {
-				newClass->instMembers.emplace_back(set(vm, new Obj{ Type::NIL, Spec::SYMBOL }, instMember));
+				newClass->instMembers.emplace_back(setObj(vm, new Obj{ Type::NIL, Spec::SYMBOL }, instMember));
 			}
 
 			cppClass = (CppClass*)newClass;

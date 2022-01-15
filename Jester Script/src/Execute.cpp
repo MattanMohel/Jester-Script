@@ -11,7 +11,7 @@
 
 namespace jts {
 
-	Obj* evalObj(VM* vm, Obj* obj, bool eval) {	
+	Obj* evalObj(VM* vm, Obj* obj) {	
 		if (!obj) {
 			return NIL;
 		}
@@ -20,29 +20,29 @@ namespace jts {
 		case Type::LIST:
 
 			if (!obj->_args) {
-				return obj;
+				break;
 			}
 
-			switch (obj->_args->value->type) {
+			switch (obj->_args->val->type) {
 			case Type::NAT_FN:
 			case Type::JTS_FN:
 			case Type::CPP_FN:
 
 				// if first argument is a callable
-				return execObj(vm, obj->_args, eval);
+				return execObj(vm, obj->_args);
 
 			case Type::QUOTE:
 
 				// evaluate quote only if eval is true
 
-				if (eval) {
-					switch (obj->_args->value->_quote->type) {
+				if (vm->eval) {
+					switch (obj->_args->val->_quote->type) {
 					case Type::NAT_FN:
 					case Type::JTS_FN:
 					case Type::CPP_FN:
 
 						// if first argument's quote value is a callable
-						return execObj(vm, obj->_args, eval);
+						return execObj(vm, obj->_args);
 					}
 				}
 
@@ -52,11 +52,11 @@ namespace jts {
 
 				// iterate over list and evaluate elements
 
-				auto* elem = obj->_args;
+				auto elm = obj->_args;
 
-				while (elem) {
-					elem->value = evalObj(vm, elem->value, eval);
-					elem = elem->next;
+				while (elm) {
+					elm->val = evalObj(vm, elm->val);
+					elm = elm->nxt;
 				}
 
 				return obj;
@@ -66,7 +66,12 @@ namespace jts {
 
 			// if a quote to be eval'd, return the quote value, otherwise return the quote
 
-			if (eval) return evalObj(vm, obj->_quote, false);
+			if (vm->eval) {
+				vm->eval = false;
+				obj = evalObj(vm, obj->_quote);
+				vm->eval = true;
+			}
+
 			return obj;
 
 		default:
@@ -77,52 +82,47 @@ namespace jts {
 		}
 	}
 
-	Obj* execObj(VM* vm, ObjNode* args, bool eval) {
-		Obj* retVal = nullptr;
+	Obj* execObj(VM* vm, Node* args) {
 
-		switch (args->value->type) {
+		Obj* ret = nullptr;
+
+		switch (args->val->type) {
 		case Type::NAT_FN:
 
-			retVal = vm->objPool->acquire();
-			args->value->_native(vm, retVal, args->next, eval);
+			ret = args->val->_native(vm, args->nxt);
 			break;
 
 		case Type::CPP_FN:
 
-			retVal = vm->objPool->acquire();
-			args->value->_cppFn->call(vm, retVal, args);
+			ret = args->val->_cppFn->call(vm, args);
 			break;
 
 		case Type::JTS_FN:
 
- 			return args->value->_jtsFn->call(vm, args->next, eval);
+ 			ret = args->val->_jtsFn->call(vm, args->nxt);
+			break;
 
 		case Type::QUOTE:
-			switch (args->value->_quote->type) {
+			switch (args->val->_quote->type) {
 			case Type::NAT_FN:
 
-				retVal = vm->objPool->acquire();
-				args->value->_quote->_native(vm, retVal, args->next, eval);
+				ret = args->val->_quote->_native(vm, args->nxt);
 				break;
 
 			case Type::CPP_FN:
 
-				retVal = vm->objPool->acquire();
-				args->value->_quote->_cppFn->call(vm, retVal, args);
+				ret = args->val->_quote->_cppFn->call(vm, args);
 				break;
 
 			case Type::JTS_FN:
 
-				return args->value->_quote->_jtsFn->call(vm, args->next, eval);
+				ret = args->val->_quote->_jtsFn->call(vm, args->nxt);
+				break;
 			}
 		}
 
-		vm->objPool->release(retVal);
-		
-		if (retVal->refCount) {
-			--(*retVal->refCount);
-		}
 
-		return retVal;
+
+		return ret;
 	}
 }

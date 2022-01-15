@@ -4,84 +4,96 @@
 #include "Types.h"
 #include "../utils/Pool.h"
 
-#define VALIDATE 1
-#define DEBUG_ALLOC 1
+#define CHECK_ERROR 1
+#define DEBUG_ALLOC 0
 
-#define STARTING_COUNT 250
+#define START_OBJ_COUNT 250
 
 namespace jts {
 
 	// Jester Script virtual machine
 
 	struct VM {
-		ObjNode* stackPtrCur = nullptr;
-		ObjNode* stackPtrBeg = nullptr;
+
+		std::unordered_map<str, Obj*> symbols;
+
+		std::vector<void(*)(VM* vm)> libs;
+
+		Pool<Node>* nodePool = nullptr;
+		Pool<Obj>*  objPool  = nullptr;
+
+		////////////////
+		/////States/////
+		////////////////
+
+		Node* stackPtrCur = nullptr;
+		Node* stackPtrBeg = nullptr;
 
 		Tok* tokenPtrCur = nullptr;
 		Tok* tokenPtrBeg = nullptr;
 
-		std::unordered_map<str, Obj*> symbols;
-		std::vector<SymbolMap*> scopes;
-		SymbolMap* curScope = nullptr;
-
-		std::vector<void(*)(VM* vm)> libs;
-
-		Pool<ObjNode>* nodePool = nullptr;
-		Pool<Obj>* objPool = nullptr;
+		bool eval = false; 
 	};
 
 	namespace env {
 
+		//////////////////////
+		/////Constructors/////
+		//////////////////////
+
 		VM* newVM();
 
-		// Emplaces new object to VM with key
-		void addSymbol(VM* vm, str key, Obj* value);
+		Node* newNode(VM* vm, Type t = Type::NIL, Spec s = Spec::SYMBOL);
+		Node* newNode   (VM* vm, Obj* obj);
+		void  releaseNode(VM* vm, Node* node);
 
-		// Gets object from VM by key
-		Obj* getSymbol(VM* vm, str symbol);
+		Obj* newObj(VM* vm, Type t = Type::NIL, Spec s = Spec::SYMBOL);
+		Obj* newObj (VM* vm, Obj* obj);
+		void releaseObj(VM* vm, Obj* obj);
 
-		// Returns if a given symbol can shadow - if in global but not local scope
-		bool symbolExistsOutOfScope(VM* vm, str symbol);
+		/////////////////
+		/////Symbols/////
+		/////////////////
 
-		// Asserts VM state
-		inline void assert(bool cond, str mes, State warnType = State::ERR);
-
-		// Executes VM
-		Obj* run(VM* vm);	
+		void addSymbol(VM* vm, const str& key, Obj* val);
 		
-		// Clears VM
-		void clear(VM* vm);
+		Obj* addNative     (Obj* (*native)(VM*, Node*));
 
-		// Executes VM in REPL mode
-		void runREPL(VM* vm);
-
-		void addLib(VM* vm, void(*lib)(VM* vm));
-		void addScript(VM* vm, const str& path);
-
-		Obj* addSrcCode(VM* vm, str src);
-		Obj* addNative(void (*native)(VM*, Obj*, ObjNode*, bool));
+		Obj* addSrcCode(VM* vm, const str& src);
 
 		// Adds an object symbol of type
-
 		template<typename T>
 		inline Obj* addConst(T value) {
 			static_assert(false, "type unsupported");
 		}
 
-		template<> Obj* addConst(j_char  value);
-		template<> Obj* addConst(j_bool  value);
-		template<> Obj* addConst(j_int   value);
-		template<> Obj* addConst(j_float value);
+		template<> Obj* addConst(jtsc val);
+		template<> Obj* addConst(jtsb val);
+		template<> Obj* addConst(jtsi val);
+		template<> Obj* addConst(jtsf val);
 		template<> Obj* addConst(std::nullptr_t value);
 
-		// Acquires an initialized ObjNode from Obj and ObjNode pool
+		Obj* getSymbol(VM* vm, const str& symbol);
 
-		ObjNode* acquireNode(VM* vm, Type type = Type::NIL, Spec spec = Spec::NIL);
-		ObjNode* acquireNode(VM* vm, Obj* obj);
+		///////////////////
+		/////Execution/////
+		///////////////////
 
-		// Releases an ObjNode
+		Obj* run(VM* vm);	
+		void runREPL(VM* vm);
 
-		void releaseNode(VM* vm, ObjNode* node);
+		Obj* beginScope(VM* vm, Node* params, std::function<Obj*(VM*)> body);
+
+		void clear(VM* vm);
+
+		///////////////////////
+		/////Miscellaneous/////
+		///////////////////////
+
+		void addLib(VM* vm, void(*lib)(VM* vm));
+		void addScript(VM* vm, const str& path);
+
+		void assert(bool cond, const str& mes, State warnType = State::ERR);
 	}
 }
 

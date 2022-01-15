@@ -41,7 +41,7 @@ namespace jts {
     }
 
     Obj* tokToLtrl(VM* vm, Tok* tok) {
-        Obj* obj = vm->objPool->acquire();
+        Obj* obj = env::newObj(vm);
         obj->type = tok->type;
         obj->spec = Spec::VALUE;
 
@@ -83,42 +83,6 @@ namespace jts {
 
             obj->_int = std::stoi(tok->symbol);
             break;
-
-        default: // case FLOAT, INT
-        {
-            bool fPart = false;
-            int iPartLen = tok->symbol.length() - 1;
-
-            for (size_t i = 0; i < tok->symbol.length(); ++i) {
-                if (fPart) {
-                    iPartLen--;
-                }
-                if (tok->symbol[i] == '.') {
-                    fPart = true;
-                    --iPartLen;
-                    continue;
-                }
-            }
-
-            if (tok->type == Type::INT) {
-                obj->_int = 0;
-
-                for (size_t i = 0; i < tok->symbol.length(); i++) {
-                    obj->_int += (tok->symbol[i] - '0') * pow(10, iPartLen--);
-                }
-            }
-            else // case FLOAT
-            {
-                obj->_float = 0.0f;
-
-                for (size_t i = 0; i < tok->symbol.length(); i++) {
-                    if (tok->symbol[i] == '.') {
-                        continue;
-                    }
-                    obj->_float += (tok->symbol[i] - '0') * pow(10.0f, iPartLen--);
-                }
-            }
-        }
         }
 
         return obj;

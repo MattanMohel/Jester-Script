@@ -12,219 +12,143 @@ using namespace jts;
 namespace lib {
 	inline void ListsLib(VM* vm) {
 
-		// (iterate variable list body)
-		env::addSymbol(vm, "iterate", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval)
+		// (for var list body)
+		env::addSymbol(vm, "for", env::addNative([](VM* vm, Node* args)
 		{
-			auto list = evalObj(vm, args->next->value, eval)->_args;
-			auto block = args->next->next;
+			auto lst = args->nxt->val->_args;
+			auto bdy = args->nxt->nxt;
+			auto ret = (Obj*)nullptr;
 
-			while (list) {
-				set(vm, evalObj(vm, args->value, eval), evalObj(vm, list->value, eval));
+			while (lst) {
+				setObj(vm, args->val, evalObj(vm, lst->val));
 
-				while (block->next) {
-					evalObj(vm, block->value, eval);
-					block = block->next;
+				while (bdy->nxt) {
+					evalObj(vm, bdy->val);
+					bdy = bdy->nxt;
 				}
 
-				auto loopRet = evalObj(vm, block->value, eval);
+				ret = evalObj(vm, bdy->val);
 
-				if (!list->next) {
-					set(vm, ret, loopRet);
-					break;
-				}
-
-				list = list->next;
-				block = args->next->next;
+				lst = lst->nxt;
+				bdy = args->nxt->nxt;
 			}
+
+			return env::newObj(vm, ret);
 		}));
 
 		// (head list)
-		env::addSymbol(vm, "head", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
-		{
-			Obj* head = evalObj(vm, args->value, eval);
-
-			if (!head) {
-				set(vm, ret, NIL);
-				return;
-			}
-				
-			set(vm, ret, head->_args->value);
+		env::addSymbol(vm, "fst", env::addNative([](VM* vm, Node* args) 
+		{			
+			return env::newObj(vm, args->val->_args->val);
 		}));
 
 		// (tail list)
-		env::addSymbol(vm, "tail", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "rst", env::addNative([](VM* vm, Node* args) 
 		{
-			Obj* head = evalObj(vm, args->value, eval);
+			auto ret = env::newObj(vm, Type::LIST, Spec::SYMBOL);
+			ret->_args = args->val->_args->nxt;
 
-			if (!head) {
-				set(vm, ret, NIL);
-				return;
-			}
-
-			auto* elem = head->_args;
-
-			while (elem->next) {
-				elem = elem->next;
-			}
-
-			set(vm, ret, elem->value);
+			return ret;
 		}));
 
 		// (nth index list)
-		env::addSymbol(vm, "nth", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "nth", env::addNative([](VM* vm, Node* args) 
 		{
-			Obj* head = args->next->value;
+			auto lst = args->nxt->val;
+			auto elm = lst->_args;
+			auto idx = castObj<jtsi>(evalObj(vm, args->val));
 
-			if (!head) {
-				set(vm, ret, NIL);
-				return;
-			}
-			
-			auto* elem = head->_args;
-
-			for (size_t i = 0; i < castObj<j_int>(evalObj(vm, args->value, eval)); ++i) {
-				elem = elem->next;
-
-				if (!elem) {
-					set(vm, ret, NIL);
-					return;
-				}
+			while (idx > 0 && elm) {
+				elm = elm->nxt;
+				--idx;
 			}
 
-			set(vm, ret, elem->value);
+			return idx == 0
+				? env::newObj(vm, elm->val)
+				: env::newObj(vm, NIL);
 		}));	
-		
-		// (seth index value list)
-		env::addSymbol(vm, "seth", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
-		{
-			Obj* head = args->next->next->value;
-
-			if (!head) {
-				set(vm, ret, NIL);
-				return;
-			}
-			
-			auto* elem = head->_args;
-
-			for (size_t i = 0; i < castObj<j_int>(evalObj(vm, args->value, eval)); ++i) {
-				elem = elem->next;
-
-				if (!elem) {
-					set(vm, ret, NIL);
-					return;
-				}
-			}
-
-			set(vm, ret, set(vm, elem->value, evalObj(vm, args->next->value, eval)));
-		}));
 
 		// (size list)
-		env::addSymbol(vm, "size", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "size", env::addNative([](VM* vm, Node* args) 
 		{
-			Obj* head = evalObj(vm, args->value, eval);
+			auto lst = args->val;
+			auto elm = lst->_args;
+			auto size = 0;
 
-			if (!head) {
-				set(vm, ret, NIL);
-				return;
-			}
-
-			auto* elem = head->_args;
-			j_int size = 0;
-
-			while (elem) {
+			while (elm) {
+				elm = elm->nxt;
 				++size;
-				elem = elem->next;
 			}
 
-			setTo<j_int>(ret, size);
+			return setTo<jtsi>(env::newObj(vm), size);
 		}));
 
 		// (prepend value list)
-		env::addSymbol(vm, "prepend", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "prepend", env::addNative([](VM* vm, Node* args) 
 		{
-			Obj* head = evalObj(vm, args->next->value, eval);
+			auto val = evalObj(vm, args->val);
+			auto lst = args->nxt->val;
+			auto prvVal = (Obj*)nullptr;
+			
+			setObj(vm, prvVal, lst->_args->val);
+			setObj(vm, lst->_args->val, val);
 
-			if (!head) {
-				set(vm, ret, NIL);
-				return;
-			}
+			auto prvNode = lst->_args->nxt;
 
-			if (!head->_args) {
-				head->_args = env::acquireNode(vm);
-				set(vm, head->_args->value, evalObj(vm, args->value, eval));
-				return;
-			}
-
-			auto* cur = head->_args;
-
-			head->_args = env::acquireNode(vm);
-			head->_args->next = cur;
-
-			set(vm, ret, set(vm, head->_args->value, evalObj(vm, args->value, eval)));
+			lst->_args->nxt = env::newNode(vm);
+			lst->_args->nxt->nxt = prvNode;
+			
+			return setObj(vm, lst->_args->nxt->val, prvVal);
 		}));
 
 		// (append value list)
-		env::addSymbol(vm, "append", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "append", env::addNative([](VM* vm, Node* args) 
 		{
-			Obj* head = evalObj(vm, args->next->value, eval);
+			auto val = evalObj(vm, args->val);
+			auto lst = args->nxt->val->_args;
 
-			if (!head) {
-				set(vm, ret, NIL);
-				return;
+			while (lst->nxt) {
+				lst = lst->nxt;
 			}
 
-			if (!head->_args) {
-				head->_args = env::acquireNode(vm);
-				set(vm, head->_args->value, evalObj(vm, args->value, eval));
-				return;
-			}
+			lst->nxt = env::newNode(vm);
 
-			auto* elem = head->_args;
-
-			while (elem->next) {
-				elem = elem->next;
-			}
-
-			elem->next = env::acquireNode(vm);
-
-			set(vm, ret, set(vm, elem->next->value, evalObj(vm, args->value, eval)));
+			return setObj(vm, lst->nxt->val, val);
 		}));
 
 		// (insert index value list)
-		env::addSymbol(vm, "insert", env::addNative([](VM* vm, Obj* ret, ObjNode* args, bool eval) 
+		env::addSymbol(vm, "insert", env::addNative([](VM* vm, Node* args) 
 		{
-			Obj* head = evalObj(vm, args->next->next->value, eval);
+			auto val = evalObj(vm, args->nxt->val);
+			auto lst =args->nxt->nxt->val;
+			auto elm = lst->_args;
+			auto idx = castObj<jtsi>(evalObj(vm, args->val));
 
-			if (!head) {
-				set(vm, ret, NIL);
-				return;
+			if (idx == 0) {
+				auto prvVal = (Obj*)nullptr;
+
+				setObj(vm, prvVal, lst->_args->val);
+				setObj(vm, lst->_args->val, val);
+
+				auto prvNode = lst->_args->nxt;
+
+				lst->_args->nxt = env::newNode(vm);
+				lst->_args->nxt->nxt = prvNode;
+
+				return setObj(vm, lst->_args->nxt->val, prvVal);
 			}
 
-			if (castObj<j_int>(evalObj(vm, args->value, eval)) <= 0) {
-				auto* cur = head->_args;
-				head->_args = env::acquireNode(vm);
-				head->_args->next = cur;
-
-				set(vm, head->_args->value, evalObj(vm, args->next->value, eval));
-				return;
+			while (idx > 1) {
+				elm = elm->nxt;
+				--idx;
 			}
 
-			auto* elem = head->_args;
+			auto prv = elm->nxt;
+			elm->nxt = env::newNode(vm);
+			setObj(vm, elm->nxt->val, val);
+			elm->nxt->nxt = prv;
 
-			for (size_t i = 1; i < castObj<j_int>(evalObj(vm, args->value, eval)); ++i) {
-				elem = elem->next;
-
-				if (!elem) {
-					set(vm, ret, NIL);
-					return;
-				}
-			}
-
-			auto* prev = elem->next;
-			elem->next = env::acquireNode(vm);
-			elem->next->next = prev;
-
-			set(vm, ret, set(vm, elem->next->value, evalObj(vm, args->next->value, eval)));
+			return env::newObj(vm, val);
 		}));
 	}
 }

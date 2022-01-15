@@ -7,11 +7,11 @@ namespace jts
 {
 	struct JtsFn
 	{
-		ObjNode* codeBlock = nullptr;
+		Node* codeBlock = nullptr;
 		
-		ObjNode* params    = nullptr;
+		Node* params    = nullptr;
 
-		Obj* call (VM* vm, ObjNode* args, bool eval);
+		Obj* call (VM* vm, Node* args);
 	};	
 }
 

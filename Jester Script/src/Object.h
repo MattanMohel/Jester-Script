@@ -15,10 +15,10 @@ namespace jts {
 		union {
 			// Integrals
 
-			j_char _char;
-			j_bool _bool;
-			j_int   _int;
-			j_float _float;
+			jtsc _char;
+			jtsb _bool;
+			jtsi   _int;
+			jtsf _float;
 
 			// Structures
 
@@ -28,13 +28,13 @@ namespace jts {
 
 			// Callables
 
-			void (*_native)(VM*, Obj*, ObjNode*, bool);
+			Obj* (*_native)(VM*, Node*);
 			CppFn* _cppFn;
 			JtsFn* _jtsFn;
 
 			// Lists
 
-			ObjNode* _args;
+			Node* _args;
 			Obj* _quote;
 		};
 
@@ -49,16 +49,16 @@ namespace jts {
 
 	// Jester Script non-destructive object wrapper
 
-	struct ObjNode {
-		ObjNode() = default;
+	struct Node {
+		Node() = default;
 
-		ObjNode(Obj* obj) :
-			value(obj) {
+		Node(Obj* obj) :
+			val(obj) {
 		}
 
-		ObjNode* next = nullptr;
+		Node* nxt = nullptr;
 
-		Obj* value = nullptr;
+		Obj* val = nullptr;
 	};
 }
 

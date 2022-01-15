@@ -69,12 +69,12 @@ namespace jts {
 			auto elem = obj->_args;
 
 			if (elem) {
-				while (elem && elem->next) {
-					ret += toString(elem->value) + " ";
-					elem = elem->next;
+				while (elem && elem->nxt) {
+					ret += toString(elem->val) + " ";
+					elem = elem->nxt;
 				}
 
-				ret += toString(elem->value);
+				ret += toString(elem->val);
 			}
 
 			return ret + ')';

@@ -14,7 +14,7 @@ namespace jts
 		@param eval : whether or not to evaluate quote values
 		@param top  : if true, all objects are released to pool upon termination of eval
 	*/
-	Obj* evalObj(VM* vm, Obj* obj, bool eval = false);
+	Obj* evalObj(VM* vm, Obj* obj);
 
 	/* 
 		Executes amd returns an object with a callable type
@@ -23,7 +23,7 @@ namespace jts
 		@param eval : wether or not to evaluate quote values
 		@param top  : if true, all objects are released to pool upon termination of eval
 	*/
-	Obj* execObj(VM* vm, ObjNode* args, bool eval);
+	Obj* execObj(VM* vm, Node* args);
 
 	// Takes object and returns its T value
 
@@ -44,7 +44,7 @@ namespace jts
 
 				return static_cast<T>(obj->_int);
 
-			default: // case FLOAT
+			default: // FLOAT
 
 				return static_cast<T>(obj->_float);
 		}
@@ -55,19 +55,19 @@ namespace jts
 	template<typename T>
 	inline Type getType()
 	{
-		if (std::is_same<T, j_char>::value)
+		if (std::is_same<T, jtsc>::value)
 		{
 			return Type::INT;
 		}
-		else if (std::is_same<T, j_bool>::value)
+		else if (std::is_same<T, jtsb>::value)
 		{
 			return Type::BOOL;
 		}
-		else if (std::is_same<T, j_int>::value)
+		else if (std::is_same<T, jtsi>::value)
 		{
 			return Type::INT;
 		}
-		else if (std::is_same<T, j_float>::value)
+		else if (std::is_same<T, jtsf>::value)
 		{
 			return Type::FLOAT;
 		}

@@ -25,7 +25,7 @@ namespace jts {
 	*/
 
 	struct CppFn {
-		virtual Obj* call(VM* vm, Obj* ret, ObjNode* args) = 0;
+		virtual Obj* call(VM* vm, Node* args) = 0;
 	};
 
 	template<typename Ret, typename... Args>
@@ -33,29 +33,29 @@ namespace jts {
 		
 		using Fn = Ret(*)(Args...);
 
-		Obj* call(VM* vm, Obj* ret, ObjNode* args) override {
-			return call_Impl(vm, ret, args, std::make_index_sequence<sizeof...(Args)>());
+		Obj* call(VM* vm, Node* args) override {
+			return call_Impl(vm, args, std::make_index_sequence<sizeof...(Args)>());
 		}
 
 		template<size_t... I>
-		Obj* call_Impl(VM* vm, Obj* ret, ObjNode* args, std::index_sequence<I...>) {
+		Obj* call_Impl(VM* vm, Node* args, std::index_sequence<I...>) {
 			std::vector<Obj*> paramVec;
 
 			// create parameter vector
 
-			while (args->next) {
-				paramVec.emplace_back(evalObj(vm, args->next->value));
-				args = args->next;
+			while (args->nxt) {
+				paramVec.emplace_back(evalObj(vm, args->nxt->val));
+				args = args->nxt;
 			}
 
 			if constexpr (std::is_void<Ret>::value)	// func is void, evaluate and return NIL
 			{
 				func(castObj<Args>(paramVec[I])...);
-				return setTo(ret, nullptr_t());
+				return setTo(env::newObj(vm), nullptr_t());
 			}
 			else // return the func value
 			{
-				return setTo(ret, func(castObj<Args>(paramVec[I])...));
+				return setTo(env::newObj(vm), func(castObj<Args>(paramVec[I])...));
 			}
 		}
 
