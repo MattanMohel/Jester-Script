@@ -27,7 +27,12 @@ namespace jts {
 		}
 
 		if (!b->refCount && !isIntegral(b->type)) {
-			b->refCount = new size_t(0);
+			if (b->type == Type::QUOTE) {
+				b->_quote->refCount = new size_t(0);
+			}
+			else {
+				b->refCount = new size_t(0);
+			}
 		}
 
 		a->type = b->type;

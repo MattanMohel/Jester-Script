@@ -172,7 +172,7 @@ namespace jts {
 				++it;
 			}
 		} 
-		while (!(depth == 0 && isNonToken(*it)));
+		while (!(depth <= 0 && isNonToken(*it)));
 
 		src.insert(it, ')');
 

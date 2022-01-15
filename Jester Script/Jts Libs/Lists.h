@@ -88,7 +88,7 @@ namespace lib {
 		{
 			auto val = evalObj(vm, args->val);
 			auto lst = args->nxt->val;
-			auto prvVal = (Obj*)nullptr;
+			auto prvVal = env::newObj(vm);
 			
 			setObj(vm, prvVal, lst->_args->val);
 			setObj(vm, lst->_args->val, val);
@@ -98,7 +98,8 @@ namespace lib {
 			lst->_args->nxt = env::newNode(vm);
 			lst->_args->nxt->nxt = prvNode;
 			
-			return setObj(vm, lst->_args->nxt->val, prvVal);
+			setObj(vm, lst->_args->nxt->val, prvVal);
+			return setObj(vm, env::newObj(vm), val);
 		}));
 
 		// (append value list)
@@ -120,35 +121,28 @@ namespace lib {
 		env::addSymbol(vm, "insert", env::addNative([](VM* vm, Node* args) 
 		{
 			auto val = evalObj(vm, args->nxt->val);
-			auto lst =args->nxt->nxt->val;
-			auto elm = lst->_args;
+			auto lst =args->nxt->nxt->val->_args;
 			auto idx = castObj<jtsi>(evalObj(vm, args->val));
 
-			if (idx == 0) {
-				auto prvVal = (Obj*)nullptr;
-
-				setObj(vm, prvVal, lst->_args->val);
-				setObj(vm, lst->_args->val, val);
-
-				auto prvNode = lst->_args->nxt;
-
-				lst->_args->nxt = env::newNode(vm);
-				lst->_args->nxt->nxt = prvNode;
-
-				return setObj(vm, lst->_args->nxt->val, prvVal);
-			}
-
-			while (idx > 1) {
-				elm = elm->nxt;
+			while (idx > 0 && lst->nxt) {
+				lst = lst->nxt;
 				--idx;
 			}
 
-			auto prv = elm->nxt;
-			elm->nxt = env::newNode(vm);
-			setObj(vm, elm->nxt->val, val);
-			elm->nxt->nxt = prv;
+			if (idx > 0) {
+				lst->nxt = env::newNode(vm, env::newObj(vm));
+				return setObj(vm, lst->nxt->val, val);
+			}
 
-			return env::newObj(vm, val);
+			auto prvVal = env::newObj(vm);
+			setObj(vm, prvVal, lst->val);
+			setObj(vm, lst->val, val);
+
+			auto prvNode = lst->nxt;
+			lst->nxt = env::newNode(vm, prvVal);
+			lst->nxt->nxt = prvNode;
+
+			return setObj(vm, env::newObj(vm), val);
 		}));
 	}
 }
