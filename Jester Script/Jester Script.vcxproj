@@ -90,6 +90,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)Jester Script\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,6 +110,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(SolutionDir)Jester Script\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,6 +127,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)Jester Script\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +149,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir)Jester Script\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,45 +159,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Log.cpp" />
-    <ClCompile Include="src\JtsFunc.cpp" />
-    <ClCompile Include="src\Execute.cpp" />
-    <ClCompile Include="src\Object.cpp" />
-    <ClCompile Include="src\Operations.cpp" />
-    <ClCompile Include="src\Parser.cpp" />
-    <ClCompile Include="src\Lexer.cpp" />
-    <ClCompile Include="src\File.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\VM.cpp" />
-    <ClCompile Include="src\StrCon.cpp" />
+    <ClCompile Include="src\core\Log.cpp" />
+    <ClCompile Include="src\core\JtsFunc.cpp" />
+    <ClCompile Include="src\core\Execute.cpp" />
+    <ClCompile Include="src\core\Object.cpp" />
+    <ClCompile Include="src\util\ListOp.cpp" />
+    <ClCompile Include="src\util\ObjectOp.cpp" />
+    <ClCompile Include="src\core\Parser.cpp" />
+    <ClCompile Include="src\core\Lexer.cpp" />
+    <ClCompile Include="src\core\File.cpp" />
+    <ClCompile Include="src\core\main.cpp" />
+    <ClCompile Include="src\core\VM.cpp" />
+    <ClCompile Include="src\core\StrCon.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Jts Libs\Arithmetic.h" />
-    <ClInclude Include="Jts Libs\Boolean.h" />
-    <ClInclude Include="Jts Libs\Lists.h" />
-    <ClInclude Include="Jts Libs\Standard.h" />
-    <ClInclude Include="src\CppClass.h" />
-    <ClInclude Include="src\JtsType.h" />
-    <ClInclude Include="src\CppFunc.h" />
-    <ClInclude Include="utils\Pool.h" />
-    <ClInclude Include="src\Log.h" />
-    <ClInclude Include="utils\IterableStack.h" />
-    <ClInclude Include="src\JtsFunc.h" />
-    <ClInclude Include="src\Execute.h" />
-    <ClInclude Include="src\Operations.h" />
-    <ClInclude Include="src\Parser.h" />
-    <ClInclude Include="src\Lexer.h" />
-    <ClInclude Include="src\File.h" />
-    <ClInclude Include="src\Object.h" />
-    <ClInclude Include="src\Types.h" />
-    <ClInclude Include="src\VM.h" />
-    <ClInclude Include="src\Token.h" />
-    <ClInclude Include="src\StrCon.h" />
-    <ClInclude Include="utils\Scopes.h" />
-    <ClInclude Include="utils\Timer.h" />
+    <ClInclude Include="src\prelude\Arithmetic.h" />
+    <ClInclude Include="src\prelude\Boolean.h" />
+    <ClInclude Include="src\prelude\Lists.h" />
+    <ClInclude Include="src\prelude\Standard.h" />
+    <ClInclude Include="src\core\CppClass.h" />
+    <ClInclude Include="src\core\JtsType.h" />
+    <ClInclude Include="src\core\CppFunc.h" />
+    <ClInclude Include="src\util\ListOp.h" />
+    <ClInclude Include="src\util\Pool.h" />
+    <ClInclude Include="src\core\Log.h" />
+    <ClInclude Include="src\core\JtsFunc.h" />
+    <ClInclude Include="src\core\Execute.h" />
+    <ClInclude Include="src\util\ObjectOp.h" />
+    <ClInclude Include="src\core\Parser.h" />
+    <ClInclude Include="src\core\Lexer.h" />
+    <ClInclude Include="src\core\File.h" />
+    <ClInclude Include="src\core\Object.h" />
+    <ClInclude Include="src\core\Types.h" />
+    <ClInclude Include="src\core\VM.h" />
+    <ClInclude Include="src\core\Token.h" />
+    <ClInclude Include="src\core\StrCon.h" />
+    <ClInclude Include="src\util\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="scripts\Jester.jts" />
+    <None Include="src\scripts\Jester.jts" />
     <None Include="scripts\Rock-Paper-Scissors.jts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

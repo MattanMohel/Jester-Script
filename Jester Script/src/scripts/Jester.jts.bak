@@ -1,0 +1,42 @@
+
+(defun factorize (n)
+	(let
+		( (fct  1)
+		  (res ()) )
+		
+		(loop (> n 1)
+			(+= fct 1)
+			(when (= (mod n fct) 0)	
+				(do 
+					(append fct res)
+					(/= n fct)
+					(set fct 1))))
+
+		res))
+
+(defun apply (f lst)
+	(let 
+		( (arg nil) )
+		(new lst arg)
+
+		(prepend 'f arg)
+		(eval arg) ))
+
+(defun prod (n)
+	
+	(let 
+		((factors (1))
+		 (factor  (1)))
+		
+		(loop (> n 1)
+			(set factor (factorize n))
+
+			(for f factors
+				(remove f factor))
+
+			(for f factor
+				(append f factors))
+
+			(-= n 1))
+
+		(apply * factors)))

@@ -8,12 +8,12 @@
 #include "CppClass.h"
 #include "VM.h"
 
-#include "../Jts Libs/Standard.h"
-#include "../Jts Libs/Arithmetic.h"
-#include "../Jts Libs/Boolean.h"
-#include "../Jts Libs/Lists.h"
+#include "prelude/Standard.h"
+#include "prelude/Arithmetic.h"
+#include "prelude/Boolean.h"
+#include "prelude/Lists.h"
 
-#include "../utils/Timer.h"
+#include "util/Timer.h"
 
 using namespace jts;
 
@@ -27,7 +27,7 @@ int main(char** argc, int** argv) {
 	env::addLib(vm, lib::BooleanLib);
 	env::addLib(vm, lib::ListsLib);
 
-	env::addScript(vm, "scripts/Jester.jts");
+	env::addScript(vm, "src/scripts/Jester.jts");
 
 	env::runREPL(vm);
 }

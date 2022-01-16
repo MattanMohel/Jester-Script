@@ -2,7 +2,7 @@
 #define VM_H
 
 #include "Types.h"
-#include "../utils/Pool.h"
+#include "util/Pool.h"
 
 #define CHECK_ERROR 1
 #define DEBUG_ALLOC 0
@@ -57,9 +57,8 @@ namespace jts {
 
 		void addSymbol(VM* vm, const str& key, Obj* val);
 		
-		Obj* addNative     (Obj* (*native)(VM*, Node*));
-
-		Obj* addSrcCode(VM* vm, const str& src);
+		Obj* addNative(Obj* (*native)(VM*, Node*));
+		Obj* addSrcCode   (VM* vm, const str& src);
 
 		// Adds an object symbol of type
 		template<typename T>
@@ -79,10 +78,14 @@ namespace jts {
 		/////Execution/////
 		///////////////////
 
-		Obj* run(VM* vm);	
+		Obj* run    (VM* vm);	
 		void runREPL(VM* vm);
 
-		Obj* beginScope(VM* vm, Node* params, std::function<Obj*(VM*)> body);
+		Node* pushEnv(VM* vm, Node* locals, Node* newVal);
+		Node* pushEnv(VM* vm, Node* locPair);
+
+		void  endEnv(VM* vm, Node* locals,  Node* prvVal);
+		void  endEnv(VM* vm, Node* locPair, Node* prvVal);
 
 		void clear(VM* vm);
 

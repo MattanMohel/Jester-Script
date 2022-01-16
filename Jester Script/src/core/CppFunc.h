@@ -4,8 +4,9 @@
 #include "Types.h"
 #include "Object.h"
 #include "Execute.h"
-#include "Operations.h"
 #include "Log.h"
+
+#include "util/ObjectOp.h"
 
 #include <vector>
 

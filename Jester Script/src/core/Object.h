@@ -60,6 +60,9 @@ namespace jts {
 
 		Obj* val = nullptr;
 	};
+
+	void  shift (Node** node);
+	Node* shiftr(Node** node);
 }
 
 #endif

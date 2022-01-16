@@ -5,8 +5,6 @@
 #include <unordered_map>
 #include <functional>
 
-#include "../utils/IterableStack.h"
-
 namespace jts {
 	using str = std::string;
 
@@ -78,15 +76,6 @@ namespace jts {
 		MES, // message
 		WRN, // warning
 		ERR, // error
-	};
-
-	struct SymbolMap {
-		std::unordered_map<str, Obj*> symbols;
-
-		SymbolMap *next, *prev;
-
-		size_t prnthDepth;
-		bool open = false;
 	};
 
 	inline bool isIntegral(Type type) {

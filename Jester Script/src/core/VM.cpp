@@ -1,11 +1,13 @@
 #include "VM.h"
 #include "Token.h"
 #include "Execute.h"
-#include "Operations.h"
 #include "Object.h"
 #include "Lexer.h"
 #include "File.h"
 #include "Log.h"
+
+#include "util/ObjectOp.h"
+#include "util/ListOp.h"
 
 #include <iostream>
 
@@ -210,38 +212,61 @@ namespace jts {
 			}
 		}
 
-		// leaking memory - prevVal
-		Obj* beginScope(VM* vm, Node* params, std::function<Obj* (VM*)> body) {
-			Node* prevVal = listCpy(vm, params, [](VM* vm, Obj* obj) {
-				
-				Obj* ret = nullptr;
+		Node* pushEnv(VM* vm, Node* locals, Node* newVal) {
+			Node* prev = lst::copy(vm, locals);
 
-				if (obj->type == Type::LIST) {
-					ret = setObj(vm, env::newObj(vm), obj->_args->val);
-					setObj(vm, obj->_args->val, evalObj(vm, obj->_args->nxt->val));
-				}
-				else {
-					ret = setObj(vm, env::newObj(vm), obj);
-					setObj(vm, obj, NIL);
-				}
+			lst::forEach(vm, locals, [&newVal](VM* vm, Obj* elm) {
+				setObj(vm, elm, evalObj(vm, newVal->val), false);
+				shift(&newVal);
+			});
+
+			return prev;
+		}
+
+		Node* pushEnv(VM* vm, Node* locPair) {
+			
+			Node* prev = 
+				lst::copy(vm, locPair, [](VM* vm, Obj* elm) {
 				
+				Obj* ret = nullptr;  
+
+				switch (elm->type) {
+				case Type::LIST:
+
+					ret = setObj(vm, env::newObj(vm), elm->_args->val);
+					setObj(vm, elm->_args->val, evalObj(vm, elm->_args->nxt->val), false);
+					break;
+
+				default:
+
+					ret = setObj(vm, env::newObj(vm), elm);
+					setObj(vm, elm, NIL, false);
+					break;
+				}
+
 				return ret;
 			});
 
-			Obj* ret = body(vm);
+			return prev;
+		}
 
-			listForEach(vm, params, [&prevVal](VM* vm, Node* node) {
-				if (node->val->type == Type::LIST) {
-					setObj(vm, node->val->_args->val, prevVal->val);
-				}
-				else {
-					setObj(vm, node->val, prevVal->val);
+		void endEnv(VM* vm, Node* locals, Node* prvVal) {
+			lst::forEach(vm, locals, [&prvVal](VM* vm, Obj* elm) {
+
+				switch (elm->type) {
+				case Type::LIST:
+
+					setObj(vm, elm->_args->val, prvVal->val);
+					break;
+
+				default:
+
+					setObj(vm, elm, prvVal->val);
+					break;
 				}
 
-				prevVal = prevVal->nxt;
+				shift(&prvVal);
 			});
-
-			return ret;
 		}
 
 		void clear(VM* vm) {

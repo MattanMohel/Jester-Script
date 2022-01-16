@@ -1,11 +1,12 @@
 #ifndef ARITHMETIC_H
 #define ARITHMETIC_H
 
-#include "../src/Types.h"
-#include "../src/Object.h"
-#include "../src/Operations.h"
-#include "../src/Execute.h"
-#include "../src/VM.h"
+#include "core/Types.h"
+#include "core/Object.h"
+#include "core/Execute.h"
+#include "core/VM.h"
+
+#include "util/ObjectOp.h"
 
 #define _USE_MATH_DEFINES
 
@@ -150,7 +151,7 @@ namespace lib {
 				args = args->nxt;
 			}
 
-			return env::newObj(vm, val);
+			return setObj(vm, env::newObj(vm), val);
 		}));
 
 		env::addSymbol(vm, "-=", env::addNative([](VM* vm, Node* args)
@@ -162,7 +163,7 @@ namespace lib {
 				args = args->nxt;
 			}
 
-			return env::newObj(vm, val);
+			return setObj(vm, env::newObj(vm), val);
 		}));
 
 		env::addSymbol(vm, "*=", env::addNative([](VM* vm, Node* args)
@@ -174,7 +175,7 @@ namespace lib {
 				args = args->nxt;
 			}
 
-			return env::newObj(vm, val);
+			return setObj(vm, env::newObj(vm), val);
 		}));
 
 		env::addSymbol(vm, "/=", env::addNative([](VM* vm, Node* args)
@@ -186,7 +187,7 @@ namespace lib {
 				args = args->nxt;
 			}
 
-			return env::newObj(vm, val);
+			return setObj(vm, env::newObj(vm), val);
 		}));
 
 		env::addSymbol(vm, "%=", env::addNative([](VM* vm, Node* args)
@@ -198,50 +199,50 @@ namespace lib {
 				args = args->nxt;
 			}
 
-			return env::newObj(vm, val);
+			return setObj(vm, env::newObj(vm), val);
 		}));
 
 		// Arithmetic Unary Operations
 
 		env::addSymbol(vm, "ln", env::addNative([](VM* vm, Node* args) 
 		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+			auto ret = setObj(vm, env::newObj(vm), evalObj(vm, args->val));
 			return unaryOp<Unary::LN>(ret);
 		}));
 
 		env::addSymbol(vm, "sin", env::addNative([](VM* vm, Node* args) 
 		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+			auto ret = setObj(vm, env::newObj(vm), evalObj(vm, args->val));
 			return unaryOp<Unary::SIN>(ret);
 		}));
 
 		env::addSymbol(vm, "asin", env::addNative([](VM* vm, Node* args) 
 		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+			auto ret = setObj(vm, env::newObj(vm), evalObj(vm, args->val));
 			return unaryOp<Unary::ASIN>(ret);
 		}));
 
 		env::addSymbol(vm, "cos", env::addNative([](VM* vm, Node* args) 
 		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+			auto ret = setObj(vm, env::newObj(vm), evalObj(vm, args->val));
 			return unaryOp<Unary::COS>(ret);
 		}));
 
 		env::addSymbol(vm, "acos", env::addNative([](VM* vm, Node* args) 
 		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+			auto ret = setObj(vm, env::newObj(vm), evalObj(vm, args->val));
 			return unaryOp<Unary::ACOS>(ret);
 		}));
 
 		env::addSymbol(vm, "tan", env::addNative([](VM* vm, Node* args) 
 		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+			auto ret = setObj(vm, env::newObj(vm), evalObj(vm, args->val));
 			return unaryOp<Unary::TAN>(ret);
 		}));
 
 		env::addSymbol(vm, "atan", env::addNative([](VM* vm, Node* args) 
 		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+			auto ret = setObj(vm, env::newObj(vm), evalObj(vm, args->val));
 			return unaryOp<Unary::ATAN>(ret);
 		}));
 	}

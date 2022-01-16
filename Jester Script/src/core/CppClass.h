@@ -3,8 +3,9 @@
 
 #include "Types.h"
 #include "Execute.h"
-#include "Operations.h"
 #include "VM.h"
+
+#include "util/ObjectOp.h"
 
 #define env_ADD_CLASS(vm, type) env::addSymbol(vm, #type, env::addClass<type>());
 #define env_ADD_MEMBER(vm, type, member) env::addMember<type>(vm, #type, #member, &type::member);

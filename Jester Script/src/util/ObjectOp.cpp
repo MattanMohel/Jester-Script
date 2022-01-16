@@ -1,14 +1,22 @@
 #include <random>
 
-#include "Operations.h"
-#include "Execute.h"
-#include "Object.h"
-#include "Log.h"
-#include "VM.h"
+#include "ObjectOp.h"
+#include "ListOp.h"
 
-// char, int and bool share the same data -> for switch check if its float, otherwise operate on int --> transmutable for char bool & float
+#include "core/Execute.h"
+#include "core/Object.h"
+#include "core/Log.h"
+#include "core/VM.h"
+
+// char, int and bool share the same data,
+// default case sets the data simultaneously 
+// for all three types
 
 namespace jts {
+
+	/////////////////
+	/////Setters/////
+	/////////////////
 
 	Obj* setObj(VM* vm, Obj* a, Obj* b, bool canFree) {
 
@@ -17,14 +25,14 @@ namespace jts {
 	#endif 
 
 		// memory collection
-		if (canFree && a->refCount) {
+		/*if (canFree && a->refCount) {
 			if (*a->refCount < 2 && !isIntegral(a->type)) {
 				freeObj(vm, a);
 			}
 			else {
 				--(*a->refCount);
 			}
-		}
+		}*/
 
 		if (!b->refCount && !isIntegral(b->type)) {
 			if (b->type == Type::QUOTE) {
@@ -42,7 +50,7 @@ namespace jts {
 		case Type::LIST:
 
 			if (b->spec == Spec::VALUE) {
-				a->_args = listCpy(vm, b->_args);
+				a->_args = lst::copy(vm, b->_args);
 			}
 			else {
 				a->_args = b->_args;
@@ -97,6 +105,52 @@ namespace jts {
 
 		return a;
 	}
+
+	template<> Obj* setTo<jtsc>(Obj* a, jtsc value) {
+		a->type = Type::CHAR;
+		a->_char = value;
+
+		return a;
+	}
+
+	template<> Obj* setTo<jtsb>(Obj* a, jtsb value) {
+		a->type = Type::BOOL;
+		a->_bool = value;
+
+		return a;
+	}
+
+	template<> Obj* setTo<jtsi>(Obj* a, jtsi value) {
+		a->type = Type::INT;
+		a->_int = value;
+
+		return a;
+	}
+
+	template<> Obj* setTo<jtsf>(Obj* a, jtsf value) {
+		a->type = Type::FLOAT;
+		a->_float = value;
+
+		return a;
+	}
+
+	template<> Obj* setTo<str*>(Obj* a, str* value) {
+		a->type = Type::STRING;
+		a->_string = value;
+
+		return a;
+	}
+
+	template<> Obj* setTo<nullptr_t>(Obj* a, nullptr_t value) {
+		a->type = Type::NIL;
+		a->_int = 0;
+
+		return a;
+	}
+
+	///////////////////////////
+	/////Binary Operations/////
+	///////////////////////////
 
 	template<> Obj* binaryOp<Binary::ADD>(Obj* a, Obj* b) {
 		switch (a->type) {
@@ -234,6 +288,10 @@ namespace jts {
 		return a;
 	}
 
+	//////////////////////////
+	/////Unary Operations/////
+	//////////////////////////
+
 	template<> Obj* unaryOp<Unary::SIN>(Obj* a) {
 		switch (a->type) {
 		case Type::FLOAT:
@@ -346,47 +404,9 @@ namespace jts {
 		return a;
 	}
 
-	template<> Obj* setTo<jtsc>(Obj* a, jtsc value) {
-		a->type = Type::CHAR;
-		a->_char = value;
-
-		return a;
-	}
-
-	template<> Obj* setTo<jtsb>(Obj* a, jtsb value) {
-		a->type = Type::BOOL;
-		a->_bool = value;
-
-		return a;
-	}
-
-	template<> Obj* setTo<jtsi>(Obj* a, jtsi value) {
-		a->type = Type::INT;
-		a->_int = value;
-
-		return a;
-	}
-
-	template<> Obj* setTo<jtsf>(Obj* a, jtsf value) {
-		a->type = Type::FLOAT;
-		a->_float = value;
-
-		return a;
-	}
-
-	template<> Obj* setTo<str*>(Obj* a, str* value) {
-		a->type = Type::STRING;
-		a->_string = value;
-
-		return a;
-	}
-
-	template<> Obj* setTo<nullptr_t>(Obj* a, nullptr_t value) {
-		a->type = Type::NIL;
-		a->_int = 0;
-
-		return a;
-	}
+	////////////////////////////
+	/////Boolean Operations/////
+	////////////////////////////
 
 	bool isTrue(Obj* a) {
 		switch (a->type) {
@@ -440,6 +460,10 @@ namespace jts {
 		return false;
 	}
 
+	///////////////////////////
+	/////Object Operations/////
+	///////////////////////////
+
 	Obj* quoteObj(VM* vm, Obj* res, Obj* q) {
 		// if quoting non-list item
 		if (q->type != Type::LIST) {
@@ -455,7 +479,7 @@ namespace jts {
 
 		res->type = Type::LIST;
 
-		res->_args = listCpy(vm, q->_args,
+		res->_args = lst::copy(vm, q->_args,
 			[](VM* vm, Obj* obj) {
 				return quoteObj(vm, env::newObj(vm), evalObj(vm, obj));
 		});
@@ -499,7 +523,7 @@ namespace jts {
 
 		case Type::LIST: 
 
-			listForEach(vm, obj->_args,
+			lst::forEach(vm, obj->_args,
 				[](VM* vm, Node* node) {
 					env::releaseNode(vm, node);
 					
@@ -510,35 +534,6 @@ namespace jts {
 		} 
 	}
 
-	Node* listCpy(VM* vm, Node* lst, std::function<Obj* (VM*, Obj*)> copy) {
-		if (!lst) {
-			return nullptr;
-		}
-
-		Node* res = nullptr;
-		Node** resPtr = &res;
-
-		while (lst) {
-			(*resPtr) = env::newNode(vm, copy(vm, lst->val));
-
-			lst = lst->nxt;
-			resPtr = &(*resPtr)->nxt;
-		}
-
-		return res;
-	}
-
-	void listForEach(VM* vm, Node* lst, std::function<void(VM*, Node*)> forEach) {
-		if (!lst) {
-			return;
-		}
-
-		while (lst) {
-			forEach(vm, lst);
-			lst = lst->nxt;
-		}
-	}
-
 	int random(int min, int max) {
 		std::random_device dev;
 		std::mt19937 rng(dev());
@@ -546,5 +541,4 @@ namespace jts {
 
 		return dist(rng);
 	}
-
 }

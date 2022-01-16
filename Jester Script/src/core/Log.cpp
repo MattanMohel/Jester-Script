@@ -43,16 +43,17 @@ namespace jts {
 			return obj->_bool ? "true" : "false";
 
 		case Type::QUOTE:
-		{
-			str ret = "";
+			
+			switch (obj->_quote->type) {
+			case Type::QUOTE:
+			case Type::LIST:
 
-			for (char c : obj->_quote->symbol) {
-				ret += toupper(c);
+				return toString(obj->_quote);
+
+			default:
+
+				return obj->_quote->symbol;
 			}
-
-			return ret;
-		}
-
 
 		case Type::FLOAT:
 		{

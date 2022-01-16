@@ -5,6 +5,8 @@
 #include "StrCon.h"
 #include "VM.h"
 
+#include <stack>
+
 namespace jts {
 
 	void parseTokens(VM* vm) {
@@ -12,7 +14,8 @@ namespace jts {
 		/*
 			Parses a tokenized source file into a linked-list tree of objects
 
-			Utilizes ObjNode's 'next' value to connect objects together
+			Utilizes Node class' 'nxt' value to connect objects together
+			non-destructively
 
 			EX:
 
@@ -33,7 +36,7 @@ namespace jts {
 		*/
 		 
 		Node** head = &vm->stackPtrBeg;
-		stack_itr<Node**> funcHead;
+		std::stack<Node**> funcHead;
 
 		Tok* it = vm->tokenPtrBeg;
 
@@ -71,14 +74,15 @@ namespace jts {
 			case Spec::LST_BEG:
 
 				// set next to the list's argument node
-				funcHead.emplace(head);
+				funcHead.push(head);
 				head = &(*head)->val->_args;
 				break;
 
 			case Spec::LST_END:
 
 				// set next to the last pushed list head's next node
-				head = &(*funcHead.pop())->nxt;
+				head = &(*funcHead.top())->nxt;
+				funcHead.pop();
 				break;
 
 			default:

@@ -1,15 +1,16 @@
 #ifndef STANDARD_H
 #define STANDARD_H
 
-#include "../src/VM.h"
-#include "../src/Types.h"
-#include "../src/Object.h"
-#include "../src/Execute.h"
-#include "../src/Operations.h"
-#include "../src/JtsFunc.h"
-#include "../src/JtsType.h"
-#include "../src/CppClass.h"
-#include "../src/Log.h"
+#include "core/VM.h"
+#include "core/Types.h"
+#include "core/Object.h"
+#include "core/Execute.h"
+#include "core/JtsFunc.h"
+#include "core/JtsType.h"
+#include "core/CppClass.h"
+#include "core/Log.h"
+
+#include "util/ObjectOp.h"
 
 #include <iostream>
 
@@ -42,17 +43,20 @@ namespace lib {
 
 		// (let [name value] body)
 		env::addSymbol(vm, "let", env::addNative([](VM* vm, Node* args) {
+			auto prvVal = env::pushEnv(vm, args->val->_args);
+
 			auto bdy = args->nxt;
-
-			return env::beginScope(vm, args->val->_args, [&bdy](VM* vm) {
 				
-				while (bdy->nxt) {
-					evalObj(vm, bdy->val);
-					bdy = bdy->nxt;
-				}
+			while (bdy->nxt) {
+				evalObj(vm, bdy->val);
+				shift(&bdy);
+			}
 
-				return setObj(vm, env::newObj(vm), evalObj(vm, bdy->val));
-			});
+			auto ret = setObj(vm, env::newObj(vm), evalObj(vm, bdy->val));
+
+			env::endEnv(vm, args->val->_args, prvVal);
+
+			return ret; 
 		}));
 
 		// (fn (params) body)
@@ -65,7 +69,7 @@ namespace lib {
 
 			ret->_jtsFn = new JtsFn();
 			ret->_jtsFn->params = args;
-			ret->_jtsFn->codeBlock = args->nxt;
+			ret->_jtsFn->block = args->nxt;
 
 			return ret;
 		}));
@@ -78,7 +82,7 @@ namespace lib {
 
 			args->val->_jtsFn = new JtsFn();
 			args->val->_jtsFn->params = args->nxt->val->_args;
-			args->val->_jtsFn->codeBlock = args->nxt->nxt;			
+			args->val->_jtsFn->block = args->nxt->nxt;			
 
 			return args->val;
 		}));
@@ -113,7 +117,7 @@ namespace lib {
 				bdy = args->nxt;
 			}
 
-			return env::newObj(vm, ret);
+			return setObj(vm, env::newObj(vm), ret);
 		}));
 
 		// (do body...)
@@ -173,8 +177,8 @@ namespace lib {
 		env::addSymbol(vm, "string", env::addNative([](VM* vm, Node* args)
 		{
 			return setTo(env::newObj(vm), new str(toString(evalObj(vm, args->val))));
-		}));
-
+		}));		
+		
 		// (input) --> (set in (input))
 		env::addSymbol(vm, "input", env::addNative([](VM* vm, Node* args)
 		{
@@ -193,7 +197,7 @@ namespace lib {
 				args = args->nxt;
 			}
 
-			return setObj(vm, env::newObj(vm), printObj(evalObj(vm, args->val), false));
+			return env::newObj(vm, printObj(evalObj(vm, args->val), false));
 		}));
 
 		// (println args)
@@ -204,7 +208,7 @@ namespace lib {
 				args = args->nxt;
 			}
 
-			return setObj(vm, env::newObj(vm), printObj(evalObj(vm, args->val), true));
+			return env::newObj(vm, printObj(evalObj(vm, args->val), true));
 		}));
 	}
 }

@@ -1,11 +1,13 @@
 #ifndef LISTS_H
 #define LISTS_H
 
-#include "../src/Types.h"
-#include "../src/Object.h"
-#include "../src/Operations.h"
-#include "../src/Execute.h"
-#include "../src/VM.h"
+#include "core/Types.h"
+#include "core/Object.h"
+#include "core/Execute.h"
+#include "core/VM.h"
+
+#include "util/ObjectOp.h"
+#include "util/ListOp.h"
 
 using namespace jts;
 
@@ -18,6 +20,10 @@ namespace lib {
 			auto lst = args->nxt->val->_args;
 			auto bdy = args->nxt->nxt;
 			auto ret = (Obj*)nullptr;
+
+			if (!lst) {
+				return env::newObj(vm, NIL);
+			}
 
 			while (lst) {
 				setObj(vm, args->val, evalObj(vm, lst->val));
@@ -81,25 +87,43 @@ namespace lib {
 			}
 
 			return setTo<jtsi>(env::newObj(vm), size);
+		}));		
+		
+		// (new list to-set)
+		env::addSymbol(vm, "new", env::addNative([](VM* vm, Node* args) 
+		{
+			auto val = args->nxt->val;
+
+			val->_args = lst::copy(vm, shiftr(&args)->val->_args);
+			val->type = Type::LIST;
+
+			return env::newObj(vm, val);
 		}));
 
 		// (prepend value list)
 		env::addSymbol(vm, "prepend", env::addNative([](VM* vm, Node* args) 
 		{
 			auto val = evalObj(vm, args->val);
-			auto lst = args->nxt->val;
+			auto lst = args->nxt->val->_args;
 			auto prvVal = env::newObj(vm);
-			
-			setObj(vm, prvVal, lst->_args->val);
-			setObj(vm, lst->_args->val, val);
 
-			auto prvNode = lst->_args->nxt;
+			if (!lst) {
+				args->nxt->val->_args = env::newNode(vm,
+					env::newObj(vm, val));
 
-			lst->_args->nxt = env::newNode(vm);
-			lst->_args->nxt->nxt = prvNode;
+				return env::newObj(vm, val);
+			}
 			
-			setObj(vm, lst->_args->nxt->val, prvVal);
-			return setObj(vm, env::newObj(vm), val);
+			setObj(vm, prvVal, lst->val);
+			setObj(vm, lst->val, val);
+
+			auto prvNode = lst->nxt;
+
+			lst->nxt = env::newNode(vm);
+			lst->nxt->nxt = prvNode;
+			
+			setObj(vm, lst->nxt->val, prvVal);
+			return env::newObj(vm, val);
 		}));
 
 		// (append value list)
@@ -108,13 +132,20 @@ namespace lib {
 			auto val = evalObj(vm, args->val);
 			auto lst = args->nxt->val->_args;
 
+			if (!lst) {
+				args->nxt->val->_args = env::newNode(vm, 
+					env::newObj(vm, val));
+
+				return env::newObj(vm, val);
+			}
+
 			while (lst->nxt) {
 				lst = lst->nxt;
 			}
 
 			lst->nxt = env::newNode(vm);
 
-			return setObj(vm, lst->nxt->val, val);
+			return env::newObj(vm, setObj(vm, lst->nxt->val, val));
 		}));
 
 		// (insert index value list)
@@ -131,7 +162,7 @@ namespace lib {
 
 			if (idx > 0) {
 				lst->nxt = env::newNode(vm, env::newObj(vm));
-				return setObj(vm, lst->nxt->val, val);
+				return env::newObj(vm, setObj(vm, lst->nxt->val, val));
 			}
 
 			auto prvVal = env::newObj(vm);
@@ -142,7 +173,48 @@ namespace lib {
 			lst->nxt = env::newNode(vm, prvVal);
 			lst->nxt->nxt = prvNode;
 
-			return setObj(vm, env::newObj(vm), val);
+			return env::newObj(vm, val);
+		}));		
+		
+		// (remove value list)
+		env::addSymbol(vm, "remove", env::addNative([](VM* vm, Node* args) 
+		{
+			auto val = evalObj(vm, args->val);
+			auto elm = args->nxt->val->_args;
+			auto prv = (Node*)nullptr;
+
+			if (!elm) {
+				return env::newObj(vm, NIL);
+			}
+
+			while (elm->nxt && !isEqual(elm->val, val)) {
+				prv =  elm;
+				shift(&elm);
+			}
+
+			if (elm->nxt) {
+				setObj(vm, elm->val, elm->nxt->val);
+
+				elm->nxt = elm->nxt->nxt
+					? elm->nxt->nxt
+					: nullptr;
+
+				//delete elm->nxt
+
+				return env::newObj(vm, val);
+			}
+			if (isEqual(elm->val, val)) {
+				prv
+					? prv->nxt = nullptr
+					: args->nxt->val->_args = nullptr;
+				
+				//delete elm
+				//or delete _args
+
+				return env::newObj(vm, val);
+			}
+
+			return env::newObj(vm, NIL);
 		}));
 	}
 }

@@ -15,113 +15,113 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\core\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\File.cpp">
+    <ClCompile Include="src\core\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Lexer.cpp">
+    <ClCompile Include="src\core\Lexer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\VM.cpp">
+    <ClCompile Include="src\core\VM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Parser.cpp">
+    <ClCompile Include="src\core\Parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\StrCon.cpp">
+    <ClCompile Include="src\core\StrCon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Execute.cpp">
+    <ClCompile Include="src\core\Execute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Operations.cpp">
+    <ClCompile Include="src\util\ObjectOp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\JtsFunc.cpp">
+    <ClCompile Include="src\core\JtsFunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Log.cpp">
+    <ClCompile Include="src\core\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Object.cpp">
+    <ClCompile Include="src\core\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\ListOp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Types.h">
+    <ClInclude Include="src\core\Types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Object.h">
+    <ClInclude Include="src\core\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\VM.h">
+    <ClInclude Include="src\core\VM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\File.h">
+    <ClInclude Include="src\core\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lexer.h">
+    <ClInclude Include="src\core\Lexer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Parser.h">
+    <ClInclude Include="src\core\Parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Token.h">
+    <ClInclude Include="src\core\Token.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\StrCon.h">
+    <ClInclude Include="src\core\StrCon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Execute.h">
+    <ClInclude Include="src\core\Execute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Operations.h">
+    <ClInclude Include="src\util\ObjectOp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Jts Libs\Standard.h">
+    <ClInclude Include="src\prelude\Standard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\JtsFunc.h">
+    <ClInclude Include="src\core\JtsFunc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Jts Libs\Arithmetic.h">
+    <ClInclude Include="src\prelude\Arithmetic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Jts Libs\Boolean.h">
+    <ClInclude Include="src\prelude\Boolean.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Log.h">
+    <ClInclude Include="src\core\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\Pool.h">
+    <ClInclude Include="src\util\Pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\CppFunc.h">
+    <ClInclude Include="src\core\CppFunc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\Timer.h">
+    <ClInclude Include="src\util\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\IterableStack.h">
+    <ClInclude Include="src\core\JtsType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\Scopes.h">
+    <ClInclude Include="src\prelude\Lists.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\JtsType.h">
+    <ClInclude Include="src\core\CppClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Jts Libs\Lists.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CppClass.h">
+    <ClInclude Include="src\util\ListOp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\Rock-Paper-Scissors.jts" />
-    <None Include="scripts\Jester.jts" />
+    <None Include="src\scripts\Jester.jts" />
   </ItemGroup>
 </Project>

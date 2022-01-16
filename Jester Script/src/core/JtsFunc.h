@@ -7,9 +7,8 @@ namespace jts
 {
 	struct JtsFn
 	{
-		Node* codeBlock = nullptr;
-		
-		Node* params    = nullptr;
+		Node* block  = nullptr;	
+		Node* params = nullptr;
 
 		Obj* call (VM* vm, Node* args);
 	};	

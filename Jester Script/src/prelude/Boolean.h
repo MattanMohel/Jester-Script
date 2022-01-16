@@ -1,13 +1,13 @@
 #ifndef BOOLEAN_H
 #define BOOLEAN_H
 
-#include "../src/Types.h"
-#include "../src/Object.h"
-#include "../src/Operations.h"
-#include "../src/Execute.h"
-#include "../src/VM.h"
+#include "core/Types.h"
+#include "core/Object.h"
+#include "core/Execute.h"
+#include "core/VM.h"
 
-#include "../utils/Pool.h"
+#include "util/ObjectOp.h"
+#include "util/Pool.h"
 
 using namespace jts;
 
@@ -22,10 +22,20 @@ namespace lib {
 		env::addSymbol(vm, "if", env::addNative([](VM* vm, Node* args)
 		{
 			if (isTrue(evalObj(vm, args->val))) {
-				return env::newObj(vm, evalObj(vm, args->nxt->val));
+				return setObj(vm, env::newObj(vm), evalObj(vm, args->nxt->val));
 			}
 			
 			return env::newObj(vm, evalObj(vm, args->nxt->nxt->val));
+		}));		
+		
+		// (when cond if-true)
+		env::addSymbol(vm, "when", env::addNative([](VM* vm, Node* args)
+		{
+			if (isTrue(evalObj(vm, args->val))) {
+				return setObj(vm, env::newObj(vm), evalObj(vm, args->nxt->val));
+			}
+			
+			return setObj(vm, env::newObj(vm), NIL);
 		}));
 
 		// (match value case-1 if-true... case-n if-true _ default)
@@ -34,11 +44,11 @@ namespace lib {
 			auto val = evalObj(vm, args->val);
 			auto pat = args->nxt;
 
-			while (pat->nxt && !isEqual(val, evalObj(vm, pat->val))) {
+			while (pat->nxt->nxt && !isEqual(val, evalObj(vm, pat->val))) {
 				pat = pat->nxt->nxt;
 			}
 
-			return env::newObj(vm, evalObj(vm, pat->nxt->val));
+			return setObj(vm, env::newObj(vm), evalObj(vm, pat->nxt->val));
 		}));
 
 		env::addSymbol(vm, "=", env::addNative([](VM* vm, Node* args)

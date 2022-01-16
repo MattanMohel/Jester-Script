@@ -1,13 +1,13 @@
 #include "Execute.h"
 #include "JtsFunc.h"
 #include "Object.h"
-#include "Operations.h"
 #include "JtsType.h"
 #include "cppFunc.h"
 #include "CppClass.h"
+#include "Log.h"
 #include "VM.h"
 
-#include "Log.h"
+#include "util/ObjectOp.h"
 
 namespace jts {
 
@@ -120,8 +120,6 @@ namespace jts {
 				break;
 			}
 		}
-
-
 
 		return ret;
 	}
