@@ -15,6 +15,18 @@
 
 #include "util/Timer.h"
 
+namespace sample {
+	Timer time;
+
+	void reset() {
+		time.reset();
+	}
+
+	float elapsed() {
+		return time.elapsed();
+	}
+}
+
 using namespace jts;
 
 int main(char** argc, int** argv) {
@@ -26,6 +38,9 @@ int main(char** argc, int** argv) {
 	env::addLib(vm, lib::ArithmeticLib);
 	env::addLib(vm, lib::BooleanLib);
 	env::addLib(vm, lib::ListsLib);
+
+	env::addSymbol(vm, "reset", env::addFunction(sample::reset));
+	env::addSymbol(vm, "elapsed", env::addFunction(sample::elapsed));
 
 	env::addScript(vm, "src/scripts/Jester.jts");
 

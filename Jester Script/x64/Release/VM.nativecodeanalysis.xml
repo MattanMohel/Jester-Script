@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::spec' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::spec</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::type' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::type</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_char' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_char</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_bool' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_bool</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_int' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_int</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_float' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_float</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_string' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_string</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_jtsType' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_jtsType</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_cppType' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_cppType</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_native' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_native</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_cppFn' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_cppFn</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_jtsFn' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_jtsFn</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_args' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_args</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::&lt;unnamed-tag&gt;::_quote' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::&lt;unnamed-tag&gt;::_quote</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

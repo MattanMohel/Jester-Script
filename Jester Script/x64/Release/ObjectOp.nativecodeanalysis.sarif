@@ -1,0 +1,357 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "C6011",
+          "message": {
+            "text": "Dereferencing NULL pointer 'b->refCount'. "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+                },
+                "region": {
+                  "startLine": 59,
+                  "startColumn": 4,
+                  "endLine": 59,
+                  "endColumn": 9
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "jts::setObj",
+                  "decoratedName": "?setObj@jts@@YAPEAUObj@1@PEAUVM@1@PEAU21@1_N@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+                          },
+                          "region": {
+                            "startLine": 37,
+                            "startColumn": 20
+                          }
+                        },
+                        "message": {
+                          "text": "'b->refCount' may be NULL (Skip this branch)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+                          },
+                          "region": {
+                            "startLine": 46,
+                            "startColumn": 11
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+                          },
+                          "region": {
+                            "startLine": 47,
+                            "startColumn": 18
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+                          },
+                          "region": {
+                            "startLine": 49,
+                            "startColumn": 12
+                          }
+                        },
+                        "message": {
+                          "text": "Assume switch ( 'b->type' ) resolves to case LIST: "
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ],
+                      "importance": "important"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+                          },
+                          "region": {
+                            "startLine": 50,
+                            "startColumn": 3
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+                          },
+                          "region": {
+                            "startLine": 52,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+                          },
+                          "region": {
+                            "startLine": 56,
+                            "startColumn": 14
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+                          },
+                          "region": {
+                            "startLine": 59,
+                            "startColumn": 4
+                          }
+                        },
+                        "message": {
+                          "text": "'b->refCount' is dereferenced, but may still be NULL"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "essential"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.30.30706.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "commandLine": "\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\bin\\HostX64\\x64\\c1xx.dll\" -ACf{1F7B090C-16DB-4822-966A-A93D26ED4681} -ACpmspft140.dll -Alint -D_PREFAST_ -D_AST_FE_ -Analyze -zm0x00007FF624AB0C80 -il C:\\Users\\matta\\AppData\\Local\\Temp\\_CL_b693b266ast -typedil -f src\\util\\ObjectOp.cpp -Ze -D_MSC_EXTENSIONS -Zp16 -pc \\:/ -D_MSC_VER=1930 -D_MSC_FULL_VER=193030706 -D_MSC_BUILD=0 -D_M_AMD64=100 -ZILP448 -D_M_X64=100 -D_WIN64 -D_WIN32 -GR -D_CPPRTTI -I D:\\repo\\Jester Script\\Jester Script\\src -nologo -W 3 -diagnostics:column -D_GUARDOVERFLOW_CRT_ALLOCATORS=1 -GF -Og -Oi -Ot -DCODE_ANALYSIS -DNDEBUG -D_CONSOLE -D_UNICODE -DUNICODE -EHs -D_CPPUNWIND -EHc -MD -D_MT -D_DLL -GS -D_M_FP_PRECISE -Zc:wchar_t -Zc:forScope -std:c++17 -permissive- -Fox64\\Release\\ObjectOp.obj -Fdx64\\Release\\vc143.pdb -external:W 3 -Gd -analyze:projectdirectory D:\\repo\\Jester Script\\Jester Script -analyze:rulesetdirectory ;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Team Tools\\Static Analysis Tools\\\\Rule Sets; -analyze:ruleset C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Team Tools\\Static Analysis Tools\\Rule Sets\\NativeRecommendedRules.ruleset -analyze:quiet -analyze:plugin C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\bin\\HostX64\\x64\\EspXEngine.dll -FC -errorreport:prompt -I C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include -I C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\atlmfc\\include -I C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\VS\\include -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\ucrt -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\um -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\shared -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\winrt -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\cppwinrt -I C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\Include\\um -external:I C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include -I C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include -external:I C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\atlmfc\\include -I C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\atlmfc\\include -external:I C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\VS\\include -I C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\VS\\include -external:I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\ucrt -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\ucrt -external:I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\um -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\um -external:I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\shared -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\shared -external:I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\winrt -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\winrt -external:I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\cppwinrt -I C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\cppwinrt -external:I C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\Include\\um -I C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\Include\\um",
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/log.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "64d655571742ab80c197262f91c74e0b93f5f9ea877c9f2bb0a0062e9c0847aa"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/log.h"
+          },
+          "hashes": {
+            "sha-256": "7dbb4bf4c92f0444fd98752617b0617e79e50fa7b5db013a1cbcc0fc6a7b3ab9"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/types.h"
+          },
+          "hashes": {
+            "sha-256": "e9c49768bdf2eaef8f070a2765f6bc276c6b3a7a6a2895c3639d6492028c8c7e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/object.h"
+          },
+          "hashes": {
+            "sha-256": "cb560490ca043a4efa95b7bb06d93b2f12622eba98eee5cba377e365b2f86eb4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/execute.h"
+          },
+          "hashes": {
+            "sha-256": "f812fb80c49b53bb2c1c844d3a8ff7fa28dd34aa1adf5b8616b4b8d9b2f5a79d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/cppclass.h"
+          },
+          "hashes": {
+            "sha-256": "d72f793ba8f0a37db691b2c40ef36bd7dcbcb558ec8b5d157d045c58c356195e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/vm.h"
+          },
+          "hashes": {
+            "sha-256": "2337e9cf9b1f98efbd3a86a2872abb5fb5b4133f41c492ee01a984ca2eb92f48"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/util/pool.h"
+          },
+          "hashes": {
+            "sha-256": "8b79a4a40908435e3046120352eae941702a71cea6dd4fe2d0d53d24de90576e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/util/objectop.h"
+          },
+          "hashes": {
+            "sha-256": "b9444f7b3da8d52eaae676fb8ff116354d9f025e82373ba7ef831776b273faef"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/cppfunc.h"
+          },
+          "hashes": {
+            "sha-256": "66ebc64bf8d24cbf95c8f8d1db4409eefe58df9e5f850d41a6820bff8c1f7ab9"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/jtstype.h"
+          },
+          "hashes": {
+            "sha-256": "56b540eda923c54630ccb3c87d902bdd0f8fe3cd2b8ac39a9129c91c38ad8396"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/jtsfunc.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "a04204bf1d4ded7eb48b68ce1f639618ec57a4c9893549fcc66b0c6d24919d1c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/jtsfunc.h"
+          },
+          "hashes": {
+            "sha-256": "42227152199989f1216c077429c711fdd5b53503b0ebafd58ef682a90d0ef268"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/execute.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "347d245327f66f22cd92d99ef916ffbf2c4698e85ce0537d1fc0902cc8a662f6"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/core/object.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "6e05e351baced4768ed17113fd38fcbc0941e876e000ececb290bca0dc058a90"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/util/listop.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "6bf011c741ecc8d30b14b3f8f931d0880c1351454d1b74fb38ee36ac199d898f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/repo/jester script/jester script/src/util/listop.h"
+          },
+          "hashes": {
+            "sha-256": "247affa66c1f64882a923cd96070a4df30a5df3440c443daa53849d73f1e7ecb"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///D:/repo/Jester Script/Jester Script/src/util/ObjectOp.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "cd2fed54be51c74f4005e80d8f5819511fdf3afd8577a1fe923c5d8be5763955"
+          }
+        }
+      ]
+    }
+  ]
+}

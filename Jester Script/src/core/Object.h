@@ -7,16 +7,16 @@ namespace jts {
 	
 	// Jester Script object
 	struct Obj {
-		Type type;
-		Spec spec;
+		Type type = Type::NIL;
+		Spec spec = Spec::NIL;
 
-		str symbol;
+		str symbol = "";
 
 		union {
 			// Integrals
 
-			jtsc _char;
-			jtsb _bool;
+			jtsc  _char = 0;
+			jtsb  _bool;
 			jtsi   _int;
 			jtsf _float;
 
@@ -38,9 +38,9 @@ namespace jts {
 			Obj* _quote;
 		};
 
-		size_t* refCount = 0;
-		bool constant = false;
+		bool constant    = false;
 		bool initialized = false;
+		size_t* refCount = nullptr;
 
 		void assert(bool cond, str message);
 	};
@@ -57,8 +57,7 @@ namespace jts {
 		}
 
 		Node* nxt = nullptr;
-
-		Obj* val = nullptr;
+		Obj* val  = nullptr;
 	};
 
 	void  shift (Node** node);

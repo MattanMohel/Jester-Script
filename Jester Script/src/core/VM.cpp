@@ -15,7 +15,7 @@ namespace jts {
 	namespace env {
 
 		//////////////////////
-		/////Constructors/////
+		/////Type Setters/////
 		//////////////////////
 
 		VM* newVM() {
@@ -37,6 +37,11 @@ namespace jts {
 				return val;
 			});
 
+			return vm;
+		}
+
+		VM* setEval(VM* vm, bool state) {
+			vm->eval = state;
 			return vm;
 		}
 
@@ -225,27 +230,52 @@ namespace jts {
 
 		Node* pushEnv(VM* vm, Node* locPair) {
 			
-			Node* prev = 
+			Node* prev =
 				lst::copy(vm, locPair, [](VM* vm, Obj* elm) {
-				
-				Obj* ret = nullptr;  
 
 				switch (elm->type) {
 				case Type::LIST:
 
-					ret = setObj(vm, env::newObj(vm), elm->_args->val);
-					setObj(vm, elm->_args->val, evalObj(vm, elm->_args->nxt->val), false);
+					return env::newObj(vm, elm->_args->val);
+
+				default:
+
+					return env::newObj(vm, elm);
+				}
+			});
+
+			auto elm = locPair;
+
+			while (elm) {
+				switch (elm->val->type) {
+				case Type::LIST:
+
+					setObj(vm, elm->val->_args->val, evalObj(vm, elm->val->_args->nxt->val));
 					break;
 
 				default:
 
-					ret = setObj(vm, env::newObj(vm), elm);
-					setObj(vm, elm, NIL, false);
+					setObj(vm, elm->val, NIL);
 					break;
 				}
 
-				return ret;
-			});
+				elm = elm->nxt;
+			}
+
+			/*lst::forEach(vm, locPair, [](VM* vm, Obj* elm) {
+				
+				switch (elm->type) {
+				case Type::LIST:
+
+					setObj(vm, elm->_args->val, evalObj(vm, elm->_args->nxt->val));
+					break;
+
+				default:
+
+					setObj(vm, elm, NIL);
+					break;
+				}
+			});*/
 
 			return prev;
 		}

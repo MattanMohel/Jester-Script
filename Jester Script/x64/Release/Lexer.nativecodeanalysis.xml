@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Token.h</FILENAME>
+      <LINE>18</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Tok::spec' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Tok::{ctor}</FUNCTION>
+    <DECORATED>??0Tok@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>18</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Tok::spec</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Token.h</FILENAME>
+      <LINE>18</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Tok::type' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Tok::{ctor}</FUNCTION>
+    <DECORATED>??0Tok@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>18</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Tok::type</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Token.h</FILENAME>
+      <LINE>18</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Tok::line' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Tok::{ctor}</FUNCTION>
+    <DECORATED>??0Tok@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>18</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Tok::line</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Lexer.cpp</FILENAME>
+      <LINE>90</LINE>
+      <COLUMN>26</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '-' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '-' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>jts::tokenizeFile</FUNCTION>
+    <DECORATED>?tokenizeFile@jts@@YAXPEAUVM@1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z</DECORATED>
+    <FUNCLINE>37</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

@@ -28,7 +28,7 @@ namespace lib {
 
 		// (set to-set value)
 		env::addSymbol(vm, "set", env::addNative([](VM* vm, Node* args) {
-			return setObj(vm, env::newObj(vm), setObj(vm, args->val, evalObj(vm, args->nxt->val)));
+			return env::newObj(vm, setObj(vm, args->val, evalObj(vm, args->nxt->val)));
 		}));
 
 		// (const to-set value)
@@ -38,7 +38,7 @@ namespace lib {
 		#endif
 
 			args->val->constant = true;
-			return setObj(vm, env::newObj(vm), setObj(vm, args->val, evalObj(vm, args->nxt->val)));
+			return env::newObj(vm, setObj(vm, args->val, evalObj(vm, args->nxt->val)));
 		}));
 
 		// (let [name value] body)
@@ -52,7 +52,7 @@ namespace lib {
 				shift(&bdy);
 			}
 
-			auto ret = setObj(vm, env::newObj(vm), evalObj(vm, bdy->val));
+			auto ret = env::newObj(vm, evalObj(vm, bdy->val));
 
 			env::endEnv(vm, args->val->_args, prvVal);
 
@@ -90,11 +90,11 @@ namespace lib {
 		// (eval target)
 		env::addSymbol(vm, "eval", env::addNative([](VM* vm, Node* args)
 		{
-			vm->eval = false;
-			auto val = evalObj(vm, args->val);
-			vm->eval = true;
-			auto ret =  setObj(vm, env::newObj(vm), evalObj(vm, val));
-			vm->eval = false;
+			auto ret = setObj(vm, env::newObj(vm), 
+				evalObj(env::setEval(vm,  true), 		
+				evalObj(env::setEval(vm, false), args->val)));
+
+			env::setEval(vm, false);
 
 			return ret;
 		}));
@@ -103,21 +103,20 @@ namespace lib {
 		env::addSymbol(vm, "loop", env::addNative([](VM* vm, Node* args)
 		{
 			auto cond = args;
-			auto bdy = args->nxt;
-			auto ret = (Obj*)nullptr;
+			Node* bdy = nullptr;
+			Obj*  ret = nullptr;
 
 			while (isTrue(evalObj(vm, cond->val))) {
+				bdy = args->nxt;
+
 				while (bdy->nxt) {
-					evalObj(vm, bdy->val);
-					bdy = bdy->nxt;
+					evalObj(vm, shiftr(&bdy)->val);
 				}
 
 				ret = evalObj(vm, bdy->val);
-
-				bdy = args->nxt;
 			}
 
-			return setObj(vm, env::newObj(vm), ret);
+			return env::newObj(vm, ret);
 		}));
 
 		// (do body...)

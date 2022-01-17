@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>CppFunc.h</FILENAME>
+      <LINE>64</LINE>
+      <COLUMN>0</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::CppFn_Impl&lt;int,int,int&gt;::func' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::CppFn_Impl&lt;int,int,int&gt;::{ctor}</FUNCTION>
+    <DECORATED>??0?$CppFn_Impl@HHH@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>64</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::CppFn_Impl&lt;int,int,int&gt;::func</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

@@ -10,11 +10,11 @@ namespace jts {
 	struct Tok {
 		Tok* next = nullptr;
 
-		str symbol;
-		size_t line;
+		str symbol = "";
+		size_t line = 0;
 
-		Type type;
-		Spec spec;
+		Type type = Type::NIL;
+		Spec spec = Spec::NIL;
 	};
 }
 

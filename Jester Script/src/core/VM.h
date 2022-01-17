@@ -38,10 +38,12 @@ namespace jts {
 	namespace env {
 
 		//////////////////////
-		/////Constructors/////
+		/////Type Setters/////
 		//////////////////////
 
 		VM* newVM();
+
+		VM* setEval(VM* vm, bool state);
 
 		Node* newNode(VM* vm, Type t = Type::NIL, Spec s = Spec::SYMBOL);
 		Node* newNode   (VM* vm, Obj* obj);

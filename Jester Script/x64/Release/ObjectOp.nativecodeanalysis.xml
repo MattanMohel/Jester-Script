@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+      <FILENAME>ObjectOp.cpp</FILENAME>
+      <LINE>59</LINE>
+      <COLUMN>3</COLUMN>
+    </SFA>
+    <DEFECTCODE>6011</DEFECTCODE>
+    <DESCRIPTION>Dereferencing NULL pointer 'b-&gt;refCount'. </DESCRIPTION>
+    <FUNCTION>jts::setObj</FUNCTION>
+    <DECORATED>?setObj@jts@@YAPEAUObj@1@PEAUVM@1@PEAU21@1_N@Z</DECORATED>
+    <FUNCLINE>21</FUNCLINE>
+    <PROBABILITY>1</PROBABILITY>
+    <RANK>4</RANK>
+    <CATEGORY>
+      <RULECATEGORY>mspft</RULECATEGORY>
+    </CATEGORY>
+    <PATH>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>37</LINE>
+        <COLUMN>19</COLUMN>
+        <KEYEVENT>
+          <ID>1</ID>
+          <KIND>branch</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>'b-&gt;refCount' may be NULL (Skip this branch)</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>46</LINE>
+        <COLUMN>10</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>47</LINE>
+        <COLUMN>17</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>49</LINE>
+        <COLUMN>11</COLUMN>
+        <KEYEVENT>
+          <ID>2</ID>
+          <KIND>branch</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>Assume switch ( 'b-&gt;type' ) resolves to case LIST: </MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>50</LINE>
+        <COLUMN>2</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>52</LINE>
+        <COLUMN>15</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>56</LINE>
+        <COLUMN>13</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>59</LINE>
+        <COLUMN>3</COLUMN>
+        <KEYEVENT>
+          <ID>3</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'b-&gt;refCount' is dereferenced, but may still be NULL</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+    </PATH>
+  </DEFECT>
+</DEFECTS>

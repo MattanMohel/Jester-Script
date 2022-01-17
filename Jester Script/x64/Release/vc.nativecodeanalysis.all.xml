@@ -1,0 +1,517 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DEFECTS><DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+      <FILENAME>ObjectOp.cpp</FILENAME>
+      <LINE>59</LINE>
+      <COLUMN>3</COLUMN>
+    </SFA>
+    <DEFECTCODE>6011</DEFECTCODE>
+    <DESCRIPTION>Dereferencing NULL pointer 'b-&gt;refCount'. </DESCRIPTION>
+    <FUNCTION>jts::setObj</FUNCTION>
+    <DECORATED>?setObj@jts@@YAPEAUObj@1@PEAUVM@1@PEAU21@1_N@Z</DECORATED>
+    <FUNCLINE>21</FUNCLINE>
+    <PROBABILITY>1</PROBABILITY>
+    <RANK>4</RANK>
+    <CATEGORY>
+      <RULECATEGORY>mspft</RULECATEGORY>
+    </CATEGORY>
+    <PATH>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>37</LINE>
+        <COLUMN>19</COLUMN>
+        <KEYEVENT>
+          <ID>1</ID>
+          <KIND>branch</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>'b-&gt;refCount' may be NULL (Skip this branch)</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>46</LINE>
+        <COLUMN>10</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>47</LINE>
+        <COLUMN>17</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>49</LINE>
+        <COLUMN>11</COLUMN>
+        <KEYEVENT>
+          <ID>2</ID>
+          <KIND>branch</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>Assume switch ( 'b-&gt;type' ) resolves to case LIST: </MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>50</LINE>
+        <COLUMN>2</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>52</LINE>
+        <COLUMN>15</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>56</LINE>
+        <COLUMN>13</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\util\</FILEPATH>
+        <FILENAME>ObjectOp.cpp</FILENAME>
+        <LINE>59</LINE>
+        <COLUMN>3</COLUMN>
+        <KEYEVENT>
+          <ID>3</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'b-&gt;refCount' is dereferenced, but may still be NULL</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+    </PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Token.h</FILENAME>
+      <LINE>18</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Tok::spec' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Tok::{ctor}</FUNCTION>
+    <DECORATED>??0Tok@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>18</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Tok::spec</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Lexer.cpp</FILENAME>
+      <LINE>90</LINE>
+      <COLUMN>26</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '-' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '-' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>jts::tokenizeFile</FUNCTION>
+    <DECORATED>?tokenizeFile@jts@@YAXPEAUVM@1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z</DECORATED>
+    <FUNCLINE>37</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>File.cpp</FILENAME>
+      <LINE>16</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>6387</DEFECTCODE>
+    <DESCRIPTION>'file' could be '0':  this does not adhere to the specification for the function 'ftell'. See line 15 for an earlier location where this can occur</DESCRIPTION>
+    <FUNCTION>jts::readSrc</FUNCTION>
+    <DECORATED>?readSrc@jts@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAUVM@1@AEBV23@@Z</DECORATED>
+    <FUNCLINE>8</FUNCLINE>
+    <PROBABILITY>1</PROBABILITY>
+    <RANK>4</RANK>
+    <CATEGORY>
+      <RULECATEGORY>mspft</RULECATEGORY>
+    </CATEGORY>
+    <PATH>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>9</LINE>
+        <COLUMN>8</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>11</LINE>
+        <COLUMN>9</COLUMN>
+        <KEYEVENT>
+          <ID>1</ID>
+          <KIND>declaration</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'file' may be NULL</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>49</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>25</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>13</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>21</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>13</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>15</LINE>
+        <COLUMN>7</COLUMN>
+        <KEYEVENT>
+          <ID>2</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>'file' is an Input to 'fseek' (declared at c:\program files (x86)\windows kits\10\include\10.0.19041.0\ucrt\stdio.h:270)</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>16</LINE>
+        <COLUMN>7</COLUMN>
+        <KEYEVENT>
+          <ID>3</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>'file' is an Input to 'ftell' (declared at c:\program files (x86)\windows kits\10\include\10.0.19041.0\ucrt\stdio.h:286)</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>16</LINE>
+        <COLUMN>7</COLUMN>
+        <KEYEVENT>
+          <ID>4</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'file' should not be NULL, because this is not consistent with the SAL annotation on 'ftell'</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+    </PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>File.cpp</FILENAME>
+      <LINE>15</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>6387</DEFECTCODE>
+    <DESCRIPTION>'file' could be '0':  this does not adhere to the specification for the function 'fseek'. </DESCRIPTION>
+    <FUNCTION>jts::readSrc</FUNCTION>
+    <DECORATED>?readSrc@jts@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAUVM@1@AEBV23@@Z</DECORATED>
+    <FUNCLINE>8</FUNCLINE>
+    <PROBABILITY>1</PROBABILITY>
+    <RANK>4</RANK>
+    <CATEGORY>
+      <RULECATEGORY>mspft</RULECATEGORY>
+    </CATEGORY>
+    <PATH>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>9</LINE>
+        <COLUMN>8</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>11</LINE>
+        <COLUMN>9</COLUMN>
+        <KEYEVENT>
+          <ID>1</ID>
+          <KIND>declaration</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'file' may be NULL</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>49</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>25</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>13</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>21</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>13</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>15</LINE>
+        <COLUMN>7</COLUMN>
+        <KEYEVENT>
+          <ID>2</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>'file' is an Input to 'fseek' (declared at c:\program files (x86)\windows kits\10\include\10.0.19041.0\ucrt\stdio.h:270)</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>15</LINE>
+        <COLUMN>7</COLUMN>
+        <KEYEVENT>
+          <ID>3</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'file' should not be NULL, because this is not consistent with the SAL annotation on 'fseek'</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+    </PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>File.cpp</FILENAME>
+      <LINE>26</LINE>
+      <COLUMN>6</COLUMN>
+    </SFA>
+    <DEFECTCODE>6387</DEFECTCODE>
+    <DESCRIPTION>'file' could be '0':  this does not adhere to the specification for the function 'fgetc'. See line 15 for an earlier location where this can occur</DESCRIPTION>
+    <FUNCTION>jts::readSrc</FUNCTION>
+    <DECORATED>?readSrc@jts@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAUVM@1@AEBV23@@Z</DECORATED>
+    <FUNCLINE>8</FUNCLINE>
+    <PROBABILITY>1</PROBABILITY>
+    <RANK>4</RANK>
+    <CATEGORY>
+      <RULECATEGORY>mspft</RULECATEGORY>
+    </CATEGORY>
+    <PATH>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>9</LINE>
+        <COLUMN>8</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>11</LINE>
+        <COLUMN>9</COLUMN>
+        <KEYEVENT>
+          <ID>1</ID>
+          <KIND>declaration</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'file' may be NULL</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>49</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>25</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>13</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>21</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>13</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>15</LINE>
+        <COLUMN>7</COLUMN>
+        <KEYEVENT>
+          <ID>2</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>'file' is an Input to 'fseek' (declared at c:\program files (x86)\windows kits\10\include\10.0.19041.0\ucrt\stdio.h:270)</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>16</LINE>
+        <COLUMN>7</COLUMN>
+        <KEYEVENT>
+          <ID>3</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>'file' is an Input to 'ftell' (declared at c:\program files (x86)\windows kits\10\include\10.0.19041.0\ucrt\stdio.h:286)</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>17</LINE>
+        <COLUMN>7</COLUMN>
+        <KEYEVENT>
+          <ID>4</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>'file' is an Input to 'fseek' (declared at c:\program files (x86)\windows kits\10\include\10.0.19041.0\ucrt\stdio.h:270)</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>19</LINE>
+        <COLUMN>6</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>20</LINE>
+        <COLUMN>18</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>22</LINE>
+        <COLUMN>7</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>23</LINE>
+        <COLUMN>16</COLUMN>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>25</LINE>
+        <COLUMN>12</COLUMN>
+        <KEYEVENT>
+          <ID>5</ID>
+          <KIND>branch</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>Enter this loop, (assume 'ch!=((-1))')</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>26</LINE>
+        <COLUMN>6</COLUMN>
+        <KEYEVENT>
+          <ID>6</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Full</IMPORTANCE>
+          <MESSAGE>'file' is an Input to 'fgetc' (declared at c:\program files (x86)\windows kits\10\include\10.0.19041.0\ucrt\stdio.h:182)</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+        <FILENAME>File.cpp</FILENAME>
+        <LINE>26</LINE>
+        <COLUMN>6</COLUMN>
+        <KEYEVENT>
+          <ID>7</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'file' should not be NULL, because this is not consistent with the SAL annotation on 'fgetc'</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+    </PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>File.cpp</FILENAME>
+      <LINE>20</LINE>
+      <COLUMN>26</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '+' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '+' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>jts::readSrc</FUNCTION>
+    <DECORATED>?readSrc@jts@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAUVM@1@AEBV23@@Z</DECORATED>
+    <FUNCLINE>8</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>CppFunc.h</FILENAME>
+      <LINE>64</LINE>
+      <COLUMN>0</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::CppFn_Impl&lt;int,int,int&gt;::func' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::CppFn_Impl&lt;int,int,int&gt;::{ctor}</FUNCTION>
+    <DECORATED>??0?$CppFn_Impl@HHH@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>64</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::CppFn_Impl&lt;int,int,int&gt;::func</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>D:\repo\Jester Script\Jester Script\src\core\</FILEPATH>
+      <FILENAME>Object.h</FILENAME>
+      <LINE>46</LINE>
+      <COLUMN>1</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'jts::Obj::spec' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>jts::Obj::{ctor}</FUNCTION>
+    <DECORATED>??0Obj@jts@@QEAA@XZ</DECORATED>
+    <FUNCLINE>46</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>jts::Obj::spec</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT></DEFECTS>
