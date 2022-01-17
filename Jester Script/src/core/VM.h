@@ -5,7 +5,7 @@
 #include "util/Pool.h"
 
 #define CHECK_ERROR 1
-#define DEBUG_ALLOC 0
+#define DEBUG_ALLOC 1
 
 #define START_OBJ_COUNT 250
 

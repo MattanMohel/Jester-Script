@@ -107,7 +107,7 @@ namespace jts {
 	///////////////////////////
 
 	Obj* quoteObj(VM* vm, Obj* res, Obj* q);
-	void freeObj         (VM* vm, Obj* obj);
+	void freeObj      (VM* vm, Obj* obj);
 
 	int random(int min, int max);
 }

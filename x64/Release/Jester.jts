@@ -1,0 +1,67 @@
+
+; returns a list of 'n's prime factors
+
+(defun factorize (n)
+	(let
+		( (fact  1)
+		  (res () ) )
+		
+		; iterate while 'n' is greater than 1
+		; when 'n' is divisible by 'fact', divide
+		; 'n' by 'fact', append 'fact' to 'res' list
+		; and reset 'fact' to 1
+		
+		(loop (> n 1)
+			(+= fact 1)
+			(when (= (mod n fact) 0)	
+				(do 
+					(append fact res)
+					(/= n fact)
+					(set fact 1))))
+		
+		; return the list of factors 'res'
+		
+		res))
+		
+; apply list 'lst' as arguments to function 'f'
+
+(defun apply (f lst)
+	(let 
+		( (arg nil) )
+		
+		(new lst arg)
+		
+		(prepend 'f arg)
+		(eval arg)))
+		
+; calculates lowest number divisible by 
+; all numbers in range [0 - 'n'] - https://projecteuler.net/problem=5
+
+(defun lcf (n)
+	(let 
+		( (res   () )
+		  (fact  () ) )
+		
+		(loop (> n 1)
+			(set fact (factorize n))
+			
+			; iterates over current list of
+			; all factors 'res' and removes any
+			; copies of factors from the 
+			; current factor list 'fact'
+			
+			(for f res
+				(remove f fact))
+				
+			; append all remaining factors 
+			; from 'fact' to the 'res' factor list
+
+			(for f fact
+				(append f res))
+
+			(-= n 1))
+		
+		; return the multiplied list of factors 'res'
+		; by applying it to function '*'
+		
+		(apply * res)))

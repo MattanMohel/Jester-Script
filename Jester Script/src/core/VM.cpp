@@ -22,7 +22,7 @@ namespace jts {
 			VM* vm = new VM();
 
 			vm->objPool = new Pool<Obj>("Object", START_OBJ_COUNT, [](Obj* val) {
-				val->refCount = nullptr;
+				val->ref  = new size_t(1);
 				val->spec = Spec::SYMBOL;
 				val->type = Type::NIL;
 				val->_int = 0;
@@ -74,7 +74,7 @@ namespace jts {
 		}
 
 		Obj* newObj(VM* vm, Obj* val) {
-			return setObj(vm, vm->objPool->acquire(), val);
+			return setObj(vm, vm->objPool->acquire(), val, false);
 		}
 
 		void releaseObj(VM* vm, Obj* obj) {

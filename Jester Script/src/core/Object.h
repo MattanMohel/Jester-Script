@@ -40,7 +40,7 @@ namespace jts {
 
 		bool constant    = false;
 		bool initialized = false;
-		size_t* refCount = nullptr;
+		size_t* ref    = nullptr;
 
 		void assert(bool cond, str message);
 	};
