@@ -22,7 +22,7 @@ namespace lib {
 		env::addSymbol(vm, "if", env::addNative([](VM* vm, Node* args)
 		{
 			if (isTrue(evalObj(vm, args->val))) {
-				return setObj(vm, env::newObj(vm), evalObj(vm, args->nxt->val));
+				return env::newObj(vm, evalObj(vm, args->nxt->val));
 			}
 			
 			return env::newObj(vm, evalObj(vm, args->nxt->nxt->val));
@@ -32,10 +32,10 @@ namespace lib {
 		env::addSymbol(vm, "when", env::addNative([](VM* vm, Node* args)
 		{
 			if (isTrue(evalObj(vm, args->val))) {
-				return setObj(vm, env::newObj(vm), evalObj(vm, args->nxt->val));
+				return env::newObj(vm, evalObj(vm, args->nxt->val));
 			}
 			
-			return setObj(vm, env::newObj(vm), NIL);
+			return env::newObj(vm, NIL);
 		}));
 
 		// (match value case-1 if-true... case-n if-true _ default)
@@ -48,42 +48,42 @@ namespace lib {
 				pat = pat->nxt->nxt;
 			}
 
-			return setObj(vm, env::newObj(vm), evalObj(vm, pat->nxt->val));
+			return env::newObj(vm, evalObj(vm, pat->nxt->val));
 		}));
 
 		env::addSymbol(vm, "=", env::addNative([](VM* vm, Node* args)
 		{
-			return setTo<bool>(env::newObj(vm), 
+			return setTo(env::newObj(vm), 
 				isEqual(evalObj(vm, args->val), evalObj(vm, args->nxt->val)));
 		}));
 
 		env::addSymbol(vm, ">", env::addNative([](VM* vm, Node* args)
 		{
-			return setTo<bool>(env::newObj(vm), 
+			return setTo(env::newObj(vm), 
 				isGreater(evalObj(vm, args->val), evalObj(vm, args->nxt->val)));
 		}));
 
 		env::addSymbol(vm, ">=", env::addNative([](VM* vm, Node* args)
 		{
-			return setTo<bool>(env::newObj(vm), 
+			return setTo(env::newObj(vm), 
 				isGreaterEq(evalObj(vm, args->val), evalObj(vm, args->nxt->val)));
 		}));
 
 		env::addSymbol(vm, "<", env::addNative([](VM* vm, Node* args)
 		{
-			return setTo<bool>(env::newObj(vm), 
+			return setTo(env::newObj(vm), 
 				!isGreaterEq(evalObj(vm, args->val), evalObj(vm, args->nxt->val)));
 		}));
 
 		env::addSymbol(vm, "<=", env::addNative([](VM* vm, Node* args)
 		{
-			return setTo<bool>(env::newObj(vm), 
+			return setTo(env::newObj(vm), 
 				!isGreater(evalObj(vm, args->val), evalObj(vm, args->nxt->val)));
 		}));
 
 		env::addSymbol(vm, "not", env::addNative([](VM* vm, Node* args)
 		{
-			return setTo<bool>(env::newObj(vm), 
+			return setTo(env::newObj(vm), 
 				!isTrue(evalObj(vm, args->val)));
 		}));
 

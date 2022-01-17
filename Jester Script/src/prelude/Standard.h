@@ -71,7 +71,7 @@ namespace lib {
 			ret->_jtsFn->params = args;
 			ret->_jtsFn->block = args->nxt;
 
-			return ret;
+			return env::newObj(vm, ret);
 		}));
 
 		// (defn name (params) body)
@@ -84,7 +84,7 @@ namespace lib {
 			args->val->_jtsFn->params = args->nxt->val->_args;
 			args->val->_jtsFn->block = args->nxt->nxt;			
 
-			return args->val;
+			return env::newObj(vm, args->val);
 		}));
 
 		// (eval target)
@@ -123,11 +123,10 @@ namespace lib {
 		env::addSymbol(vm, "do", env::addNative([](VM* vm, Node* args)
 		{
 			while (args->nxt) {
-				evalObj(vm, args->val);
-				args = args->nxt;
+				evalObj(vm, shiftr(&args)->val);
 			}
 
-			return setObj(vm, env::newObj(vm), evalObj(vm, args->val));
+			return env::newObj(vm, evalObj(vm, args->val));
 		}));
 
 		// (string-int value)

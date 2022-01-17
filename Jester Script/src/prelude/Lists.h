@@ -29,13 +29,12 @@ namespace lib {
 				setObj(vm, args->val, evalObj(vm, lst->val));
 
 				while (bdy->nxt) {
-					evalObj(vm, bdy->val);
-					bdy = bdy->nxt;
+					evalObj(vm, shiftr(&bdy)->val);
 				}
 
 				ret = evalObj(vm, bdy->val);
 
-				lst = lst->nxt;
+				shift(&lst);
 				bdy = args->nxt->nxt;
 			}
 

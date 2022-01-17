@@ -27,31 +27,12 @@ namespace jts {
 		if (canFree) {
 			freeObj(vm, a);
 
-			switch (b->type) {
-				case Type::LIST:
-
-					if (b->spec == Spec::VALUE) {
-						*a->ref = 1;
-					}
-					else {
-						a->ref = b->ref;
-						++(*b->ref);
-					}
-
-					break;
-
-				case Type::QUOTE:
-
-					++(*b->_quote->ref);
-
-					break;
-
-				default:
-
-					a->ref = b->ref;
-					++(*b->ref);
-
-					break;
+			if (b->spec == Spec::SYMBOL) {
+				a->ref = b->ref;
+				++(*b->ref);
+			}
+			else if (b->spec == Spec::VALUE) {
+				*(a->ref) = 1;
 			}
 		}
 
@@ -498,7 +479,7 @@ namespace jts {
 			? obj->_quote->ref
 			: obj->ref;		
 
-		--(*ref);
+		(*ref) -= 1;
 
 		if (*ref > 0) {
 			return;
@@ -512,7 +493,6 @@ namespace jts {
 			case Type::LIST:
 
 				lst::forEach(vm, obj->_args, [](VM* vm, Node* node) {
-
 					freeObj(vm, node->val);
 					env::releaseObj(vm, node->val);
 					env::releaseNode(vm, node);

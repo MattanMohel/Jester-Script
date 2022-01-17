@@ -124,4 +124,10 @@ private:
 	str name;
 };
 
+class pool {
+
+private:
+
+};
+
 #endif
