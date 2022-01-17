@@ -87,7 +87,9 @@ namespace jts {
 		Node* pushEnv(VM* vm, Node* locPair);
 
 		void  endEnv(VM* vm, Node* locals,  Node* prvVal);
-		void  endEnv(VM* vm, Node* locPair, Node* prvVal);
+
+		void pushUsed(VM* vm, Obj* ret);
+		void releaseUsed(VM* vm);
 
 		void clear(VM* vm);
 

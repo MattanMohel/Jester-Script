@@ -9,31 +9,26 @@
 using namespace jts;
 
 template<typename T>
-class Pool
-{
-	using InitFunc = T* (*)(T*);
+class Pool {
+	using InitFunc = T * (*)(T*);
 
 public:
 
-	Pool(str name, size_t size, InitFunc initFunc)
-		: m_initFunc(initFunc), name(name)
-	{
+	Pool(str name, size_t size, InitFunc init)
+		: m_init(init), name(name) {
+		
 		m_buffer.reserve(size * 2);
-		m_usedBuffer.reserve(size * 2);
+		m_used.reserve(size * 2);
 
-		while (m_buffer.size() < size)
-		{
+		while (m_buffer.size() < size) {
 			m_buffer.emplace_back(new T());
 		}
 	}
 
-	/*
-		Remove and return back-most pool value
-	*/
-	T* acquire()
-	{
-		if (m_buffer.empty())
-		{
+	// Remove and return back-most pool value
+
+	T* acquire() {
+		if (m_buffer.empty()) {
 
 		#if DEBUG_ALLOC
 			std::cout << "allocating\n";
@@ -47,39 +42,33 @@ public:
 		std::cout << "acquiring " << value << " - " << m_buffer.size() << " " << name << "s left\n";
 	#endif
 
-		m_usedBuffer.emplace_back(value);
 		m_buffer.pop_back();
 
-		return m_initFunc(value);
+		return m_init(value);
 	}
 
-	/*
-		Returns back-most pool value without removal
-	*/
-	T* peek()
-	{
-		if (m_buffer.empty())
-		{
+	
+	// Return back-most pool value without removal
+	
+	T* peek() {
+		if (m_buffer.empty()) {
 			return new T();
 		}
 
-		return m_initFunc(m_buffer.back());
+		return m_init(m_buffer.back());
 	}
 
-	/*
-		Insert value back into pool
-	*/
-	void release(T* value)
-	{
-		if (m_buffer.size() == m_buffer.capacity())
-		{
+	
+	// Insert value back into pool
+	
+	void release(T* value) {
+		if (m_buffer.size() == m_buffer.capacity()) {
 
 		#if DEBUG_ALLOC
-			std::cout << "reserving - " << m_buffer.size() * 1.5 << " bits\n";
+			std::cout << "reserving buffer - " << m_buffer.size() * 1.5 << " bits\n";
 		#endif
 
 			m_buffer.reserve(m_buffer.capacity() * 1.5);
-			m_usedBuffer.reserve(m_buffer.capacity() * 1.5);
 		}
 
 	#if DEBUG_ALLOC
@@ -89,45 +78,40 @@ public:
 		m_buffer.emplace_back(value);
 	}
 
-	void release_all()
-	{
-		size_t size = m_usedBuffer.size();
+	// push a used value to used vec
 
-	#if DEBUG_ALLOC
-		std::cout << "releasing all (" << size << ") - " << m_buffer.size() << " left\n";
-	#endif
+	void push_used(T* value) {
+		if (m_used.size() == m_used.capacity()) {
 
-		if (size > m_buffer.capacity())
-		{
-			m_buffer.reserve(size * 1.5);
+		#if DEBUG_ALLOC
+			std::cout << "reserving used - " << m_buffer.size() * 1.5 << " bits\n";
+		#endif
+
+			m_used.reserve(m_used.capacity() * 1.5);
 		}
 
-		while (size)
-		{
-			m_buffer.emplace_back(m_usedBuffer[size - 1]);
-			m_usedBuffer.pop_back();
-
-			--size;
-		}
+		m_used.emplace_back(value);
 	}
 
-	size_t count()
-	{
+	// release all used values
+
+	void release_used() {
+		m_buffer.insert(m_buffer.end(), m_used.begin(), m_used.end());
+		m_used.clear();
+	}
+
+	size_t count() {
 		return m_buffer.size();
 	}
 
 private:
 
-	std::vector<T*> m_buffer, m_usedBuffer;
-	InitFunc m_initFunc;
+	std::vector<T*> m_buffer;
+	std::vector<T*> m_used;
+
+	InitFunc m_init;
 
 	str name;
-};
-
-class pool {
-
-private:
-
 };
 
 #endif

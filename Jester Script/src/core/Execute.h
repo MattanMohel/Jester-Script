@@ -8,21 +8,14 @@
 
 namespace jts
 {
-	/* 
-		Evaluates and returns an object
-
-		@param eval : whether or not to evaluate quote values
-		@param top  : if true, all objects are released to pool upon termination of eval
-	*/
+	 
+	// Evaluates and returns an object
+	
 	Obj* evalObj(VM* vm, Obj* obj);
 
-	/* 
-		Executes amd returns an object with a callable type
-		
-		@param args : pointer to the first argument of the callable
-		@param eval : wether or not to evaluate quote values
-		@param top  : if true, all objects are released to pool upon termination of eval
-	*/
+	
+	// Executes and returns an object with a callable type
+	
 	Obj* execObj(VM* vm, Node* args);
 
 	// Takes object and returns its T value

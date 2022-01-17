@@ -174,16 +174,18 @@ namespace jts {
 
 		Obj* run(VM* vm) {
 
-
 			vm->stackPtrCur = vm->stackPtrBeg;
 
-			while (vm->stackPtrCur->nxt) {
-				evalObj(vm, vm->stackPtrCur->val);
+			Obj* ret = nullptr;
 
-				vm->stackPtrCur = vm->stackPtrCur->nxt;
+			while (vm->stackPtrCur) {
+				ret = evalObj(vm, vm->stackPtrCur->val);
+				env::releaseUsed(vm);
+
+				shift(&vm->stackPtrCur);
 			}
 
-			return evalObj(vm, vm->stackPtrCur->val);
+			return ret;
 		}
 
 		void runREPL(VM* vm) {
@@ -221,84 +223,57 @@ namespace jts {
 			Node* prev = lst::copy(vm, locals);
 
 			lst::forEach(vm, locals, [&newVal](VM* vm, Obj* elm) {
-				setObj(vm, elm, evalObj(vm, newVal->val), false);
-				shift(&newVal);
+				setObj(vm, elm, evalObj(vm, shiftr(&newVal)->val), 
+					false);
 			});
 
 			return prev;
 		}
 
 		Node* pushEnv(VM* vm, Node* locPair) {
-			
+	
 			Node* prev =
 				lst::copy(vm, locPair, [](VM* vm, Obj* elm) {
+					return env::newObj(vm, (elm->type == Type::LIST)
+						? elm->_args->val
+						: elm);
+				});
 
-				switch (elm->type) {
-				case Type::LIST:
-
-					return env::newObj(vm, elm->_args->val);
-
-				default:
-
-					return env::newObj(vm, elm);
+			lst::forEach(vm, locPair, [](VM* vm, Obj* elm) {
+				if (elm->type == Type::LIST) {
+					setObj(vm, elm->_args->val, evalObj(vm, elm->_args->nxt->val), 
+						false);
+				}
+				else {
+					setObj(vm, elm, NIL, 
+						false);
 				}
 			});
-
-			auto elm = locPair;
-
-			while (elm) {
-				switch (elm->val->type) {
-				case Type::LIST:
-
-					setObj(vm, elm->val->_args->val, evalObj(vm, elm->val->_args->nxt->val));
-					break;
-
-				default:
-
-					setObj(vm, elm->val, NIL);
-					break;
-				}
-
-				elm = elm->nxt;
-			}
-
-			/*lst::forEach(vm, locPair, [](VM* vm, Obj* elm) {
-				
-				switch (elm->type) {
-				case Type::LIST:
-
-					setObj(vm, elm->_args->val, evalObj(vm, elm->_args->nxt->val));
-					break;
-
-				default:
-
-					setObj(vm, elm, NIL);
-					break;
-				}
-			});*/
 
 			return prev;
 		}
 
 		void endEnv(VM* vm, Node* locals, Node* prvVal) {
+			
 			lst::forEach(vm, locals, [&prvVal](VM* vm, Obj* elm) {
-
-				switch (elm->type) {
-				case Type::LIST:
-
-					setObj(vm, elm->_args->val, prvVal->val);
-					break;
-
-				default:
-
-					setObj(vm, elm, prvVal->val);
-					break;
+				if (elm->type == Type::LIST) {
+					setObj(vm, elm->_args->val, shiftr(&prvVal)->val);
 				}
-
-				shift(&prvVal);
+				else {
+					setObj(vm, elm, shiftr(&prvVal)->val);
+				}
 			});
+
+			lst::free(vm, prvVal);
 		}
 
+		void pushUsed(VM* vm, Obj* ret) {
+			vm->objPool->push_used(ret);
+		}
+
+		void releaseUsed(VM* vm) {
+			vm->objPool->release_used();
+		}
 		void clear(VM* vm) {
 			vm->stackPtrCur = vm->stackPtrBeg;
 

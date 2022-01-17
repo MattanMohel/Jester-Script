@@ -22,6 +22,17 @@ namespace jts::lst {
 		return res;
 	}
 
+	void free(VM* vm, Node* lst) {
+		while (lst) {
+			freeObj(vm, lst->val);
+
+			env::releaseNode(vm, lst);
+			env::releaseObj(vm, lst->val);
+
+			shift(&lst);
+		}
+	}
+
 	void forEach(VM* vm, Node* lst, std::function<void(VM*, Obj*)> each) {
 		if (!lst) {
 			return;

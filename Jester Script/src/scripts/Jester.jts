@@ -65,3 +65,8 @@
 		; by applying it to function '*'
 		
 		(apply * res)))
+
+(defun fac (n)
+	(if (= n 0)
+		1
+		(* n (fac (- n 1)))))

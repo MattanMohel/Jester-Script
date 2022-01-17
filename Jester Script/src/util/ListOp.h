@@ -10,6 +10,8 @@ namespace jts::lst {
 		return env::newObj(vm, obj);
 	});
 
+	void free(VM* vm, Node* lst);
+
 	void forEach(VM* vm, Node* lst, std::function<void(VM*, Obj*)> each);
 	void forEach(VM* vm, Node* lst, std::function<void(VM*, Node*)> each);
 }

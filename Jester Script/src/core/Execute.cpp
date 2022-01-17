@@ -21,7 +21,7 @@ namespace jts {
 			case Type::LIST: {
 				
 				if (!obj->_args) {
-					return obj;
+					break;
 				}
 
 				switch (obj->_args->val->type) {
@@ -29,28 +29,24 @@ namespace jts {
 					case Type::JTS_FN:
 					case Type::CPP_FN: 
 
-						// if first argument is a callable
 						return execObj(vm, obj->_args);
 					
 					case Type::QUOTE: 
 
-						// evaluate quote only if eval is true
 						if (vm->eval) {
 							switch (obj->_args->val->_quote->type) {
 								case Type::NAT_FN:
 								case Type::JTS_FN:
 								case Type::CPP_FN:
 
-									// if first argument's quote value is a callable
 									return execObj(vm, obj->_args);
 							}
 						}
 
-						return obj;					
+						break;
 
 					default: 
 
-						// iterate over list and evaluate elements
 						auto elm = obj->_args;
 
 						while (elm) {
@@ -58,25 +54,22 @@ namespace jts {
 							elm = elm->nxt;
 						}
 
-						return obj;			
+						break;
 				}
+
+				break;
 			}
 
 			case Type::QUOTE:
-				// if a quote to be eval'd, return the quote value, otherwise return the quote
 				if (vm->eval) {
-					vm->eval = false;
-					obj = evalObj(vm, obj->_quote);
-					vm->eval = true;
+					obj = evalObj(env::setEval(vm, false), obj->_quote);
+					env::setEval(vm, true);
 				}
 
-				return obj;
-
-			default: {
-				// if not a list, callable or quote, return self
-				return obj;
-			}
+				break;
 		}
+
+		return obj;
 	}
 
 	Obj* execObj(VM* vm, Node* args) {
@@ -117,6 +110,8 @@ namespace jts {
 						break;
 				}
 		}
+
+		env::pushUsed(vm, ret);
 
 		return ret;
 	}

@@ -492,11 +492,7 @@ namespace jts {
 		switch (obj->type) {
 			case Type::LIST:
 
-				lst::forEach(vm, obj->_args, [](VM* vm, Node* node) {
-					freeObj(vm, node->val);
-					env::releaseObj(vm, node->val);
-					env::releaseNode(vm, node);
-				});
+				lst::free(vm, obj->_args);
 
 				break;
 
