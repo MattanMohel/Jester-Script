@@ -4,12 +4,13 @@
 #include "VM.h"
 
 #include "util/ObjectOp.h"
+#include "util/ListOp.h"
 
 namespace jts {
 
 	Obj* JtsFn::call(VM* vm, Node* args) {
 
-		Node* prvVal = env::pushEnv(vm, params, args);
+		Node* prvVal = env::pushEnv(vm, params, lst::eval(vm, args));
 		
 		Node* blockPtr = block;
 
@@ -18,7 +19,7 @@ namespace jts {
 			shift(&blockPtr);
 		}
 
-		Obj* ret = setObj(vm, env::newObj(vm), evalObj(vm, blockPtr->val));
+		Obj* ret = env::newObj(vm, evalObj(vm, blockPtr->val));
 
 		env::endEnv(vm, params, prvVal);
 

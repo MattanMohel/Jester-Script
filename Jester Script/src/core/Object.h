@@ -62,6 +62,8 @@ namespace jts {
 
 	void  shift (Node** node);
 	Node* shiftr(Node** node);
+
+	bool isMutable(Obj* obj);
 }
 
 #endif

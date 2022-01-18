@@ -1,6 +1,7 @@
 #include "ListOp.h"
 
 #include "core/Object.h"
+#include "core/Execute.h"
 
 namespace jts::lst {
 
@@ -53,5 +54,21 @@ namespace jts::lst {
 			each(vm, lst);
 			lst = lst->nxt;
 		}
+	}
+
+	Node* eval(VM* vm, Node* lst) {
+		return copy(vm, lst, [](VM* vm, Obj* elm) {
+			return env::newObj(vm, evalObj(vm, elm));
+		});
+	}	
+	
+	Node* evalSelf(VM* vm, Node* lst) {
+		forEach(vm, lst, [](VM* vm, Obj* elm) {
+			if (!isMutable(elm)) return;
+
+			setObj(vm, elm, evalObj(vm, elm));
+		});
+
+		return lst;
 	}
 }

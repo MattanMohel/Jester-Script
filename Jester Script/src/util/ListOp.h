@@ -14,4 +14,7 @@ namespace jts::lst {
 
 	void forEach(VM* vm, Node* lst, std::function<void(VM*, Obj*)> each);
 	void forEach(VM* vm, Node* lst, std::function<void(VM*, Node*)> each);
+
+	Node* eval(VM* vm, Node* lst);
+	Node* evalSelf(VM* vm, Node* lst);
 }

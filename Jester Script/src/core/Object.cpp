@@ -17,4 +17,8 @@ namespace jts {
 		*node = (*node)->nxt;
 		return prv;
 	}
+
+	bool isMutable(Obj* obj) {
+		return obj->spec == Spec::SYMBOL && !obj->constant;
+	}
 }

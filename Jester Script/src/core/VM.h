@@ -4,10 +4,15 @@
 #include "Types.h"
 #include "util/Pool.h"
 
-#define CHECK_ERROR 1
-#define DEBUG_ALLOC 1
+#define CHECK_ERROR 0
 
-#define START_OBJ_COUNT 250
+#if CHECK_ERROR
+#define ASSERT(cond, mes) if (cond) { printf("%s\n", mes); __debugbreak();}
+#else
+#define ASSERT(cond, mes) 
+#endif
+
+#define START_OBJ_COUNT 10000
 
 namespace jts {
 

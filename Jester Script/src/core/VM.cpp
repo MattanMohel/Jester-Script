@@ -257,14 +257,16 @@ namespace jts {
 			
 			lst::forEach(vm, locals, [&prvVal](VM* vm, Obj* elm) {
 				if (elm->type == Type::LIST) {
-					setObj(vm, elm->_args->val, shiftr(&prvVal)->val);
+					setObj(vm, elm->_args->val, shiftr(&prvVal)->val,
+						false);
 				}
 				else {
-					setObj(vm, elm, shiftr(&prvVal)->val);
+					setObj(vm, elm, shiftr(&prvVal)->val,
+						false);
 				}
 			});
 
-			lst::free(vm, prvVal);
+			//lst::free(vm, prvVal);
 		}
 
 		void pushUsed(VM* vm, Obj* ret) {

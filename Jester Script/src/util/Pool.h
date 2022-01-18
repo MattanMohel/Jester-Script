@@ -2,9 +2,12 @@
 #define POOL_H
 
 #include "core/Types.h"
+#include "core/VM.h"
 
 #include <iostream>
 #include <vector>
+
+#define DEBUG_ALLOC 0
 
 using namespace jts;
 
@@ -28,12 +31,12 @@ public:
 	// Remove and return back-most pool value
 
 	T* acquire() {
-		if (m_buffer.empty()) {
+ 		if (m_buffer.empty()) {
 
 		#if DEBUG_ALLOC
 			std::cout << "allocating\n";
 		#endif
-			return new T();
+			return m_init(new T());
 		}
 
 		T* value = m_buffer.back();

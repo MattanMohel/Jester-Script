@@ -66,7 +66,24 @@
 		
 		(apply * res)))
 
+(defun time (f)
+	(reset)
+	(eval f)
+	(elapsed))
+
 (defun fac (n)
 	(if (= n 0)
 		1
 		(* n (fac (- n 1)))))
+
+(defun t (v)
+
+	(reset)
+
+	(set i 0)
+	(set n 0)
+	(loop (< i v)
+		(*= n 1)
+		(+= i 1))
+
+	(elapsed))

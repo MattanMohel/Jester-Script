@@ -20,9 +20,7 @@ namespace jts {
 
 	Obj* setObj(VM* vm, Obj* a, Obj* b, bool canFree) {
 
-	#if CHECK_ERROR 
-		a->assert(a->spec == Spec::VALUE || a->constant, "tried setting a constant value %");
-	#endif 
+		ASSERT(a->spec == Spec::VALUE || a->constant, "tried setting a constant value");
 
 		if (canFree) {
 			freeObj(vm, a);
@@ -478,6 +476,10 @@ namespace jts {
 		size_t* ref = (obj->type == Type::QUOTE)
 			? obj->_quote->ref
 			: obj->ref;		
+
+		if (!ref) {
+			return;
+		}
 
 		(*ref) -= 1;
 
