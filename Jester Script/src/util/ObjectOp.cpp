@@ -523,7 +523,7 @@ namespace jts {
 				delete obj->_cppFn;
 
 				break;
-		}	
+		}
 	}
 
 	int random(int min, int max) {

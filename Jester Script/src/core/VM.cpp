@@ -28,9 +28,25 @@ namespace jts {
 				val->_int = 0;
 
 				return val;
+			});			
+			
+			vm->cmpl_objPool = new Pool<Obj>("Object", START_OBJ_COUNT, [](Obj* val) {
+				val->ref  = new size_t(1);
+				val->spec = Spec::SYMBOL;
+				val->type = Type::NIL;
+				val->_int = 0;
+
+				return val;
 			});
 
 			vm->nodePool = new Pool<Node>("Node", START_OBJ_COUNT, [](Node* val) {
+				val->nxt = nullptr;
+				val->val = nullptr;
+
+				return val;
+			});	
+			
+			vm->cmpl_nodePool = new Pool<Node>("Node", START_OBJ_COUNT, [](Node* val) {
 				val->nxt = nullptr;
 				val->val = nullptr;
 
@@ -45,14 +61,6 @@ namespace jts {
 			return vm;
 		}
 
-		Node* newNode(VM* vm, Type t, Spec s) {
-			auto* node = vm->nodePool->acquire();
-
-			node->val = env::newObj(vm, t, s);
-
-			return node;
-		}
-				
 		Node* newNode(VM* vm, Obj* obj) {
 			auto* node = vm->nodePool->acquire();
 
@@ -73,12 +81,28 @@ namespace jts {
 			return obj;
 		}
 
-		Obj* newObj(VM* vm, Obj* val) {
-			return setObj(vm, vm->objPool->acquire(), val, false);
+		Obj* newObj(VM* vm, Obj* obj) {
+			return setObj(vm, vm->objPool->acquire(), obj, false);
 		}
 
 		void releaseObj(VM* vm, Obj* obj) {
 			vm->objPool->release(obj);
+		}
+
+		Node* cmplNode(VM* vm, Obj* obj) {
+			auto* node = vm->cmpl_nodePool->acquire();
+
+			node->val = obj;
+
+			return node;
+		}
+
+		Obj* cmplObj(VM* vm, Type t, Spec s) {
+			auto obj = vm->cmpl_objPool->acquire();
+			obj->type = t;
+			obj->spec = s;
+
+			return obj;
 		}
 
 		/////////////////
@@ -210,8 +234,6 @@ namespace jts {
 				parseSrc(vm, src, false);
 
 				printObj(env::run(vm), true);
-
-				clear(vm);
 				 
 			#if DEBUG_ALLOC
 				std::cout << "have " << vm->objPool->count() << " objects and " << vm->nodePool->count() << " nodes\n";
@@ -219,13 +241,18 @@ namespace jts {
 			}
 		}
 
+		//MEMORY LEAKS
+
 		Node* pushEnv(VM* vm, Node* locals, Node* newVal) {
 			Node* prev = lst::copy(vm, locals);
 
-			lst::forEach(vm, locals, [&newVal](VM* vm, Obj* elm) {
-				setObj(vm, elm, evalObj(vm, shiftr(&newVal)->val), 
-					false);
+			auto valPtr = newVal;
+
+			lst::forEach(vm, locals, [&](VM* vm, Obj* elm) {
+				setObj(vm, elm, evalObj(vm, shiftr(&valPtr)->val), false);
 			});
+
+			//lst::free(vm, newVal);
 
 			return prev;
 		}
@@ -254,14 +281,16 @@ namespace jts {
 		}
 
 		void endEnv(VM* vm, Node* locals, Node* prvVal) {
+
+			auto valPtr = prvVal;
 			
-			lst::forEach(vm, locals, [&prvVal](VM* vm, Obj* elm) {
+			lst::forEach(vm, locals, [&](VM* vm, Obj* elm) {
 				if (elm->type == Type::LIST) {
-					setObj(vm, elm->_args->val, shiftr(&prvVal)->val,
+					setObj(vm, elm->_args->val, shiftr(&valPtr)->val,
 						false);
 				}
 				else {
-					setObj(vm, elm, shiftr(&prvVal)->val,
+					setObj(vm, elm, shiftr(&valPtr)->val,
 						false);
 				}
 			});

@@ -4,7 +4,7 @@
 #include "Types.h"
 #include "util/Pool.h"
 
-#define CHECK_ERROR 0
+#define CHECK_ERROR 1
 
 #if CHECK_ERROR
 #define ASSERT(cond, mes) if (cond) { printf("%s\n", mes); __debugbreak();}
@@ -12,7 +12,7 @@
 #define ASSERT(cond, mes) 
 #endif
 
-#define START_OBJ_COUNT 10000
+#define START_OBJ_COUNT 1000
 
 namespace jts {
 
@@ -26,6 +26,8 @@ namespace jts {
 
 		Pool<Node>* nodePool = nullptr;
 		Pool<Obj>*  objPool  = nullptr;
+		Pool<Node>* cmpl_nodePool = nullptr;
+		Pool<Obj>*  cmpl_objPool  = nullptr;
 
 		////////////////
 		/////States/////
@@ -50,13 +52,15 @@ namespace jts {
 
 		VM* setEval(VM* vm, bool state);
 
-		Node* newNode(VM* vm, Type t = Type::NIL, Spec s = Spec::SYMBOL);
-		Node* newNode   (VM* vm, Obj* obj);
+		Node* newNode (VM* vm, Obj* obj);
 		void  releaseNode(VM* vm, Node* node);
 
 		Obj* newObj(VM* vm, Type t = Type::NIL, Spec s = Spec::SYMBOL);
-		Obj* newObj (VM* vm, Obj* obj);
+		Obj* newObj(VM* vm, Obj* obj);
 		void releaseObj(VM* vm, Obj* obj);
+
+		Node* cmplNode(VM* vm, Obj* obj);
+		Obj* cmplObj(VM* vm, Type t = Type::NIL, Spec s = Spec::SYMBOL);
 
 		/////////////////
 		/////Symbols/////

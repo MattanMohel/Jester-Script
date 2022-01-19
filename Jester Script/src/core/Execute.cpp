@@ -8,15 +8,11 @@
 #include "VM.h"
 
 #include "util/ObjectOp.h"
+#include "util/ListOp.h"
 
 namespace jts {
 
 	Obj* evalObj(VM* vm, Obj* obj) {
-
-		if (!obj) {
-			return NIL;
-		}
-
 		switch (obj->type) {
 			case Type::LIST: {
 				
@@ -47,12 +43,7 @@ namespace jts {
 
 					default: 
 
-						auto elm = obj->_args;
-
-						while (elm) {
-							elm->val = evalObj(vm, elm->val);
-							elm = elm->nxt;
-						}
+						lst::evalSelf(vm, obj->_args);
 
 						break;
 				}

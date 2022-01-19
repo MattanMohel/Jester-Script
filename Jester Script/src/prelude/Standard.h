@@ -92,7 +92,7 @@ namespace lib {
 		{
 			auto ret = setObj(vm, env::newObj(vm), 
 				evalObj(env::setEval(vm,  true), 		
-				evalObj(env::setEval(vm, false), args->val)));
+					evalObj(env::setEval(vm, false), args->val)));
 
 			env::setEval(vm, false);
 
@@ -109,15 +109,15 @@ namespace lib {
 			while (isTrue(evalObj(vm, cond->val))) {
 				bdy = args->nxt;
 
-				while (bdy->nxt) {
-					evalObj(vm, shiftr(&bdy)->val);
+				while (bdy) {
+					ret = evalObj(vm, shiftr(&bdy)->val);
 				}
-
-				ret = evalObj(vm, bdy->val);
 			}
 
 			return env::newObj(vm, ret);
 		}));
+
+		// (loop x in (range 1000)
 
 		// (do body...)
 		env::addSymbol(vm, "do", env::addNative([](VM* vm, Node* args)

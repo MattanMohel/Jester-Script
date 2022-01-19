@@ -46,24 +46,24 @@ namespace jts {
 
 			case Spec::LST_BEG:
 
-				(*head) = env::newNode(vm, env::newObj(vm, Type::LIST, Spec::VALUE));
+				(*head) = env::cmplNode(vm, env::cmplObj(vm, Type::LIST, Spec::VALUE));
 
 				break;
 
 			case Spec::SYMBOL:
 
 				if (!env::getSymbol(vm, it->symbol)) {
-					env::addSymbol(vm, it->symbol, env::newObj(vm));
+					env::addSymbol(vm, it->symbol, env::cmplObj(vm));
 				}
 
-				(*head) = env::newNode(vm, env::getSymbol(vm, it->symbol));
+				(*head) = env::cmplNode(vm, env::getSymbol(vm, it->symbol));
 				(*head)->val->symbol = it->symbol;
 
 				break;
 
 			case Spec::VALUE:
 
-				(*head) = env::newNode(vm, tokToLtrl(vm, it));
+				(*head) = env::cmplNode(vm, tokToLtrl(vm, it));
 				(*head)->val->symbol = it->symbol;
 
 				break;

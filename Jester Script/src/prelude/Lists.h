@@ -93,7 +93,7 @@ namespace lib {
 		{
 			auto val = args->nxt->val;
 
-			val->_args = lst::copy(vm, shiftr(&args)->val->_args);
+			val->_args = lst::copy(vm, args->val->_args);
 			val->type = Type::LIST;
 
 			return env::newObj(vm, val);
@@ -118,7 +118,7 @@ namespace lib {
 
 			auto prvNode = lst->nxt;
 
-			lst->nxt = env::newNode(vm);
+			lst->nxt = env::newNode(vm, env::newObj(vm));
 			lst->nxt->nxt = prvNode;
 			
 			setObj(vm, lst->nxt->val, prvVal);
@@ -142,7 +142,7 @@ namespace lib {
 				lst = lst->nxt;
 			}
 
-			lst->nxt = env::newNode(vm);
+			lst->nxt = env::newNode(vm, env::newObj(vm));
 
 			return env::newObj(vm, setObj(vm, lst->nxt->val, val));
 		}));

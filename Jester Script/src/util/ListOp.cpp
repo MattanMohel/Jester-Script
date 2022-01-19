@@ -27,8 +27,8 @@ namespace jts::lst {
 		while (lst) {
 			freeObj(vm, lst->val);
 
-			env::releaseNode(vm, lst);
 			env::releaseObj(vm, lst->val);
+			env::releaseNode(vm, lst);
 
 			shift(&lst);
 		}
