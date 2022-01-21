@@ -12,7 +12,7 @@
 #define ASSERT(cond, mes) 
 #endif
 
-#define START_OBJ_COUNT 1000
+#define START_OBJ_COUNT 100
 
 namespace jts {
 
@@ -40,6 +40,8 @@ namespace jts {
 		Tok* tokenPtrBeg = nullptr;
 
 		bool eval = false; 
+
+		str workDir = "";
 	};
 
 	namespace env {
@@ -69,7 +71,7 @@ namespace jts {
 		void addSymbol(VM* vm, const str& key, Obj* val);
 		
 		Obj* addNative(Obj* (*native)(VM*, Node*));
-		Obj* addSrcCode   (VM* vm, const str& src);
+		Obj* addSrc   (VM* vm, const str& src);
 
 		// Adds an object symbol of type
 		template<typename T>
@@ -90,7 +92,7 @@ namespace jts {
 		///////////////////
 
 		Obj* run    (VM* vm);	
-		void runREPL(VM* vm);
+		Obj* runREPL(VM* vm);
 
 		Node* pushEnv(VM* vm, Node* locals, Node* newVal);
 		Node* pushEnv(VM* vm, Node* locPair);
@@ -102,12 +104,19 @@ namespace jts {
 
 		void clear(VM* vm);
 
+		///////////////////
+		/////Directory/////
+		///////////////////
+
+		const str& getDir(VM* vm);
+		void changeDir(VM* vm, const str& path);
+
 		///////////////////////
 		/////Miscellaneous/////
 		///////////////////////
 
 		void addLib(VM* vm, void(*lib)(VM* vm));
-		void addScript(VM* vm, const str& path);
+		void addScript(VM* vm, const str& path, bool abs = false, bool run = true);
 
 		void assert(bool cond, const str& mes, State warnType = State::ERR);
 	}

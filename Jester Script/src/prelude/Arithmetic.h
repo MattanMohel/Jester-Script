@@ -132,7 +132,7 @@ namespace lib {
 			}
 
 			return ret;
-		}));
+		}));		
 
 		env::addSymbol(vm, "+=", env::addNative([](VM* vm, Node* args)
 		{

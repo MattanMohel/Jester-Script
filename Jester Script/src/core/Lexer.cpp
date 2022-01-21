@@ -59,7 +59,7 @@ namespace jts {
 
 		while (true) {
 			// extract a single token
-			while (inLtrl || !isNonToken(*ch)) {
+			while (!*ch || inLtrl || !isNonToken(*ch)) {
 				// if '\"', parse as string until next '\"'
 				if (*ch == '\"') inLtrl = !inLtrl;
 

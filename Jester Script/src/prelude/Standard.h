@@ -97,6 +97,39 @@ namespace lib {
 			env::setEval(vm, false);
 
 			return ret;
+		}));		
+		
+		// (repl)
+		env::addSymbol(vm, "repl", env::addNative([](VM* vm, Node* args)
+		{
+			return env::runREPL(vm);
+		}));		
+		
+		// (compile path)
+		env::addSymbol(vm, "compile", env::addNative([](VM* vm, Node* args)
+		{
+			str path = toString(evalObj(vm, args->val));
+
+			Node* stackPtr = vm->stackPtrCur;
+			env::addScript(vm, path, false, false);
+			Obj* ret = env::run(vm);
+
+			vm->stackPtrCur = stackPtr;
+
+			return ret;
+		}));		
+		
+		// (pwd)
+		env::addSymbol(vm, "pwd", env::addNative([](VM* vm, Node* args)
+		{
+			return setTo<str*>(env::newObj(vm), &vm->workDir);
+		}));		
+		
+		// (cd path)
+		env::addSymbol(vm, "cd", env::addNative([](VM* vm, Node* args)
+		{
+			env::changeDir(vm, toString(evalObj(vm, args->val)));
+			return setTo<str*>(env::newObj(vm), &vm->workDir);
 		}));
 
 		// (loop cond body)
@@ -107,17 +140,20 @@ namespace lib {
 			Obj*  ret = nullptr;
 
 			while (isTrue(evalObj(vm, cond->val))) {
+				env::releaseUsed(vm);
+
 				bdy = args->nxt;
 
-				while (bdy) {
-					ret = evalObj(vm, shiftr(&bdy)->val);
+				while (bdy->nxt) {
+					evalObj(vm, bdy->val);
+					shift(&bdy);
 				}
+
+				ret = evalObj(vm, bdy->val);
 			}
 
 			return env::newObj(vm, ret);
 		}));
-
-		// (loop x in (range 1000)
 
 		// (do body...)
 		env::addSymbol(vm, "do", env::addNative([](VM* vm, Node* args)
@@ -127,6 +163,12 @@ namespace lib {
 			}
 
 			return env::newObj(vm, evalObj(vm, args->val));
+		}));
+				
+		
+		env::addSymbol(vm, "obj-count", env::addNative([](VM* vm, Node* args)
+		{
+			return setTo<jtsi>(env::newObj(vm), vm->objPool->count());
 		}));
 
 		// (string-int value)

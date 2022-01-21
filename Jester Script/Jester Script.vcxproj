@@ -199,11 +199,13 @@
     <ClInclude Include="src\core\VM.h" />
     <ClInclude Include="src\core\Token.h" />
     <ClInclude Include="src\core\StrCon.h" />
+    <ClInclude Include="src\util\Stack.h" />
     <ClInclude Include="src\util\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\scripts\Jester.jts" />
     <None Include="scripts\Rock-Paper-Scissors.jts" />
+    <None Include="src\scripts\main.jts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

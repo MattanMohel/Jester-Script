@@ -10,6 +10,7 @@
 #include "util/ListOp.h"
 
 #include <iostream>
+#include <filesystem>
 
 namespace jts {
 	namespace env {
@@ -52,6 +53,8 @@ namespace jts {
 
 				return val;
 			});
+
+			vm->workDir = file::projectDir();
 
 			return vm;
 		}
@@ -129,9 +132,9 @@ namespace jts {
 			return obj;
 		}		
 
-		Obj* addSrcCode(VM* vm, str src) {
-			src += EOF;
-			parseSrc(vm, src);
+		Obj* addSrc(VM* vm, const str& src) {
+			(*const_cast<str*>(&src)) += EOF;
+			file::parseSrc(vm, src);
 
 			return env::run(vm);
 		}
@@ -212,17 +215,22 @@ namespace jts {
 			return ret;
 		}
 
-		void runREPL(VM* vm) {
+		Obj* runREPL(VM* vm) {
 			str src;
+			size_t line = 0;
 
-			size_t inputCount = 0;
+			Obj* ret = nullptr;
 
 			while (1) {
-				std::cout << "[" << inputCount++ << "]>> ";
+				std::cout << "[" << line++ << "]>> ";
 				std::getline(std::cin, src);
 				src += EOF;
 
-				if (src.empty()) continue;
+				if (src.empty()) {
+					continue;
+				}
+
+				if ("$env parse scripts/jts/Jester.jts")
 
 				// Reset VM
 
@@ -231,14 +239,16 @@ namespace jts {
 
 				// Run input
 
-				parseSrc(vm, src, false);
+				file::parseSrc(vm, src, false);
 
-				printObj(env::run(vm), true);
+				ret = printObj(env::run(vm), true);
 				 
 			#if DEBUG_ALLOC
 				std::cout << "have " << vm->objPool->count() << " objects and " << vm->nodePool->count() << " nodes\n";
 			#endif
 			}
+
+			return ret;
 		}
 
 		//MEMORY LEAKS
@@ -316,6 +326,47 @@ namespace jts {
 			}
 		}
 
+		///////////////////
+		/////Directory/////
+		///////////////////
+
+		const str& getDir(VM* vm) {
+			return vm->workDir;
+		}
+
+		void changeDir(VM* vm, const str& cd) {
+			if (cd[0] == '\\') {
+				vm->workDir = cd.substr(1);
+			}
+			else if (cd[0] == '.') {
+				size_t fst = cd.find_first_of('\\');
+
+				str cond = cd.substr(0, fst);
+				str path = cd.substr(fst + 1);
+
+				size_t count = cond.find_last_of('.');
+
+				// "C:/Downlaods/Secret"
+
+				for (size_t i = 0; i <= count; ++i) {
+					size_t idx = vm->workDir.find_last_of("\\");
+
+					ASSERT(idx == (size_t) - 1, "tried to cd into non existing parent dir " + vm->workDir);
+
+					vm->workDir = vm->workDir.substr(0, idx);
+				}
+
+				if (path != "") {
+					vm->workDir += "\\" + path;
+				}
+			}
+			else {
+				vm->workDir += "\\" + cd;
+			}
+
+			ASSERT(!std::filesystem::exists(vm->workDir), "tried to cd into non existing path");
+		}
+
 		///////////////////////
 		/////Miscellaneous/////
 		///////////////////////
@@ -326,8 +377,13 @@ namespace jts {
 			lib(vm);
 		}
 
-		void addScript(VM* vm, const str& path) {
-			jts::parseSrc(vm, readSrc(vm, path));
+		void addScript(VM* vm, const str& path, bool abs, bool run) {
+			if (abs) {
+				file::parseSrc(vm, file::readFile(vm, file::open(path)), run);
+			}
+			else {
+				file::parseSrc(vm, file::readFile(vm, file::open(vm, path)), run);
+			}
 		}
 
 		void assert(bool cond, const str& mes, State warnType) {

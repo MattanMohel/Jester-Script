@@ -1,0 +1,4 @@
+
+(compile "Jester.jts")
+
+(repl)

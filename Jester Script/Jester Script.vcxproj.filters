@@ -119,9 +119,13 @@
     <ClInclude Include="src\util\ListOp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\Stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\Rock-Paper-Scissors.jts" />
     <None Include="src\scripts\Jester.jts" />
+    <None Include="src\scripts\main.jts" />
   </ItemGroup>
 </Project>
