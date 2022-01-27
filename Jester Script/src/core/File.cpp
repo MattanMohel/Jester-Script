@@ -22,7 +22,7 @@ namespace jts::file {
 	FILE* open(VM* vm, const str& path) {
 		FILE* file = nullptr;
 
-		str path_s = vm->workDir + '/' + path;
+		str path_s = vm->workingDir + '/' + path;
 
 		fopen_s(&file, path_s.c_str(), "r");
 
@@ -31,7 +31,32 @@ namespace jts::file {
 		return file;
 	}
 
-	str readFile(VM* vm, FILE* file) {
+	str getWorkingDir() {
+		return std::filesystem::current_path().string();
+	}
+
+	std::vector<str> getFiles(const str& path, bool rec) {
+		std::vector<str> files;
+
+		for (auto const& entry : std::filesystem::directory_iterator{ path }) {
+			files.emplace_back(entry.path().string());
+		}
+
+		return files;
+	}	
+	
+	std::vector<str> getFiles(VM* vm, const str& path, bool rec) {
+		std::vector<str> files;
+
+		for (auto const& entry : std::filesystem::directory_iterator{ env::pwd(vm) + path }) {
+			str file = entry.path().string();
+			files.emplace_back(file.substr(file.find_last_of('\\') + 1));
+		}
+
+		return files;
+	}
+
+	str readFile(FILE* file) {
 		fseek(file, 0, SEEK_END);
 		long length = ftell(file);
 		fseek(file, 0, SEEK_SET);
@@ -60,7 +85,4 @@ namespace jts::file {
 		if (run) env::run(vm);
 	}
 
-	str projectDir() {
-		return std::filesystem::current_path().string();
-	}
 }

@@ -13,6 +13,7 @@
 #include "prelude/Arithmetic.h"
 #include "prelude/Boolean.h"
 #include "prelude/Lists.h"
+#include "prelude/File.h"
 
 #include "util/Timer.h"
 #include "util/Stack.h"
@@ -37,13 +38,13 @@ int main(char** argc, int** argv) {
 	std::cout << "---------- Welcome to Jester-Script ----------\n\n";
 
 	VM* vm = env::newVM();
-
-	env::changeDir(vm, "src\\scripts");
+	env::cd(vm, "src\\scripts");
 
 	env::addLib(vm, lib::StandardLib);
 	env::addLib(vm, lib::ArithmeticLib);
 	env::addLib(vm, lib::BooleanLib);
 	env::addLib(vm, lib::ListsLib);
+	env::addLib(vm, lib::FileLib);
 
 	env::addSymbol(vm, "reset", env::addFunction(sample::reset));
 	env::addSymbol(vm, "elapsed", env::addFunction(sample::elapsed));

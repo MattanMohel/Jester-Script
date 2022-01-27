@@ -2,8 +2,9 @@
 #define TYPES_H
 
 #include <string>
-#include <unordered_map>
 #include <functional>
+#include <filesystem>
+#include <unordered_map>
 
 namespace jts {
 	using str = std::string;

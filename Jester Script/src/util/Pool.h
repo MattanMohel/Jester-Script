@@ -1,120 +1,141 @@
 #ifndef POOL_H
 #define POOL_H
 
-#include "core/Types.h"
-#include "core/VM.h"
+#include <functional>
+#include <signal.h>
 
-#include <iostream>
-#include <vector>
-
-#define DEBUG_ALLOC 0
-
+#include "core/Object.h"
 using namespace jts;
 
-template<typename T>
-class Pool {
-	using InitFunc = T * (*)(T*);
+#define ASSERT(cond, mes) if (cond) { printf(mes); raise(SIGABRT); }
+
+#define DEBUG_POOL 0
+
+template<typename T, int SZ>
+class Pool_s {
+
+    static_assert(SZ > 0, "pool size must be greater than 0");
+
+    using CLR = std::function<T* (T*)>;
+
+    struct N {
+        T* nxt = nullptr;
+        T  val;
+    };
 
 public:
+    void init(CLR clear = [](T* val) { return val; }) {
+        _clear = new CLR(clear);
+        _free = SZ;
 
-	Pool(str name, size_t size, InitFunc init)
-		: m_init(init), name(name) {
-		
-		m_buffer.reserve(size * 2);
-		m_used.reserve(size * 2);
+        _head = &_buffer[0].val;
 
-		while (m_buffer.size() < size) {
-			m_buffer.emplace_back(new T());
-		}
-	}
+        for (int i = 0; i < SZ - 1; ++i) {
+            _buffer[i].nxt = &_buffer[i + 1].val;
+        }
+        _buffer[SZ - 1].nxt = nullptr;
+    }
 
-	// Remove and return back-most pool value
+    T* acquire() {
+        T* val = _head;
 
-	T* acquire() {
- 		if (m_buffer.empty()) {
+        size_t head_index = index_of(_head);
 
-		#if DEBUG_ALLOC
-			std::cout << "allocating\n";
-		#endif
-			return m_init(new T());
-		}
+        ASSERT(!_head, "acquiring empty pool element");
 
-		T* value = m_buffer.back();
+    #if DEBUG_POOL
+        printf("acquiring - %p\n", val);
+    #endif
 
-	#if DEBUG_ALLOC
-		std::cout << "acquiring " << value << " - " << m_buffer.size() << " " << name << "s left\n";
-	#endif
+        --_free;
 
-		m_buffer.pop_back();
+        _head = _buffer[head_index].nxt;
 
-		return m_init(value);
-	}
+        return (*_clear)(val);
+    }
 
-	
-	// Return back-most pool value without removal
-	
-	T* peek() {
-		if (m_buffer.empty()) {
-			return new T();
-		}
+    T* acquire(CLR clear) {
+        T* val = _head;
 
-		return m_init(m_buffer.back());
-	}
+        size_t head_index = index_of(_head);
 
-	
-	// Insert value back into pool
-	
-	void release(T* value) {
-		if (m_buffer.size() == m_buffer.capacity()) {
+        ASSERT(!_head, "acquiring empty pool element");
 
-		#if DEBUG_ALLOC
-			std::cout << "reserving buffer - " << m_buffer.size() * 1.5 << " bits\n";
-		#endif
+    #if DEBUG_POOL
+        printf("acquiring - %p\n", val);
+    #endif
 
-			m_buffer.reserve(m_buffer.capacity() * 1.5);
-		}
+        --_free;
 
-	#if DEBUG_ALLOC
-		std::cout << "releasing " << value << " - " << m_buffer.size() << " " << name << "s left\n";
-	#endif
+        _head = _buffer[head_index].nxt;
 
-		m_buffer.emplace_back(value);
-	}
+        return clear(val);
+    }
 
-	// push a used value to used vec
+    T* peek() {
+        return _head;
+    }
 
-	void push_used(T* value) {
-		if (m_used.size() == m_used.capacity()) {
+    void release(T** elm) {
+        size_t elm_index = index_of(*elm);
 
-		#if DEBUG_ALLOC
-			std::cout << "reserving used - " << m_buffer.size() * 1.5 << " bits\n";
-		#endif
+        ASSERT(elm_index >= SZ, "releasing foreign element");
 
-			m_used.reserve(m_used.capacity() * 1.5);
-		}
+    #if DEBUG_POOL
+        printf("releasing - %p\n", *elm);
+    #endif
 
-		m_used.emplace_back(value);
-	}
+        ++_free;
 
-	// release all used values
+        *elm = nullptr;
 
-	void release_used() {
-		m_buffer.insert(m_buffer.end(), m_used.begin(), m_used.end());
-		m_used.clear();
-	}
+        _buffer[elm_index].nxt = _head;
+        _head = &_buffer[elm_index].val;
+    }
 
-	size_t count() {
-		return m_buffer.size();
-	}
+    // release Ts... elements back to buffer
+    template<typename... Ts>
+    void release_t(Ts... elms) {
+        (release(&elms), ...);
+    }
+
+    void release_all() {
+        _head = &_buffer[0].val;
+
+        for (int i = 0; i < SZ - 1; ++i) {
+            _buffer[i].nxt = &_buffer[i + 1].val;
+        }
+        _buffer[SZ - 1].nxt = nullptr;
+    }
+
+    // returns index of element in buffer
+    size_t index_of(T* elm) {
+        return (elm - &_buffer[0].val) / (sizeof(N) / sizeof(T));
+    }
+
+    // returns if element is in buffer
+    bool elem_of(T* elm) {
+        return index_of(elm) < SZ;
+    }
+
+    void set_clear(CLR clear) {
+        _clear = &clear;
+    }
+
+    size_t free() {
+        return _free;
+    }
+
+    size_t size() {
+        return SZ;
+    }
 
 private:
+    T* _head;
+    N  _buffer[SZ];
 
-	std::vector<T*> m_buffer;
-	std::vector<T*> m_used;
-
-	InitFunc m_init;
-
-	str name;
+    CLR* _clear;
+    size_t _free;
 };
 
 #endif

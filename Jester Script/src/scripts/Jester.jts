@@ -65,15 +65,3 @@
 		; by applying it to function '*'
 		
 		(apply * res)))
-
-(defun bench (n)	
-		(let 
-			( (i 0) )
-
-			(loop (< i n)
-				(+= i 1))))
-
-(defun time (f)
-	(reset)
-	(eval f)
-	(elapsed))

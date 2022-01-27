@@ -10,7 +10,7 @@ namespace jts {
 
 	Obj* JtsFn::call(VM* vm, Node* args) {
 
-		Node* prvVal = env::pushEnv(vm, params, lst::eval(vm, args));
+		Node* prvVal = env::bindEnv(vm, params, lst::eval(vm, args));
 		
 		Node* blockPtr = block;
 
@@ -21,7 +21,7 @@ namespace jts {
 
 		Obj* ret = env::newObj(vm, evalObj(vm, blockPtr->val));
 
-		env::endEnv(vm, params, prvVal);
+		env::unbindEnv(vm, params, prvVal);
 
 		return ret;
 	}

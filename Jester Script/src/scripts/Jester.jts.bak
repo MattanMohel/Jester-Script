@@ -66,14 +66,14 @@
 		
 		(apply * res)))
 
-(defun bench ()
-		
+(defun bench (n)	
 		(let 
-			( (x 0.0)
-			  (i 0) )
+			( (i 0) )
 
-			(loop (< i 1000000)
-				(set x (root (+ x 1) 2))
-				(+= i 1))
-		
-			x))
+			(loop (< i n)
+				(+= i 1))))
+
+(defun time (f)
+	(reset)
+	(eval f)
+	(elapsed))

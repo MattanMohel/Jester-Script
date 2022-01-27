@@ -122,10 +122,14 @@
     <ClInclude Include="src\util\Stack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\prelude\File.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\Rock-Paper-Scissors.jts" />
     <None Include="src\scripts\Jester.jts" />
     <None Include="src\scripts\main.jts" />
+    <None Include="src\scripts\Dog.jts" />
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@
 #define ASSERT(cond, mes) 
 #endif
 
-#define START_OBJ_COUNT 100
+#define POOL_SZ 100
 
 namespace jts {
 
@@ -20,14 +20,14 @@ namespace jts {
 
 	struct VM {
 
-		std::unordered_map<str, Obj*> symbols;
+		using Map = std::unordered_map<str, Obj*>;
+
+		Map symbols;
 
 		std::vector<void(*)(VM* vm)> libs;
 
-		Pool<Node>* nodePool = nullptr;
-		Pool<Obj>*  objPool  = nullptr;
-		Pool<Node>* cmpl_nodePool = nullptr;
-		Pool<Obj>*  cmpl_objPool  = nullptr;
+		Pool_s<Node, POOL_SZ> nodePool;
+		Pool_s<Obj,  POOL_SZ>  objPool;
 
 		////////////////
 		/////States/////
@@ -41,7 +41,7 @@ namespace jts {
 
 		bool eval = false; 
 
-		str workDir = "";
+		str workingDir = "";
 	};
 
 	namespace env {
@@ -52,17 +52,15 @@ namespace jts {
 
 		VM* newVM();
 
-		VM* setEval(VM* vm, bool state);
-
 		Node* newNode (VM* vm, Obj* obj);
+
 		void  releaseNode(VM* vm, Node* node);
 
 		Obj* newObj(VM* vm, Type t = Type::NIL, Spec s = Spec::SYMBOL);
-		Obj* newObj(VM* vm, Obj* obj);
-		void releaseObj(VM* vm, Obj* obj);
 
-		Node* cmplNode(VM* vm, Obj* obj);
-		Obj* cmplObj(VM* vm, Type t = Type::NIL, Spec s = Spec::SYMBOL);
+		Obj* newObj(VM* vm, Obj* obj);
+
+		void releaseObj(VM* vm, Obj* obj);
 
 		/////////////////
 		/////Symbols/////
@@ -71,6 +69,7 @@ namespace jts {
 		void addSymbol(VM* vm, const str& key, Obj* val);
 		
 		Obj* addNative(Obj* (*native)(VM*, Node*));
+
 		Obj* addSrc   (VM* vm, const str& src);
 
 		// Adds an object symbol of type
@@ -92,30 +91,33 @@ namespace jts {
 		///////////////////
 
 		Obj* run    (VM* vm);	
+
 		Obj* runREPL(VM* vm);
 
-		Node* pushEnv(VM* vm, Node* locals, Node* newVal);
-		Node* pushEnv(VM* vm, Node* locPair);
+		Node* bindEnv(VM* vm, Node* locals, Node* newVal);
 
-		void  endEnv(VM* vm, Node* locals,  Node* prvVal);
+		Node* bindEnv(VM* vm, Node* locPair);
 
-		void pushUsed(VM* vm, Obj* ret);
-		void releaseUsed(VM* vm);
-
-		void clear(VM* vm);
+		void  unbindEnv(VM* vm, Node* locals,  Node* prvVal);
 
 		///////////////////
 		/////Directory/////
 		///////////////////
 
-		const str& getDir(VM* vm);
-		void changeDir(VM* vm, const str& path);
+		const str& pwd(VM* vm);
+
+		void cd(VM* vm, const str& path);
+
+		str cat(VM* vm, const str& file);
+
+		str ls(VM* vm);
 
 		///////////////////////
 		/////Miscellaneous/////
 		///////////////////////
 
 		void addLib(VM* vm, void(*lib)(VM* vm));
+
 		void addScript(VM* vm, const str& path, bool abs = false, bool run = true);
 
 		void assert(bool cond, const str& mes, State warnType = State::ERR);

@@ -21,17 +21,19 @@ namespace lib {
 
 		env::addSymbol(vm, "nil", env::addConst(nullptr));
 
-		// (quote target)
+		// (quote value)
 		env::addSymbol(vm, "quote", env::addNative([](VM* vm, Node* args) {
+			
 			return quoteObj(vm, env::newObj(vm), args->val);
 		}));
 
-		// (set to-set value)
+		// (set target value)
 		env::addSymbol(vm, "set", env::addNative([](VM* vm, Node* args) {
+			
 			return env::newObj(vm, setObj(vm, args->val, evalObj(vm, args->nxt->val)));
 		}));
 
-		// (const to-set value)
+		// (const target value)
 		env::addSymbol(vm, "const", env::addNative([](VM* vm, Node* args) {
 		#if CHECK_ERROR
 			args->val->assert(args->val->initialized, "trying to make an initialized value % const");
@@ -39,11 +41,11 @@ namespace lib {
 
 			args->val->constant = true;
 			return env::newObj(vm, setObj(vm, args->val, evalObj(vm, args->nxt->val)));
-		}));
-
-		// (let [name value] body)
+		}));		
+		
+		// (let ( (name value)... ) body)
 		env::addSymbol(vm, "let", env::addNative([](VM* vm, Node* args) {
-			auto prvVal = env::pushEnv(vm, args->val->_args);
+			auto prvVal = env::bindEnv(vm, args->val->_args);
 
 			auto bdy = args->nxt;
 				
@@ -54,7 +56,7 @@ namespace lib {
 
 			auto ret = env::newObj(vm, evalObj(vm, bdy->val));
 
-			env::endEnv(vm, args->val->_args, prvVal);
+			env::unbindEnv(vm, args->val->_args, prvVal);
 
 			return ret; 
 		}));
@@ -74,7 +76,7 @@ namespace lib {
 			return env::newObj(vm, ret);
 		}));
 
-		// (defn name (params) body)
+		// (defun name (params) body)
 		env::addSymbol(vm, "defun", env::addNative([](VM* vm, Node* args)
 		{
 			args->val->spec = Spec::SYMBOL;
@@ -90,47 +92,18 @@ namespace lib {
 		// (eval target)
 		env::addSymbol(vm, "eval", env::addNative([](VM* vm, Node* args)
 		{
-			auto ret = setObj(vm, env::newObj(vm), 
-				evalObj(env::setEval(vm,  true), 		
-					evalObj(env::setEval(vm, false), args->val)));
+			vm->eval = false;
 
-			env::setEval(vm, false);
+			auto ret = evalObj(vm, args->val);
 
-			return ret;
-		}));		
-		
-		// (repl)
-		env::addSymbol(vm, "repl", env::addNative([](VM* vm, Node* args)
-		{
-			return env::runREPL(vm);
-		}));		
-		
-		// (compile path)
-		env::addSymbol(vm, "compile", env::addNative([](VM* vm, Node* args)
-		{
-			str path = toString(evalObj(vm, args->val));
+			vm->eval = true;
 
-			Node* stackPtr = vm->stackPtrCur;
-			env::addScript(vm, path, false, false);
-			Obj* ret = env::run(vm);
+			ret = setObj(vm, env::newObj(vm), evalObj(vm, ret));
 
-			vm->stackPtrCur = stackPtr;
+			vm->eval = false;
 
 			return ret;
 		}));		
-		
-		// (pwd)
-		env::addSymbol(vm, "pwd", env::addNative([](VM* vm, Node* args)
-		{
-			return setTo<str*>(env::newObj(vm), &vm->workDir);
-		}));		
-		
-		// (cd path)
-		env::addSymbol(vm, "cd", env::addNative([](VM* vm, Node* args)
-		{
-			env::changeDir(vm, toString(evalObj(vm, args->val)));
-			return setTo<str*>(env::newObj(vm), &vm->workDir);
-		}));
 
 		// (loop cond body)
 		env::addSymbol(vm, "loop", env::addNative([](VM* vm, Node* args)
@@ -140,8 +113,6 @@ namespace lib {
 			Obj*  ret = nullptr;
 
 			while (isTrue(evalObj(vm, cond->val))) {
-				env::releaseUsed(vm);
-
 				bdy = args->nxt;
 
 				while (bdy->nxt) {
@@ -163,12 +134,6 @@ namespace lib {
 			}
 
 			return env::newObj(vm, evalObj(vm, args->val));
-		}));
-				
-		
-		env::addSymbol(vm, "obj-count", env::addNative([](VM* vm, Node* args)
-		{
-			return setTo<jtsi>(env::newObj(vm), vm->objPool->count());
 		}));
 
 		// (string-int value)

@@ -53,8 +53,9 @@ namespace jts {
 
 			case Type::QUOTE:
 				if (vm->eval) {
-					obj = evalObj(env::setEval(vm, false), obj->_quote);
-					env::setEval(vm, true);
+					vm->eval = false;
+					obj = evalObj(vm, obj->_quote);
+					vm->eval = true;
 				}
 
 				break;
@@ -102,7 +103,7 @@ namespace jts {
 				}
 		}
 
-		env::pushUsed(vm, ret);
+		//env::pushUsed(vm, ret);
 
 		return ret;
 	}

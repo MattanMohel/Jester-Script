@@ -180,6 +180,7 @@
   <ItemGroup>
     <ClInclude Include="src\prelude\Arithmetic.h" />
     <ClInclude Include="src\prelude\Boolean.h" />
+    <ClInclude Include="src\prelude\File.h" />
     <ClInclude Include="src\prelude\Lists.h" />
     <ClInclude Include="src\prelude\Standard.h" />
     <ClInclude Include="src\core\CppClass.h" />
@@ -206,6 +207,7 @@
     <None Include="src\scripts\Jester.jts" />
     <None Include="scripts\Rock-Paper-Scissors.jts" />
     <None Include="src\scripts\main.jts" />
+    <None Include="src\scripts\Dog.jts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -10,16 +10,12 @@ namespace jts
 {
 	 
 	// Evaluates and returns an object
-	
 	Obj* evalObj(VM* vm, Obj* obj);
-
 	
 	// Executes and returns an object with a callable type
-	
 	Obj* execObj(VM* vm, Node* args);
 
 	// Takes object and returns its T value
-
 	template<typename T>
 	inline T castObj(Obj* obj)
 	{
@@ -44,7 +40,6 @@ namespace jts
 	}
 
 	// Takes T and returns corresponding enum-Type value 
-
 	template<typename T>
 	inline Type getType()
 	{

@@ -22,62 +22,41 @@ namespace jts {
 		VM* newVM() {
 			VM* vm = new VM();
 
-			vm->objPool = new Pool<Obj>("Object", START_OBJ_COUNT, [](Obj* val) {
-				val->ref  = new size_t(1);
-				val->spec = Spec::SYMBOL;
-				val->type = Type::NIL;
-				val->_int = 0;
+			vm->objPool.init([](Obj* elm) {
+				
+				elm->ref  = new size_t(1);
+				elm->spec =  Spec::SYMBOL;
+				elm->type =     Type::NIL;
+				elm->_int = 0;
 
-				return val;
+				return elm;
 			});			
-			
-			vm->cmpl_objPool = new Pool<Obj>("Object", START_OBJ_COUNT, [](Obj* val) {
-				val->ref  = new size_t(1);
-				val->spec = Spec::SYMBOL;
-				val->type = Type::NIL;
-				val->_int = 0;
 
-				return val;
-			});
+			vm->nodePool.init([](Node* elm) {
+				elm->nxt = nullptr;
+				elm->val = nullptr;
 
-			vm->nodePool = new Pool<Node>("Node", START_OBJ_COUNT, [](Node* val) {
-				val->nxt = nullptr;
-				val->val = nullptr;
-
-				return val;
+				return elm;
 			});	
-			
-			vm->cmpl_nodePool = new Pool<Node>("Node", START_OBJ_COUNT, [](Node* val) {
-				val->nxt = nullptr;
-				val->val = nullptr;
 
-				return val;
-			});
+			vm->workingDir = file::getWorkingDir();
 
-			vm->workDir = file::projectDir();
-
-			return vm;
-		}
-
-		VM* setEval(VM* vm, bool state) {
-			vm->eval = state;
 			return vm;
 		}
 
 		Node* newNode(VM* vm, Obj* obj) {
-			auto* node = vm->nodePool->acquire();
-
+			Node* node = vm->nodePool.acquire();
 			node->val = obj;
 
 			return node;
 		}
 
 		void releaseNode(VM* vm, Node* node) {
-			vm->nodePool->release(node);
+			vm->nodePool.release(&node);
 		}
 
 		Obj* newObj(VM* vm, Type t, Spec s) {
-			auto obj = vm->objPool->acquire();
+			Obj* obj = vm->objPool.acquire();
 			obj->type = t;
 			obj->spec = s;
 
@@ -85,27 +64,11 @@ namespace jts {
 		}
 
 		Obj* newObj(VM* vm, Obj* obj) {
-			return setObj(vm, vm->objPool->acquire(), obj, false);
+			return setObj(vm, vm->objPool.acquire(), obj, false);
 		}
 
 		void releaseObj(VM* vm, Obj* obj) {
-			vm->objPool->release(obj);
-		}
-
-		Node* cmplNode(VM* vm, Obj* obj) {
-			auto* node = vm->cmpl_nodePool->acquire();
-
-			node->val = obj;
-
-			return node;
-		}
-
-		Obj* cmplObj(VM* vm, Type t, Spec s) {
-			auto obj = vm->cmpl_objPool->acquire();
-			obj->type = t;
-			obj->spec = s;
-
-			return obj;
+			vm->objPool.release(&obj);
 		}
 
 		/////////////////
@@ -205,14 +168,12 @@ namespace jts {
 
 			Obj* ret = nullptr;
 
-			while (vm->stackPtrCur) {
-				ret = evalObj(vm, vm->stackPtrCur->val);
-				env::releaseUsed(vm);
-
+			while (vm->stackPtrCur->nxt) {
+				evalObj(vm, vm->stackPtrCur->val);
 				shift(&vm->stackPtrCur);
 			}
 
-			return ret;
+			return evalObj(vm, vm->stackPtrCur->val);
 		}
 
 		Obj* runREPL(VM* vm) {
@@ -229,8 +190,6 @@ namespace jts {
 				if (src.empty()) {
 					continue;
 				}
-
-				if ("$env parse scripts/jts/Jester.jts")
 
 				// Reset VM
 
@@ -253,7 +212,7 @@ namespace jts {
 
 		//MEMORY LEAKS
 
-		Node* pushEnv(VM* vm, Node* locals, Node* newVal) {
+		Node* bindEnv(VM* vm, Node* locals, Node* newVal) {
 			Node* prev = lst::copy(vm, locals);
 
 			auto valPtr = newVal;
@@ -267,7 +226,7 @@ namespace jts {
 			return prev;
 		}
 
-		Node* pushEnv(VM* vm, Node* locPair) {
+		Node* bindEnv(VM* vm, Node* locPair) {
 	
 			Node* prev =
 				lst::copy(vm, locPair, [](VM* vm, Obj* elm) {
@@ -290,7 +249,7 @@ namespace jts {
 			return prev;
 		}
 
-		void endEnv(VM* vm, Node* locals, Node* prvVal) {
+		void unbindEnv(VM* vm, Node* locals, Node* prvVal) {
 
 			auto valPtr = prvVal;
 			
@@ -308,35 +267,21 @@ namespace jts {
 			//lst::free(vm, prvVal);
 		}
 
-		void pushUsed(VM* vm, Obj* ret) {
-			vm->objPool->push_used(ret);
-		}
-
-		void releaseUsed(VM* vm) {
-			vm->objPool->release_used();
-		}
-		void clear(VM* vm) {
-			vm->stackPtrCur = vm->stackPtrBeg;
-
-			while (vm->stackPtrCur) {
-
-				vm->nodePool->release(vm->stackPtrCur);
-
-				vm->stackPtrCur = vm->stackPtrCur->nxt;
-			}
-		}
-
 		///////////////////
 		/////Directory/////
 		///////////////////
 
-		const str& getDir(VM* vm) {
-			return vm->workDir;
+		const str& pwd(VM* vm) {
+			return vm->workingDir;
 		}
 
-		void changeDir(VM* vm, const str& cd) {
+		str cat(VM* vm, const str& file) {
+			return file::readFile(file::open(vm, file)) + '\n';
+		}
+
+		void cd(VM* vm, const str& cd) {
 			if (cd[0] == '\\') {
-				vm->workDir = cd.substr(1);
+				vm->workingDir = cd.substr(1);
 			}
 			else if (cd[0] == '.') {
 				size_t fst = cd.find_first_of('\\');
@@ -349,22 +294,37 @@ namespace jts {
 				// "C:/Downlaods/Secret"
 
 				for (size_t i = 0; i <= count; ++i) {
-					size_t idx = vm->workDir.find_last_of("\\");
+					size_t idx = vm->workingDir.find_last_of('\\');
 
-					ASSERT(idx == (size_t) - 1, "tried to cd into non existing parent dir " + vm->workDir);
+					ASSERT(idx == (size_t) - 1, "tried to cd into non existing parent dir " + vm->workingDir);
 
-					vm->workDir = vm->workDir.substr(0, idx);
+					vm->workingDir = vm->workingDir.substr(0, idx);
 				}
 
 				if (path != "") {
-					vm->workDir += "\\" + path;
+					vm->workingDir += '\\' + path;
 				}
 			}
 			else {
-				vm->workDir += "\\" + cd;
+				vm->workingDir += '\\' + cd;
 			}
 
-			ASSERT(!std::filesystem::exists(vm->workDir), "tried to cd into non existing path");
+			ASSERT(!std::filesystem::exists(vm->workingDir), "tried to cd into non existing path");
+		}
+
+		str ls(VM* vm) {
+			auto files = file::getFiles(vm, "");
+			str res = "";
+
+			for (size_t i = 0; i < files.size(); ++i) {
+				res += files[i];
+
+				if (i + 1 < files.size()) {
+					res += '\n';
+				}
+			}
+
+			return res;
 		}
 
 		///////////////////////
@@ -379,10 +339,10 @@ namespace jts {
 
 		void addScript(VM* vm, const str& path, bool abs, bool run) {
 			if (abs) {
-				file::parseSrc(vm, file::readFile(vm, file::open(path)), run);
+				file::parseSrc(vm, file::readFile(file::open(path)), run);
 			}
 			else {
-				file::parseSrc(vm, file::readFile(vm, file::open(vm, path)), run);
+				file::parseSrc(vm, file::readFile(file::open(vm, path)), run);
 			}
 		}
 

@@ -41,7 +41,7 @@ namespace jts {
     }
 
     Obj* tokToLtrl(VM* vm, Tok* tok) {
-        Obj* obj = env::cmplObj(vm);
+        Obj* obj = env::newObj(vm);
         obj->type = tok->type;
         obj->spec = Spec::VALUE;
 
