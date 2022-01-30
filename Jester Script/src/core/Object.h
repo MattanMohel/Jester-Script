@@ -28,7 +28,7 @@ namespace jts {
 
 			// Callables
 
-			Obj* (*_native)(VM*, Node*);
+			NatFn* _natFn;
 			CppFn* _cppFn;
 			JtsFn* _jtsFn;
 
@@ -41,8 +41,6 @@ namespace jts {
 		bool constant    = false;
 		bool initialized = false;
 		size_t* ref    = nullptr;
-
-		void assert(bool cond, str message);
 	};
 
 	static Obj* NIL = new Obj{ Type::NIL, Spec::SYMBOL };

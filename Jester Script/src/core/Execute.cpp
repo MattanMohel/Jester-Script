@@ -12,99 +12,140 @@
 
 namespace jts {
 
-	Obj* evalObj(VM* vm, Obj* obj) {
+	template<> Obj* evalObj<true>(VM* vm, Obj* obj) {
 		switch (obj->type) {
-			case Type::LIST: {
-				
-				if (!obj->_args) {
-					break;
-				}
-
-				switch (obj->_args->val->type) {
-					case Type::NAT_FN:
-					case Type::JTS_FN:
-					case Type::CPP_FN: 
-
-						return execObj(vm, obj->_args);
-					
-					case Type::QUOTE: 
-
-						if (vm->eval) {
-							switch (obj->_args->val->_quote->type) {
-								case Type::NAT_FN:
-								case Type::JTS_FN:
-								case Type::CPP_FN:
-
-									return execObj(vm, obj->_args);
-							}
-						}
-
-						break;
-
-					default: 
-
-						lst::evalSelf(vm, obj->_args);
-
-						break;
-				}
-
+		case Type::LIST:
+			if (!obj->_args) {
 				break;
 			}
 
-			case Type::QUOTE:
-				if (vm->eval) {
-					vm->eval = false;
-					obj = evalObj(vm, obj->_quote);
-					vm->eval = true;
-				}
+			if (is<Var::CALLABLE_V>(obj->_args->val) || is<Var::CALLABLE_Q>(obj->_args->val)) {
+				return execObj<true>(vm, obj->_args);
+			}
 
+			lst::evalSelf(vm, obj->_args);
+
+			break;
+
+		case Type::QUOTE:
+			if (vm->eval) {
+				obj = evalObj<true>(env::withEval(vm, false), obj->_quote);
+				env::withEval(vm, true);
+			}
+
+			break;
+		}
+
+		return env::newObj(vm, obj);
+	}
+
+	template<> Obj* evalObj(VM* vm, Obj* obj) {
+		switch (obj->type) {
+		case Type::LIST:
+			if (!obj->_args) {
 				break;
+			}
+
+			if (is<Var::CALLABLE_V>(obj->_args->val) || is<Var::CALLABLE_Q>(obj->_args->val)) {
+				return execObj<false>(vm, obj->_args);
+			}
+
+			lst::evalSelf(vm, obj->_args);
+
+			break;
+
+		case Type::QUOTE:
+			if (vm->eval) {
+				obj = evalObj<true>(env::withEval(vm, false), obj->_quote);
+				env::withEval(vm, true);
+			}
+
+			break;
 		}
 
 		return obj;
 	}
 
-	Obj* execObj(VM* vm, Node* args) {
+	template<> Obj* execObj<true>(VM* vm, Node* args) {
+		switch (args->val->type) {
+
+		case Type::CPP_FN:
+
+			return args->val->_cppFn->call(vm, args);
+
+		case Type::NAT_FN:
+
+			return call(vm, args->nxt, args->val->_natFn);
+
+		case Type::JTS_FN:
+
+			return call(vm, args->nxt, args->val->_jtsFn);
+
+		case Type::QUOTE:
+
+			switch (args->val->_quote->type) {
+
+			case Type::CPP_FN:
+
+				return args->val->_quote->_cppFn->call(vm, args);
+
+			case Type::NAT_FN:
+
+				return call(vm, args->nxt, args->val->_natFn);
+
+			case Type::JTS_FN:
+
+				return call(vm, args->nxt, args->val->_jtsFn);
+			}
+		}
+
+		return nullptr;
+	}
+
+	template<> Obj* execObj<false>(VM* vm, Node* args) {
 
 		Obj* ret = nullptr;
 
 		switch (args->val->type) {
-			case Type::NAT_FN:
 
-				ret = args->val->_native(vm, args->nxt);
-				break;
+		case Type::CPP_FN:
+
+			ret = args->val->_cppFn->call(vm, args);
+			break;
+
+		case Type::NAT_FN:
+
+			ret = call(vm, args->nxt, args->val->_natFn);
+			break;
+
+		case Type::JTS_FN:
+
+			ret = call(vm, args->nxt, args->val->_jtsFn);
+			break;
+
+		case Type::QUOTE:
+
+			switch (args->val->_quote->type) {
 
 			case Type::CPP_FN:
 
-				ret = args->val->_cppFn->call(vm, args);
+				ret = args->val->_quote->_cppFn->call(vm, args);
+				break;
+
+			case Type::NAT_FN:
+
+				ret = call(vm, args->nxt, args->val->_natFn);
 				break;
 
 			case Type::JTS_FN:
 
-				ret = args->val->_jtsFn->call(vm, args->nxt);
+				ret = call(vm, args->nxt, args->val->_jtsFn);
 				break;
 
-			case Type::QUOTE:
-				switch (args->val->_quote->type) {
-					case Type::NAT_FN:
-
-						ret = args->val->_quote->_native(vm, args->nxt);
-						break;
-
-					case Type::CPP_FN:
-
-						ret = args->val->_quote->_cppFn->call(vm, args);
-						break;
-
-					case Type::JTS_FN:
-
-						ret = args->val->_quote->_jtsFn->call(vm, args->nxt);
-						break;
-				}
+			}
 		}
 
-		//env::pushUsed(vm, ret);
-
+		env::releaseObj(vm, ret);
 		return ret;
 	}
 }

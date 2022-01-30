@@ -2,6 +2,7 @@
 #include "Token.h"
 #include "Execute.h"
 #include "Object.h"
+#include "JtsFunc.h"
 #include "Lexer.h"
 #include "File.h"
 #include "Log.h"
@@ -44,6 +45,11 @@ namespace jts {
 			return vm;
 		}
 
+		VM* withEval(VM* vm, bool state) {
+			vm->eval = state;
+			return vm;
+		}
+
 		Node* newNode(VM* vm, Obj* obj) {
 			Node* node = vm->nodePool.acquire();
 			node->val = obj;
@@ -67,8 +73,12 @@ namespace jts {
 			return setObj(vm, vm->objPool.acquire(), obj, false);
 		}
 
+		Obj* newObj(VM* vm, Obj& obj) {
+			return setObj(vm, vm->objPool.acquire(), &obj, false);
+		}
+
 		void releaseObj(VM* vm, Obj* obj) {
-			vm->objPool.release(&obj);
+			vm->objPool.release(obj);
 		}
 
 		/////////////////
@@ -78,7 +88,7 @@ namespace jts {
 		void addSymbol(VM* vm, const str& symbol, Obj* val) {
 			bool hasKey = env::getSymbol(vm, symbol);
 
-			assert(false, "creating duplicate symbol " + symbol);
+			ASSERT(false, "creating duplicate symbol " + symbol);
 
 			vm->symbols.emplace(symbol, val);
 		}
@@ -86,7 +96,9 @@ namespace jts {
 		Obj* addNative(Obj* (*native)(VM*, Node*)) {
 			Obj* obj = new Obj();
 
-			obj->_native = native;
+			obj->_natFn = new NatFn();
+			obj->_natFn->_native = native;
+				
 			obj->type = Type::NAT_FN;
 			obj->spec = Spec::SYMBOL;
 
@@ -343,27 +355,6 @@ namespace jts {
 			}
 			else {
 				file::parseSrc(vm, file::readFile(file::open(vm, path)), run);
-			}
-		}
-
-		void assert(bool cond, const str& mes, State warnType) {
-			if (!cond) return;
-
-			switch (warnType) {
-			case State::MES:
-
-				std::cout << "MESSAGE: " << mes;
-				break;
-
-			case State::WRN:
-
-				std::cout << "WARING: " << mes;
-				break;
-
-			case State::ERR:
-
-				std::cout << "ERROR: " << mes;
-				exit(EXIT_FAILURE);
 			}
 		}
 	}

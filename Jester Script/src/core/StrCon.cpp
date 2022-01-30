@@ -61,7 +61,7 @@ namespace jts {
                     obj->_char = '\t';
                     break;
                 default:
-                    env::assert(true, "created invalid char '\\'" + c);
+                    ASSERT(true, "created invalid char '\\'" + c);
                 }            
             }
             else {

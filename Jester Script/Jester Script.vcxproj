@@ -168,6 +168,7 @@
     <ClCompile Include="src\core\JtsFunc.cpp" />
     <ClCompile Include="src\core\Execute.cpp" />
     <ClCompile Include="src\core\Object.cpp" />
+    <ClCompile Include="src\core\Type.cpp" />
     <ClCompile Include="src\util\ListOp.cpp" />
     <ClCompile Include="src\util\ObjectOp.cpp" />
     <ClCompile Include="src\core\Parser.cpp" />

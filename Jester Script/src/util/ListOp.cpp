@@ -58,7 +58,7 @@ namespace jts::lst {
 
 	Node* eval(VM* vm, Node* lst) {
 		return copy(vm, lst, [](VM* vm, Obj* elm) {
-			return env::newObj(vm, evalObj(vm, elm));
+			return evalObj<true>(vm, elm);
 		});
 	}	
 	
@@ -66,7 +66,7 @@ namespace jts::lst {
 		forEach(vm, lst, [](VM* vm, Obj* elm) {
 			if (!isMutable(elm)) return;
 
-			setObj(vm, elm, evalObj(vm, elm));
+			setObj(vm, elm, evalObj<true>(vm, elm));
 		});
 
 		return lst;

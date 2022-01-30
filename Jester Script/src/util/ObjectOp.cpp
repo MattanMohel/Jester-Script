@@ -64,7 +64,7 @@ namespace jts {
 
 			case Type::NAT_FN:
 
-				a->_native = b->_native;
+				a->_natFn = b->_natFn;
 
 				break;
 
@@ -452,12 +452,14 @@ namespace jts {
 	/////Object Operations/////
 	///////////////////////////
 
-	Obj* quoteObj(VM* vm, Obj* res, Obj* q) {
+	Obj* quoteObj(VM* vm, Obj* q) {
+		auto res = env::newObj(vm);
+
 		// if quoting non-list item
 		if (q->type != Type::LIST) {
 
 			res->type = Type::QUOTE;
-			res->_quote = evalObj(vm, q);
+			res->_quote = evalObj<true>(vm, q);
 
 			return res;
 		}
@@ -466,7 +468,7 @@ namespace jts {
 
 		res->_args = lst::copy(vm, q->_args,
 			[](VM* vm, Obj* obj) {
-			return quoteObj(vm, env::newObj(vm), evalObj(vm, obj));
+			return quoteObj(vm, evalObj<true>(vm, obj));
 		});
 
 		return res;
@@ -487,10 +489,6 @@ namespace jts {
 			return;
 		}
 
-	#if DEBUG_ALLOC
-		std::cout << "freeing " << obj->symbol << " - " << obj << '\n';
-	#endif
-
 		switch (obj->type) {
 			case Type::LIST:
 
@@ -510,17 +508,23 @@ namespace jts {
 
 				break;
 
-			case Type::JTS_FN:
-
-				// TODO: implement destructor
-				delete obj->_jtsFn;
-
-				break;
-
 			case Type::CPP_FN:
 
 				//TODO: implement destructor
 				delete obj->_cppFn;
+
+				break;
+
+			case Type::NAT_FN:
+
+				delete obj->_natFn;
+
+				break;
+
+			case Type::JTS_FN:
+
+				// TODO: implement destructor
+				delete obj->_jtsFn;
 
 				break;
 		}

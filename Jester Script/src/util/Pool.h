@@ -76,6 +76,23 @@ public:
         return _head;
     }
 
+    void release(T* elm) {
+        size_t elm_index = index_of(elm);
+
+        ASSERT(elm_index >= SZ, "releasing foreign element");
+
+    #if DEBUG_POOL
+        printf("releasing - %p\n", *elm);
+    #endif
+
+        ++_free;
+
+        elm = nullptr;
+
+        _buffer[elm_index].nxt = _head;
+        _head = &_buffer[elm_index].val;
+    }    
+    
     void release(T** elm) {
         size_t elm_index = index_of(*elm);
 

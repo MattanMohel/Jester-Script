@@ -62,7 +62,7 @@ namespace jts {
 			// create parameter vector
 
 			while (args->nxt) {
-				paramVec.emplace_back(evalObj(vm, args->nxt->val));
+				paramVec.emplace_back(evalObj<true>(vm, args->nxt->val));
 				args = args->nxt;
 			}
 

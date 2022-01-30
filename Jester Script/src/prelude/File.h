@@ -16,14 +16,12 @@ namespace lib {
 	inline void FileLib(VM* vm) {
 
 		// (repl)
-		env::addSymbol(vm, "repl", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "repl", env::addNative([](VM* vm, Node* args) {
 			return env::runREPL(vm);
 		}));
 
 		// (compile path)
-		env::addSymbol(vm, "compile", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "compile", env::addNative([](VM* vm, Node* args) {
 			str path = toString(evalObj(vm, args->val));
 
 			Node* stackPtr = vm->stackPtrCur;
@@ -36,28 +34,29 @@ namespace lib {
 		}));
 
 		// (pwd)
-		env::addSymbol(vm, "pwd", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "pwd", env::addNative([](VM* vm, Node* args) {
 			return setTo<str*>(env::newObj(vm), &vm->workingDir);
 		}));
-				
+
 		// (cat file)
-		env::addSymbol(vm, "cat", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "cat", env::addNative([](VM* vm, Node* args) {
 			return setTo<str*>(env::newObj(vm), new str(env::cat(vm, toString(evalObj(vm, args->val)))));
 		}));
 
 		// (cd path)
-		env::addSymbol(vm, "cd", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "cd", env::addNative([](VM* vm, Node* args) {
 			env::cd(vm, toString(evalObj(vm, args->val)));
 			return setTo<str*>(env::newObj(vm), &vm->workingDir);
-		}));		
-		
+		}));
+
 		// (ls)
-		env::addSymbol(vm, "ls", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "ls", env::addNative([](VM* vm, Node* args) {
 			return setTo<str*>(env::newObj(vm), new str(env::ls(vm)));
+		}));
+
+		// (ls)
+		env::addSymbol(vm, "free", env::addNative([](VM* vm, Node* args) {
+			return setTo<int>(env::newObj(vm), vm->objPool.free());
 		}));
 	}
 }

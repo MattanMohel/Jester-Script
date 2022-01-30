@@ -12,7 +12,7 @@
 #define ASSERT(cond, mes) 
 #endif
 
-#define POOL_SZ 100
+#define POOL_SZ 1000
 
 namespace jts {
 
@@ -52,6 +52,8 @@ namespace jts {
 
 		VM* newVM();
 
+		VM* withEval(VM* vm, bool state);
+
 		Node* newNode (VM* vm, Obj* obj);
 
 		void  releaseNode(VM* vm, Node* node);
@@ -59,6 +61,8 @@ namespace jts {
 		Obj* newObj(VM* vm, Type t = Type::NIL, Spec s = Spec::SYMBOL);
 
 		Obj* newObj(VM* vm, Obj* obj);
+
+		Obj* newObj(VM* vm, Obj obj);
 
 		void releaseObj(VM* vm, Obj* obj);
 
@@ -70,7 +74,7 @@ namespace jts {
 		
 		Obj* addNative(Obj* (*native)(VM*, Node*));
 
-		Obj* addSrc   (VM* vm, const str& src);
+		Obj* addSrc(VM* vm, const str& src);
 
 		// Adds an object symbol of type
 		template<typename T>
@@ -119,9 +123,29 @@ namespace jts {
 		void addLib(VM* vm, void(*lib)(VM* vm));
 
 		void addScript(VM* vm, const str& path, bool abs = false, bool run = true);
-
-		void assert(bool cond, const str& mes, State warnType = State::ERR);
 	}
+
+#define WRAPPER(ID, ...) Obj* arr[] = {__VA_ARGS__}; wrapper_v<sizeof(arr)/sizeof(void*)> ID(vm, arr)
+
+	template<size_t SZ>
+	struct wrapper_v {
+
+		wrapper_v(VM* vm, Obj** value)
+			: _arr(value), _vm_ptr(vm) {}
+
+		~wrapper_v() {
+			for (size_t i = 0; i < SZ; ++i) {
+				env::releaseObj(_vm_ptr, _arr[i]);
+			}
+		}
+
+		inline Obj* get(size_t&& idx) {
+			return _arr[idx];
+		}		
+
+		VM* _vm_ptr;
+		Obj** _arr;
+	};
 }
 
 #endif

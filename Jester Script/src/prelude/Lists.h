@@ -15,8 +15,7 @@ namespace lib {
 	inline void ListsLib(VM* vm) {
 
 		// (for var list body)
-		env::addSymbol(vm, "for", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "for", env::addNative([](VM* vm, Node* args) {
 			auto lst = args->nxt->val->_args;
 			auto bdy = args->nxt->nxt;
 			auto ret = (Obj*)nullptr;
@@ -29,7 +28,8 @@ namespace lib {
 				setObj(vm, args->val, evalObj(vm, lst->val));
 
 				while (bdy->nxt) {
-					evalObj(vm, shiftr(&bdy)->val);
+					evalObj(vm, bdy->val);
+					shift(&bdy);
 				}
 
 				ret = evalObj(vm, bdy->val);
@@ -42,14 +42,12 @@ namespace lib {
 		}));
 
 		// (head list)
-		env::addSymbol(vm, "fst", env::addNative([](VM* vm, Node* args) 
-		{			
+		env::addSymbol(vm, "fst", env::addNative([](VM* vm, Node* args) {
 			return env::newObj(vm, args->val->_args->val);
 		}));
 
 		// (tail list)
-		env::addSymbol(vm, "rst", env::addNative([](VM* vm, Node* args) 
-		{
+		env::addSymbol(vm, "rst", env::addNative([](VM* vm, Node* args) {
 			auto ret = env::newObj(vm, Type::LIST, Spec::SYMBOL);
 			ret->_args = args->val->_args->nxt;
 
@@ -57,8 +55,7 @@ namespace lib {
 		}));
 
 		// (nth index list)
-		env::addSymbol(vm, "nth", env::addNative([](VM* vm, Node* args) 
-		{
+		env::addSymbol(vm, "nth", env::addNative([](VM* vm, Node* args) {
 			auto lst = args->nxt->val;
 			auto elm = lst->_args;
 			auto idx = castObj<jtsi>(evalObj(vm, args->val));
@@ -71,11 +68,10 @@ namespace lib {
 			return idx == 0
 				? env::newObj(vm, elm->val)
 				: env::newObj(vm, NIL);
-		}));	
+		}));
 
 		// (size list)
-		env::addSymbol(vm, "size", env::addNative([](VM* vm, Node* args) 
-		{
+		env::addSymbol(vm, "size", env::addNative([](VM* vm, Node* args) {
 			auto lst = args->val;
 			auto elm = lst->_args;
 			auto size = 0;
@@ -86,11 +82,10 @@ namespace lib {
 			}
 
 			return setTo<jtsi>(env::newObj(vm), size);
-		}));		
-		
+		}));
+
 		// (new list to-set)
-		env::addSymbol(vm, "new", env::addNative([](VM* vm, Node* args) 
-		{
+		env::addSymbol(vm, "new", env::addNative([](VM* vm, Node* args) {
 			auto val = args->nxt->val;
 
 			val->_args = lst::copy(vm, args->val->_args);
@@ -100,8 +95,7 @@ namespace lib {
 		}));
 
 		// (prepend value list)
-		env::addSymbol(vm, "prepend", env::addNative([](VM* vm, Node* args) 
-		{
+		env::addSymbol(vm, "prepend", env::addNative([](VM* vm, Node* args) {
 			auto val = evalObj(vm, args->val);
 			auto lst = args->nxt->val->_args;
 			auto prvVal = env::newObj(vm);
@@ -112,7 +106,7 @@ namespace lib {
 
 				return env::newObj(vm, val);
 			}
-			
+
 			setObj(vm, prvVal, lst->val);
 			setObj(vm, lst->val, val);
 
@@ -120,19 +114,18 @@ namespace lib {
 
 			lst->nxt = env::newNode(vm, env::newObj(vm));
 			lst->nxt->nxt = prvNode;
-			
+
 			setObj(vm, lst->nxt->val, prvVal);
 			return env::newObj(vm, val);
 		}));
 
 		// (append value list)
-		env::addSymbol(vm, "append", env::addNative([](VM* vm, Node* args) 
-		{
+		env::addSymbol(vm, "append", env::addNative([](VM* vm, Node* args) {
 			auto val = evalObj(vm, args->val);
 			auto lst = args->nxt->val->_args;
 
 			if (!lst) {
-				args->nxt->val->_args = env::newNode(vm, 
+				args->nxt->val->_args = env::newNode(vm,
 					env::newObj(vm, val));
 
 				return env::newObj(vm, val);
@@ -148,11 +141,10 @@ namespace lib {
 		}));
 
 		// (insert index value list)
-		env::addSymbol(vm, "insert", env::addNative([](VM* vm, Node* args) 
-		{
-			auto val = evalObj(vm, args->nxt->val);
-			auto lst =args->nxt->nxt->val->_args;
+		env::addSymbol(vm, "insert", env::addNative([](VM* vm, Node* args) {
 			auto idx = castObj<jtsi>(evalObj(vm, args->val));
+			auto val = evalObj(vm, args->nxt->val);
+			auto lst = args->nxt->nxt->val->_args;
 
 			while (idx > 0 && lst->nxt) {
 				lst = lst->nxt;
@@ -173,11 +165,10 @@ namespace lib {
 			lst->nxt->nxt = prvNode;
 
 			return env::newObj(vm, val);
-		}));		
-		
+		}));
+
 		// (remove value list)
-		env::addSymbol(vm, "remove", env::addNative([](VM* vm, Node* args) 
-		{
+		env::addSymbol(vm, "remove", env::addNative([](VM* vm, Node* args) {
 			auto val = evalObj(vm, args->val);
 			auto elm = args->nxt->val->_args;
 			auto prv = (Node*)nullptr;
@@ -187,7 +178,7 @@ namespace lib {
 			}
 
 			while (elm->nxt && !isEqual(elm->val, val)) {
-				prv =  elm;
+				prv = elm;
 				shift(&elm);
 			}
 
@@ -206,7 +197,7 @@ namespace lib {
 				prv
 					? prv->nxt = nullptr
 					: args->nxt->val->_args = nullptr;
-				
+
 				//delete elm
 				//or delete _args
 

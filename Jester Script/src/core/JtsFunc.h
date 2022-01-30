@@ -5,13 +5,28 @@
 
 namespace jts
 {
-	struct JtsFn
-	{
+	struct JtsFn {
+
 		Node* block  = nullptr;	
 		Node* params = nullptr;
 
-		Obj* call (VM* vm, Node* args);
+		str id;
 	};	
+
+	struct NatFn {
+
+		Obj* (*_native)(VM*, Node*);
+
+		str id;
+	};
+
+	template<typename Fn>
+	inline Obj* call(VM* vm, Node* args, Fn* func) {
+		static_assert(false, "unsupported function type");
+	}
+
+	template<> Obj* call(VM* vm, Node* args, JtsFn* func);
+	template<> Obj* call(VM* vm, Node* args, NatFn* func);
 }
 
 #endif

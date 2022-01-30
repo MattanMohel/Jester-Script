@@ -20,10 +20,11 @@ namespace jts {
 	struct Tok;
 	struct Obj;
 	struct JtsFn;
-	struct MacFn;
-	struct JtsType;
+	struct NatFn;
 	struct CppFn;
+	struct JtsType;
 	struct Node;
+	struct MacFn;
 
 	struct CppClass;
 
@@ -39,8 +40,8 @@ namespace jts {
 		QUOTE,       // 5
 		LIST,        // 6
 				    
-		NAT_FN,      // 7
-		CPP_FN,      // 8
+		CPP_FN,      // 7
+		NAT_FN,      // 8
 		JTS_FN,      // 9
 
 		JTS_TYPE,    // 11
@@ -56,32 +57,26 @@ namespace jts {
 		SYMBOL, // variable
 		VALUE,  // literal value
 
-		LST_BEG, // '(' or '['
-		LST_END, // ')' or ']'
+		LST_BEG, // '(' 
+		LST_END, // ')' 
 	};
 
-	// Symbol flags
-	enum class SFlag {
+	enum class Var {
 		NIL = 0,
 
-		STAT,
-		CONST,
-		MUT,
-
-		END,
+		CALLABLE_V,
+		CALLABLE_Q,
+		INTEGRAL,
 	};
 
-	enum class State {
-		NIL = 0,
-
-		MES, // message
-		WRN, // warning
-		ERR, // error
-	};
-
-	inline bool isIntegral(Type type) {
-		return (int)type >= (int)Type::CHAR && (size_t)type <= (int)Type::FLOAT;
+	template <Var Vt>
+	inline bool is(Obj* obj) {
+		static_assert(false, "Var type assertion unsupported");
 	}
+
+	template<> bool is<Var::CALLABLE_V>(Obj* obj);
+	template<> bool is<Var::CALLABLE_Q>(Obj* obj);
+	template<> bool is<Var::INTEGRAL>(Obj* obj);
 }
 
 #endif

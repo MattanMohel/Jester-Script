@@ -49,13 +49,11 @@ namespace jts {
 				args = args->nxt;
 			}
 
-			if constexpr (std::is_void<Ret>::value)	// func is void, evaluate and return NIL
-			{
+			if constexpr (std::is_void<Ret>::value)	{
 				func(castObj<Args>(paramVec[I])...);
 				return setTo(env::newObj(vm), nullptr_t());
 			}
-			else // return the func value
-			{
+			else {
 				return setTo(env::newObj(vm), func(castObj<Args>(paramVec[I])...));
 			}
 		}

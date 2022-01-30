@@ -38,9 +38,8 @@ namespace lib {
 
 		// Arithmetic Binary Operations
 
-		env::addSymbol(vm, "+", env::addNative([](VM* vm, Node* args)
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+		env::addSymbol(vm, "+", env::addNative([](VM* vm, Node* args) {
+			auto ret = evalObj<true>(vm, args->val);
 
 			while (args->nxt) {
 				binaryOp<Binary::ADD>(ret, evalObj(vm, args->nxt->val));
@@ -50,9 +49,8 @@ namespace lib {
 			return ret;
 		}));
 
-		env::addSymbol(vm, "-", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+		env::addSymbol(vm, "-", env::addNative([](VM* vm, Node* args) {
+			auto ret = evalObj<true>(vm, args->val);
 
 			while (args->nxt) {
 				binaryOp<Binary::SUB>(ret, evalObj(vm, args->nxt->val));
@@ -62,9 +60,8 @@ namespace lib {
 			return ret;
 		}));
 
-		env::addSymbol(vm, "*", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+		env::addSymbol(vm, "*", env::addNative([](VM* vm, Node* args) {
+			auto ret = evalObj<true>(vm, args->val);
 
 			while (args->nxt) {
 				binaryOp<Binary::MUL>(ret, evalObj(vm, args->nxt->val));
@@ -74,9 +71,8 @@ namespace lib {
 			return ret;
 		}));
 
-		env::addSymbol(vm, "/", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+		env::addSymbol(vm, "/", env::addNative([](VM* vm, Node* args) {
+			auto ret = evalObj<true>(vm, args->val);
 
 			while (args->nxt) {
 				binaryOp<Binary::DIV>(ret, evalObj(vm, args->nxt->val));
@@ -86,9 +82,8 @@ namespace lib {
 			return ret;
 		}));
 
-		env::addSymbol(vm, "mod", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+		env::addSymbol(vm, "mod", env::addNative([](VM* vm, Node* args) {
+			auto ret = evalObj<true>(vm, args->val);
 
 			while (args->nxt) {
 				binaryOp<Binary::MOD>(ret, evalObj(vm, args->nxt->val));
@@ -98,9 +93,8 @@ namespace lib {
 			return ret;
 		}));
 
-		env::addSymbol(vm, "pow", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+		env::addSymbol(vm, "pow", env::addNative([](VM* vm, Node* args) {
+			auto ret = evalObj<true>(vm, args->val);
 
 			while (args->nxt) {
 				binaryOp<Binary::POW>(ret, evalObj(vm, args->nxt->val));
@@ -110,9 +104,8 @@ namespace lib {
 			return ret;
 		}));
 
-		env::addSymbol(vm, "root", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+		env::addSymbol(vm, "root", env::addNative([](VM* vm, Node* args) {
+			auto ret = evalObj<true>(vm, args->val);
 
 			while (args->nxt) {
 				binaryOp<Binary::ROOT>(ret, evalObj(vm, args->nxt->val));
@@ -122,9 +115,8 @@ namespace lib {
 			return ret;
 		}));
 
-		env::addSymbol(vm, "log", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
+		env::addSymbol(vm, "log", env::addNative([](VM* vm, Node* args) {
+			auto ret = evalObj<true>(vm, args->val);
 
 			while (args->nxt) {
 				binaryOp<Binary::LOG>(ret, evalObj(vm, args->nxt->val));
@@ -132,10 +124,9 @@ namespace lib {
 			}
 
 			return ret;
-		}));		
+		}));
 
-		env::addSymbol(vm, "+=", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "+=", env::addNative([](VM* vm, Node* args) {
 			auto val = args->val;
 
 			while (args->nxt) {
@@ -146,8 +137,7 @@ namespace lib {
 			return env::newObj(vm, val);
 		}));
 
-		env::addSymbol(vm, "-=", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "-=", env::addNative([](VM* vm, Node* args) {
 			auto val = args->val;
 
 			while (args->nxt) {
@@ -158,8 +148,7 @@ namespace lib {
 			return env::newObj(vm, val);
 		}));
 
-		env::addSymbol(vm, "*=", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "*=", env::addNative([](VM* vm, Node* args) {
 			auto val = args->val;
 
 			while (args->nxt) {
@@ -170,8 +159,7 @@ namespace lib {
 			return env::newObj(vm, val);
 		}));
 
-		env::addSymbol(vm, "/=", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "/=", env::addNative([](VM* vm, Node* args) {
 			auto val = args->val;
 
 			while (args->nxt) {
@@ -182,8 +170,7 @@ namespace lib {
 			return env::newObj(vm, val);
 		}));
 
-		env::addSymbol(vm, "%=", env::addNative([](VM* vm, Node* args)
-		{
+		env::addSymbol(vm, "%=", env::addNative([](VM* vm, Node* args) {
 			auto val = args->val;
 
 			while (args->nxt) {
@@ -196,46 +183,32 @@ namespace lib {
 
 		// Arithmetic Unary Operations
 
-		env::addSymbol(vm, "ln", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
-			return unaryOp<Unary::LN>(ret);
+		env::addSymbol(vm, "ln", env::addNative([](VM* vm, Node* args) {
+			return unaryOp<Unary::LN>(evalObj<true>(vm, args->val));
 		}));
 
-		env::addSymbol(vm, "sin", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
-			return unaryOp<Unary::SIN>(ret);
+		env::addSymbol(vm, "sin", env::addNative([](VM* vm, Node* args) {
+			return unaryOp<Unary::SIN>(evalObj<true>(vm, args->val));
 		}));
 
-		env::addSymbol(vm, "asin", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
-			return unaryOp<Unary::ASIN>(ret);
+		env::addSymbol(vm, "asin", env::addNative([](VM* vm, Node* args) {
+			return unaryOp<Unary::ASIN>(evalObj<true>(vm, args->val));
 		}));
 
-		env::addSymbol(vm, "cos", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
-			return unaryOp<Unary::COS>(ret);
+		env::addSymbol(vm, "cos", env::addNative([](VM* vm, Node* args) {
+			return unaryOp<Unary::COS>(evalObj<true>(vm, args->val));
 		}));
 
-		env::addSymbol(vm, "acos", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
-			return unaryOp<Unary::ACOS>(ret);
+		env::addSymbol(vm, "acos", env::addNative([](VM* vm, Node* args) {
+			return unaryOp<Unary::ACOS>(evalObj<true>(vm, args->val));
 		}));
 
-		env::addSymbol(vm, "tan", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
-			return unaryOp<Unary::TAN>(ret);
+		env::addSymbol(vm, "tan", env::addNative([](VM* vm, Node* args) {
+			return unaryOp<Unary::TAN>(evalObj<true>(vm, args->val));
 		}));
 
-		env::addSymbol(vm, "atan", env::addNative([](VM* vm, Node* args) 
-		{
-			auto ret = env::newObj(vm, evalObj(vm, args->val));
-			return unaryOp<Unary::ATAN>(ret);
+		env::addSymbol(vm, "atan", env::addNative([](VM* vm, Node* args) {
+			return unaryOp<Unary::ATAN>(evalObj<true>(vm, args->val));
 		}));
 	}
 }
