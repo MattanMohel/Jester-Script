@@ -39,7 +39,7 @@ namespace jts {
 		return env::newObj(vm, obj);
 	}
 
-	template<> Obj* evalObj(VM* vm, Obj* obj) {
+	template<> Obj* evalObj<false>(VM* vm, Obj* obj) {
 		switch (obj->type) {
 		case Type::LIST:
 			if (!obj->_args) {

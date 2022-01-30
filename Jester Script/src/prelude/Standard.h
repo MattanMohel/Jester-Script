@@ -28,7 +28,7 @@ namespace lib {
 
 		// (set target value)
 		env::addSymbol(vm, "set", env::addNative([](VM* vm, Node* args) {
-			return setObj(vm, args->val, evalObj(vm, args->nxt->val));
+			return env::newObj(vm, setObj(vm, args->val, evalObj(vm, args->nxt->val)));
 		}));
 
 		// (const target value)
@@ -36,7 +36,7 @@ namespace lib {
 			ASSERT(args->val->initialized, "trying to make declared symbol const");
 
 			args->val->constant = true;
-			return setObj(vm, args->val, evalObj(vm, args->nxt->val));
+			return env::newObj(vm, setObj(vm, args->val, evalObj(vm, args->nxt->val)));
 		}));
 
 		// (let ( (name value)... ) body)
