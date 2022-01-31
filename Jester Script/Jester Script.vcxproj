@@ -201,6 +201,7 @@
     <ClInclude Include="src\core\VM.h" />
     <ClInclude Include="src\core\Token.h" />
     <ClInclude Include="src\core\StrCon.h" />
+    <ClInclude Include="src\util\ScopeHelper.h" />
     <ClInclude Include="src\util\Stack.h" />
     <ClInclude Include="src\util\Timer.h" />
   </ItemGroup>

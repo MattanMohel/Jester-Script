@@ -46,8 +46,10 @@ int main(char** argc, int** argv) {
 	env::addLib(vm, lib::ListsLib);
 	env::addLib(vm, lib::FileLib);
 
-	env::addSymbol(vm, "reset", env::addFunction(sample::reset));
-	env::addSymbol(vm, "elapsed", env::addFunction(sample::elapsed));
+	//env::addSymbol(vm, "reset", env::addFunction(sample::reset));
+	//env::addSymbol(vm, "elapsed", env::addFunction(sample::elapsed));
 
-	env::addScript(vm, "main.jts");
+	//env::addScript(vm, "main.jts");
+
+	env::runREPL(vm);
 }

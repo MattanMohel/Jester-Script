@@ -11,6 +11,7 @@
 #include "core/Log.h"
 
 #include "util/ObjectOp.h"
+#include "util/ScopeHelper.h"
 
 #include <iostream>
 
@@ -41,7 +42,7 @@ namespace lib {
 
 		// (let ( (name value)... ) body)
 		env::addSymbol(vm, "let", env::addNative([](VM* vm, Node* args) {
-			auto prvVal = env::bindEnv(vm, args->val->_args);
+			BINDING_S(l, args->val->_args);
 
 			auto bdy = args->nxt;
 
@@ -50,11 +51,7 @@ namespace lib {
 				shift(&bdy);
 			}
 
-			auto ret = evalObj<true>(vm, bdy->val);
-
-			env::unbindEnv(vm, args->val->_args, prvVal);
-
-			return ret;
+			return evalObj<true>(vm, bdy->val);
 		}));
 
 		// (fn (params) body)
@@ -80,7 +77,7 @@ namespace lib {
 			args->val->_jtsFn->params = args->nxt->val->_args;
 			args->val->_jtsFn->block = args->nxt->nxt;
 
-			return args->val;
+			return env::newObj(vm, args->val);
 		}));
 
 		// (eval target)

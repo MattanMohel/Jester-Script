@@ -12,7 +12,7 @@
 #define ASSERT(cond, mes) 
 #endif
 
-#define POOL_SZ 1000
+#define POOL_SZ 100
 
 namespace jts {
 
@@ -124,28 +124,6 @@ namespace jts {
 
 		void addScript(VM* vm, const str& path, bool abs = false, bool run = true);
 	}
-
-#define WRAPPER(ID, ...) Obj* arr[] = {__VA_ARGS__}; wrapper_v<sizeof(arr)/sizeof(void*)> ID(vm, arr)
-
-	template<size_t SZ>
-	struct wrapper_v {
-
-		wrapper_v(VM* vm, Obj** value)
-			: _arr(value), _vm_ptr(vm) {}
-
-		~wrapper_v() {
-			for (size_t i = 0; i < SZ; ++i) {
-				env::releaseObj(_vm_ptr, _arr[i]);
-			}
-		}
-
-		inline Obj* get(size_t&& idx) {
-			return _arr[idx];
-		}		
-
-		VM* _vm_ptr;
-		Obj** _arr;
-	};
 }
 
 #endif

@@ -6,6 +6,7 @@
 #include "core/Execute.h"
 #include "core/VM.h"
 
+#include "util/ScopeHelper.h"
 #include "util/ObjectOp.h"
 #include "util/Pool.h"
 
@@ -51,27 +52,27 @@ namespace lib {
 		}));
 
 		env::addSymbol(vm, "=", env::addNative([](VM* vm, Node* args) {
-			WRAPPER(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
+			WRAPPER_S(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
 			return setTo(env::newObj(vm), isEqual(vls.get(0), vls.get(1)));
 		}));
 
 		env::addSymbol(vm, ">", env::addNative([](VM* vm, Node* args) {
-			WRAPPER(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
+			WRAPPER_S(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
 			return setTo(env::newObj(vm), isGreater(vls.get(0), vls.get(1)));
 		}));
 
 		env::addSymbol(vm, ">=", env::addNative([](VM* vm, Node* args) {
-			WRAPPER(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
+			WRAPPER_S(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
 			return setTo(env::newObj(vm), isGreaterEq(vls.get(0), vls.get(1)));
 		}));
 
 		env::addSymbol(vm, "<", env::addNative([](VM* vm, Node* args) {
-			WRAPPER(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
+			WRAPPER_S(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
 			return setTo(env::newObj(vm), !isGreaterEq(vls.get(0), vls.get(1)));
 		}));
 
 		env::addSymbol(vm, "<=", env::addNative([](VM* vm, Node* args) {
-			WRAPPER(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
+			WRAPPER_S(vls, evalObj<true>(vm, args->val), evalObj<true>(vm, args->nxt->val));
 			return setTo(env::newObj(vm), !isGreater(vls.get(0), vls.get(1)));
 		}));
 

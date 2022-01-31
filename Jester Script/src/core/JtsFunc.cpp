@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "VM.h"
 
+#include "util/ScopeHelper.h"
 #include "util/ObjectOp.h"
 #include "util/ListOp.h"
 
@@ -10,7 +11,7 @@ namespace jts {
 
 	template<> Obj* call(VM* vm, Node* args, JtsFn* func) {
 
-		Node* prvVal = env::bindEnv(vm, func->params, lst::eval(vm, args));
+		BINDING(b, func->params, args);
 
 		Node* blockPtr = func->block;
 
@@ -19,11 +20,7 @@ namespace jts {
 			shift(&blockPtr);
 		}
 
-		Obj* ret = evalObj<true>(vm, blockPtr->val);
-
-		env::unbindEnv(vm, func->params, prvVal);
-
-		return ret;
+		return evalObj<true>(vm, blockPtr->val);
 	}
 
 	template<> Obj* call(VM* vm, Node* args, NatFn* func) {

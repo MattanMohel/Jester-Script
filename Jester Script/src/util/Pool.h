@@ -9,7 +9,7 @@ using namespace jts;
 
 #define ASSERT(cond, mes) if (cond) { printf(mes); raise(SIGABRT); }
 
-#define DEBUG_POOL 0
+#define DEBUG_POOL 1
 
 template<typename T, int SZ>
 class Pool_s {
@@ -19,140 +19,76 @@ class Pool_s {
     using CLR = std::function<T* (T*)>;
 
     struct N {
-        T* nxt = nullptr;
-        T  val;
+        N* nxt = nullptr;
+        T val;
     };
 
 public:
-    void init(CLR clear = [](T* val) { return val; }) {
-        _clear = new CLR(clear);
-        _free = SZ;
-
-        _head = &_buffer[0].val;
+    void init(str id, CLR clear = [](T* val) { return val; }) {
+        m_clear = new CLR(clear);
+        m_debugID = id;
+        m_index = 0;
 
         for (int i = 0; i < SZ - 1; ++i) {
-            _buffer[i].nxt = &_buffer[i + 1].val;
+            m_elements[i] = &m_buffer[i];
         }
-        _buffer[SZ - 1].nxt = nullptr;
     }
 
     T* acquire() {
-        T* val = _head;
+        ASSERT(m_index == SZ - 1, "acquiring empty pool element");
 
-        size_t head_index = index_of(_head);
+        T* val = m_elements[m_index];
+        m_elements[m_index] = nullptr;
 
-        ASSERT(!_head, "acquiring empty pool element");
-
-    #if DEBUG_POOL
-        printf("acquiring - %p\n", val);
-    #endif
-
-        --_free;
-
-        _head = _buffer[head_index].nxt;
-
-        return (*_clear)(val);
-    }
-
-    T* acquire(CLR clear) {
-        T* val = _head;
-
-        size_t head_index = index_of(_head);
-
-        ASSERT(!_head, "acquiring empty pool element");
+        ++m_index;
 
     #if DEBUG_POOL
-        printf("acquiring - %p\n", val);
+        printf("%s - acquiring - %p, have %d\n", m_debugID.c_str(), val, SZ - m_index);
     #endif
 
-        --_free;
-
-        _head = _buffer[head_index].nxt;
-
-        return clear(val);
+        return (*m_clear)(val);
     }
 
-    T* peek() {
-        return _head;
-    }
+    void release(T* elm) { 
+        ASSERT(is_elem(elm) >= SZ, "releasing foreign element");
 
-    void release(T* elm) {
-        size_t elm_index = index_of(elm);
+        --m_index;
 
-        ASSERT(elm_index >= SZ, "releasing foreign element");
+        m_elements[m_index] = elm;
 
     #if DEBUG_POOL
-        printf("releasing - %p\n", *elm);
+        printf("%s - releasing - %p, have %d\n", m_debugID.c_str(), elm, SZ - m_index);
     #endif
-
-        ++_free;
-
-        elm = nullptr;
-
-        _buffer[elm_index].nxt = _head;
-        _head = &_buffer[elm_index].val;
     }    
-    
-    void release(T** elm) {
-        size_t elm_index = index_of(*elm);
-
-        ASSERT(elm_index >= SZ, "releasing foreign element");
-
-    #if DEBUG_POOL
-        printf("releasing - %p\n", *elm);
-    #endif
-
-        ++_free;
-
-        *elm = nullptr;
-
-        _buffer[elm_index].nxt = _head;
-        _head = &_buffer[elm_index].val;
-    }
-
-    // release Ts... elements back to buffer
-    template<typename... Ts>
-    void release_t(Ts... elms) {
-        (release(&elms), ...);
-    }
-
-    void release_all() {
-        _head = &_buffer[0].val;
-
-        for (int i = 0; i < SZ - 1; ++i) {
-            _buffer[i].nxt = &_buffer[i + 1].val;
-        }
-        _buffer[SZ - 1].nxt = nullptr;
-    }
 
     // returns index of element in buffer
-    size_t index_of(T* elm) {
-        return (elm - &_buffer[0].val) / (sizeof(N) / sizeof(T));
+    long index_of(T* elm) const {
+        return elm - &m_buffer[0];
     }
 
     // returns if element is in buffer
-    bool elem_of(T* elm) {
-        return index_of(elm) < SZ;
+    bool is_elem(T* elm) const {
+        long index = index_of(elm);
+
+        return index > -1 && index < SZ;
     }
 
-    void set_clear(CLR clear) {
-        _clear = &clear;
+    size_t free() const {
+        return m_index;
     }
 
-    size_t free() {
-        return _free;
-    }
-
-    size_t size() {
+    size_t size() const {
         return SZ;
     }
 
 private:
-    T* _head;
-    N  _buffer[SZ];
+    T    m_buffer[SZ];
+    T* m_elements[SZ];
 
-    CLR* _clear;
-    size_t _free;
+    CLR* m_clear;
+    size_t m_index;
+
+    str m_debugID;
 };
 
 #endif

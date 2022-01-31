@@ -23,7 +23,7 @@ namespace jts {
 		VM* newVM() {
 			VM* vm = new VM();
 
-			vm->objPool.init([](Obj* elm) {
+			vm->objPool.init("Object", [](Obj* elm) {
 				
 				elm->ref  = new size_t(1);
 				elm->spec =  Spec::SYMBOL;
@@ -33,7 +33,7 @@ namespace jts {
 				return elm;
 			});			
 
-			vm->nodePool.init([](Node* elm) {
+			vm->nodePool.init("Node", [](Node* elm) {
 				elm->nxt = nullptr;
 				elm->val = nullptr;
 
@@ -51,14 +51,14 @@ namespace jts {
 		}
 
 		Node* newNode(VM* vm, Obj* obj) {
-			Node* node = vm->nodePool.acquire();
+			Node* node = new Node(); //vm->nodePool.acquire();
 			node->val = obj;
 
 			return node;
 		}
 
 		void releaseNode(VM* vm, Node* node) {
-			vm->nodePool.release(&node);
+			vm->nodePool.release(node);
 		}
 
 		Obj* newObj(VM* vm, Type t, Spec s) {
