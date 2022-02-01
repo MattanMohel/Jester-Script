@@ -62,9 +62,7 @@ namespace jts {
 
 		Obj* newObj(VM* vm, Obj* obj);
 
-		Obj* newObj(VM* vm, Obj obj);
-
-		void releaseObj(VM* vm, Obj* obj);
+		Obj* releaseObj(VM* vm, Obj* obj);
 
 		/////////////////
 		/////Symbols/////
@@ -98,11 +96,7 @@ namespace jts {
 
 		Obj* runREPL(VM* vm);
 
-		Node* bindEnv(VM* vm, Node* locals, Node* newVal);
-
-		Node* bindEnv(VM* vm, Node* locPair);
-
-		void  unbindEnv(VM* vm, Node* locals,  Node* prvVal);
+		void clear(VM* vm, Node* beg);
 
 		///////////////////
 		/////Directory/////

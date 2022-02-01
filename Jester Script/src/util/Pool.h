@@ -49,7 +49,19 @@ public:
         return (*m_clear)(val);
     }
 
-    void release(T* elm) { 
+    T* peek() {
+        ASSERT(m_index == SZ - 1, "acquiring empty pool element");
+
+        T* val = m_elements[m_index];
+
+    #if DEBUG_POOL
+        printf("%s - peeking - %p, have %d\n", m_debugID.c_str(), val, SZ - m_index);
+    #endif
+
+        return (*m_clear)(val);
+    }
+
+    T* release(T* elm) { 
         ASSERT(is_elem(elm) >= SZ, "releasing foreign element");
 
         --m_index;
@@ -59,6 +71,8 @@ public:
     #if DEBUG_POOL
         printf("%s - releasing - %p, have %d\n", m_debugID.c_str(), elm, SZ - m_index);
     #endif
+
+        return elm;
     }    
 
     // returns index of element in buffer

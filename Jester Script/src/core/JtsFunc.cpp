@@ -11,7 +11,7 @@ namespace jts {
 
 	template<> Obj* call(VM* vm, Node* args, JtsFn* func) {
 
-		BINDING(b, func->params, args);
+		BINDING(bind, func->params, args);
 
 		Node* blockPtr = func->block;
 

@@ -82,7 +82,7 @@ namespace lib {
 
 		// (eval target)
 		env::addSymbol(vm, "eval", env::addNative([](VM* vm, Node* args) {
-			auto ret = evalObj(env::withEval(vm, true), evalObj<true>(vm, args->val));
+			auto ret = evalObj(env::withEval(vm, true), args->val);
 			env::withEval(vm, false);
 
 			return ret;

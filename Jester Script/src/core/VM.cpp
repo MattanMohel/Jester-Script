@@ -51,7 +51,7 @@ namespace jts {
 		}
 
 		Node* newNode(VM* vm, Obj* obj) {
-			Node* node = new Node(); //vm->nodePool.acquire();
+			Node* node = vm->nodePool.acquire();
 			node->val = obj;
 
 			return node;
@@ -71,14 +71,10 @@ namespace jts {
 
 		Obj* newObj(VM* vm, Obj* obj) {
 			return setObj(vm, vm->objPool.acquire(), obj, false);
-		}
+		}	
 
-		Obj* newObj(VM* vm, Obj& obj) {
-			return setObj(vm, vm->objPool.acquire(), &obj, false);
-		}
-
-		void releaseObj(VM* vm, Obj* obj) {
-			vm->objPool.release(obj);
+		Obj* releaseObj(VM* vm, Obj* obj) {
+			return vm->objPool.release(obj);
 		}
 
 		/////////////////
@@ -185,7 +181,11 @@ namespace jts {
 				shift(&vm->stackPtrCur);
 			}
 
-			return evalObj(vm, vm->stackPtrCur->val);
+			ret = evalObj(vm, vm->stackPtrCur->val);
+
+			clear(vm, vm->stackPtrBeg);
+
+			return ret;
 		}
 
 		Obj* runREPL(VM* vm) {
@@ -222,61 +222,18 @@ namespace jts {
 			return ret;
 		}
 
-		//MEMORY LEAKS
+		void clear(VM* vm, Node* node) {	
+			//lst::for_each(vm, node, [](VM* vm, Obj* elm) {
+			//	if (elm->type == Type::LIST && elm->spec != Spec::SYMBOL) {
+			//		clear(vm, elm->_args);
+			//	}
+			//});
 
-		Node* bindEnv(VM* vm, Node* locals, Node* newVal) {
-			Node* prev = lst::copy(vm, locals);
+			//if (node->nxt) {
+			//	clear(vm, node->nxt);
+			//}
 
-			auto valPtr = newVal;
-
-			lst::forEach(vm, locals, [&](VM* vm, Obj* elm) {
-				setObj(vm, elm, evalObj(vm, shiftr(&valPtr)->val), false);
-			});
-
-			//lst::free(vm, newVal);
-
-			return prev;
-		}
-
-		Node* bindEnv(VM* vm, Node* locPair) {
-	
-			Node* prev =
-				lst::copy(vm, locPair, [](VM* vm, Obj* elm) {
-					return env::newObj(vm, (elm->type == Type::LIST)
-						? elm->_args->val
-						: elm);
-				});
-
-			lst::forEach(vm, locPair, [](VM* vm, Obj* elm) {
-				if (elm->type == Type::LIST) {
-					setObj(vm, elm->_args->val, evalObj(vm, elm->_args->nxt->val), 
-						false);
-				}
-				else {
-					setObj(vm, elm, NIL, 
-						false);
-				}
-			});
-
-			return prev;
-		}
-
-		void unbindEnv(VM* vm, Node* locals, Node* prvVal) {
-
-			auto valPtr = prvVal;
-			
-			lst::forEach(vm, locals, [&](VM* vm, Obj* elm) {
-				if (elm->type == Type::LIST) {
-					setObj(vm, elm->_args->val, shiftr(&valPtr)->val,
-						false);
-				}
-				else {
-					setObj(vm, elm, shiftr(&valPtr)->val,
-						false);
-				}
-			});
-
-			//lst::free(vm, prvVal);
+			//env::releaseNode(vm, node);
 		}
 
 		///////////////////

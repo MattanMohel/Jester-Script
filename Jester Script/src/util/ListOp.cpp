@@ -34,7 +34,7 @@ namespace jts::lst {
 		}
 	}
 
-	void forEach(VM* vm, Node* lst, std::function<void(VM*, Obj*)> each) {
+	void for_each(VM* vm, Node* lst, std::function<void(VM*, Obj*)> each) {
 		if (!lst) {
 			return;
 		}
@@ -45,7 +45,7 @@ namespace jts::lst {
 		}
 	}	
 	
-	void forEach(VM* vm, Node* lst, std::function<void(VM*, Node*)> each) {
+	void for_each(VM* vm, Node* lst, std::function<void(VM*, Node*)> each) {
 		if (!lst) {
 			return;
 		}
@@ -63,7 +63,7 @@ namespace jts::lst {
 	}	
 	
 	Node* evalSelf(VM* vm, Node* lst) {
-		forEach(vm, lst, [](VM* vm, Obj* elm) {
+		for_each(vm, lst, [](VM* vm, Obj* elm) {
 			if (!isMutable(elm)) return;
 
 			setObj(vm, elm, evalObj<true>(vm, elm));

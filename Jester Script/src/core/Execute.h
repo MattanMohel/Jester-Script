@@ -14,11 +14,7 @@ namespace jts {
 	template<> Obj* evalObj(VM* vm, Obj* obj);
 
 	// Executes and returns an object with a callable type
-	template<bool Rt>
 	Obj* execObj(VM* vm, Node* args);
-
-	template<> Obj* execObj<true >(VM* vm, Node* args);
-	template<> Obj* execObj<false>(VM* vm, Node* args);
 
 	// Takes object and returns its T value
 	template<typename T>

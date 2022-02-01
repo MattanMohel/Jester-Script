@@ -63,7 +63,11 @@ namespace jts {
 
 			case Spec::VALUE:
 
-				(*head) = env::newNode(vm, tokToLtrl(vm, it));
+				if (!env::getSymbol(vm, it->symbol)) {
+					env::addSymbol(vm, it->symbol, tokToLtrl(vm, it));
+				}
+
+				(*head) = env::newNode(vm, env::getSymbol(vm, it->symbol));
 				(*head)->val->symbol = it->symbol;
 
 				break;

@@ -12,8 +12,8 @@ namespace jts::lst {
 
 	void free(VM* vm, Node* lst);
 
-	void forEach(VM* vm, Node* lst, std::function<void(VM*, Obj*)> each);
-	void forEach(VM* vm, Node* lst, std::function<void(VM*, Node*)> each);
+	void for_each(VM* vm, Node* lst, std::function<void(VM*, Obj*)> each);
+	void for_each(VM* vm, Node* lst, std::function<void(VM*, Node*)> each);
 
 	Node* eval(VM* vm, Node* lst);
 	Node* evalSelf(VM* vm, Node* lst);

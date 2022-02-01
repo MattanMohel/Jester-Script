@@ -72,7 +72,7 @@ namespace jts {
 		binding(VM* vm, Node* args) 
 			: _vm(vm) {
 
-			lst::forEach(vm, args, [&](VM* vm, Obj* elm) {
+			lst::for_each(vm, args, [&](VM* vm, Obj* elm) {
 				if (elm->type == Type::LIST) {
 					_prv_pairs.emplace_back(elm->_args->val, env::newObj(vm, elm->_args->val));
 					setObj(vm, elm->_args->val, evalObj(vm, elm->_args->nxt->val));
@@ -87,7 +87,7 @@ namespace jts {
 		binding(VM* vm, Node* args, Node* vals) 
 			: _vm(vm) {
 
-			lst::forEach(vm, args, [&](VM* vm, Obj* elm) {
+			lst::for_each(vm, args, [&](VM* vm, Obj* elm) {
 				_prv_pairs.emplace_back(elm, env::newObj(vm, elm));
 				setObj(vm, elm, vals->val);
 
